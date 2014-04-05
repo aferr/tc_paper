@@ -41,9 +41,15 @@
     content without paying for a subscription. The adversary is capable of any 
     software attack in addition to simple physical attacks, for example, by 
     making power measurements at the terminals of the SoC to carry out a side 
-    channel attack. However, power side channel attacks orthogonal to the 
-    timing channel attacks addressed in this work and viable solutions already 
-    exist \cite{needed}.
+    channel attack. However, power side channel attacks are orthogonal to the 
+    problems addressed in this work and viable solutions already exist 
+    \cite{needed}. Since all software attacks are possible, the adversary is 
+    capable of performing timing channel attacks. Timing channel attacks can be 
+    classified as internal (if the adversary requires shared resources to 
+    exploit them) or external (if they can be exploit by an adversary that does 
+    not share resources with the victim). Both classes of timing channels are 
+    important to consider, however, here we only address internal timing 
+    channels.
 
     \subsubsection{Baseline Security Mechanisms}
     AMD TrustZone \cite{trustzone} exemplifies a state of the practice solution 
@@ -84,18 +90,26 @@
     the tag is set in the cache. If it is either a hit or a miss and the 
     security level does not meet the requirements, the access fails.
 
-    The two virtual processors share the physical processor in time-multiplexed 
-    way. Context switches may be entered either through an explicit instruction 
-    or through interrupts. On a context switch, the monitor mode is entered.  
-    Typically, the monitor mode will save the general purpose registers and any 
-    processor configuration registers. The TLB is not flushed since the tags 
-    protect illegal data accesses from happening.
+    The two virtual machines may share the same physical processor in time-multiplexed 
+    way through context switching. Context switches between these VMs are entered by a special 
+    instruction that invokes the monitor mode.  Typically, the monitor mode 
+    will save the general purpose registers and any processor configuration 
+    registers. The TLB and caches are not flushed since the tags protect 
+    illegal data accesses.
 
-    The video is sent to the device through an encrypted stream. The key used 
-    for decryption is stored inside the secure world VM. To play the video, the 
-    user space application must issue a special instruction to interact with 
-    the secure world and decrypt the stream. This invokes the monitor mode 
-    which then context switches out the normal world VM replacing it with the 
-    secure world VM. The secure world VM loads the encrypted data into the 
-    cache, decrypts it, and invokes the monitor to return execution to the 
-    normal world. 
+    To play the DRM protected video, it is sent to the device through an 
+    encrypted stream. The key used for decryption is stored inside the secure 
+    world VM. To play the video, the user space application loads the encrypted 
+    data into the cache, tagging it as normal world readable. It then issue a 
+    special instruction to interact with the secure world which decrypts the 
+    stream. This invokes the monitor mode which then context switches out the 
+    normal world VM replacing it with the secure world VM. The secure world VM 
+    loads the encrypted data into the cache, decrypts it with a key that is 
+    only readable by the secure world, tags it as readable by the normal world, 
+    and invokes the monitor to return execution to the normal world. Note that 
+    the data is not cleared from the TLB or cache during context switches. 
+    The normal world and secure world VMs can execute in separate cores which 
+    communicate through the shared cache instead of context switching, however, 
+    since they operate on the same data, it is generally better if they share 
+    the same core allowing them to both access the data quickly in the private 
+    cache.
