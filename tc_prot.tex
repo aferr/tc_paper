@@ -1,20 +1,77 @@
 \section{Timing Channels}
 The baseline architecture is vulnerable to microarchitectural timing channels 
 caused by shared resources including the private and shared caches, the on chip 
-network, the system bus, and the main memory.
+network, the system bus, and the main memory. Furthermore, data-dependent 
+variations in the timing parameters of microarchitectural components can cause 
+timing channels even in the absence of sharing.
 
 \subsection{Private Caches}
 The baseline private caches are shared among security domains whenever a core 
-context switches between them. Since the cache timing behavior observable by 
-one security domain depends in the private cache depends on the data the other 
-security domain operates on, this causes a timing channel. For example, the 
-normal world VM can load various sets of addresses into the cache and make the 
-same request from the secure world VM while monitoring the time required to 
-fulfill the request each time. In this way, the adversarial normal world 
-program can learn if fulfilling the request depended on these addresses. Since 
-memory addresses operated on by the secure world may depend on sensitive data 
-(e.g. through branch conditions), sensitive data may be leaked. In addition, it 
-is possible for the secure world VM to evict cache lines which were brought 
-into the cache by the normal world. Which cache lines are evicted depends on 
-the data operated on by the secure world, so clearly the cache replacement 
+context switches between them. Despite the lack of concurrent sharing, private 
+caches cause information leakage between context switches and through variation 
+in timing not due to sharing. 
+
+The fundamental cause of all cache timing channels is that cache space is 
+finite and requests for data that is present in the cache finish more quickly 
+than requests for data that is not in the cache. Caches typically contain data 
+that is likely to be accessed in the future. The data that is used by a program 
+depends on actual data values which are potentially secret (for example through 
+control flow). 
+
+The primary sources of timing channels are data sharing from lower class 
+security domains to higher class security domains, cache line eviction, and 
+total execution time variation. The examples presented in this section are 
+based on the DRM usage scenario and threat model, but the timing channel 
+sources are generalizable to many cases.
+
+The cache timing behavior observable by one security domain depends on the data 
+the other security domain operates on. This causes a timing channel. For 
+example, the normal world VM can load various sets of addresses into the cache 
+and make the same request from the secure world VM while monitoring the time 
+required to fulfill the request each time.  Since normal world entries may be 
+used by the secure world, the time spent in secure world depends on whether or 
+not the data loaded by the normal world is used by the secure world.
+Since memory addresses operated on by the secure world may depend on sensitive 
+data (e.g. through branch conditions), sensitive data may be leaked. 
+
+In addition, it is possible for the secure world VM to evict cache lines which 
+were brought into the cache by the normal world.  Which cache lines are evicted 
+depends on the data operated on by the secure world, so the cache replacement 
 policy also causes a timing channel
+
+Even if interference were eliminated, the total time required to complete a 
+request in secure world depends on the cache state and therefore the data 
+operated on by the secure world. Since the adversary can observe the time spent 
+in secure world, attacks which aim to correlate execution time to the secret 
+(such as the attack proposed by Bernstein \cite{bernstein}) are possible.
+
+\subsection{TLBs and Branch Predictors}
+As with private caches, TLBs and branch predictors are shared among security 
+domains between context switches and have state that causes the total execution 
+time of tasks to correlate with private data. As a result, similar approaches 
+can be taken to prevent timing channels in all three of these per-core 
+resources, however, different approaches may be desirable because each resource 
+affects performance differently.
+
+\subsection{Shared Caches}
+Unlike the private caches, shared caches allow concurrently executing security 
+domains to interfere with one another. However, the sources of timing channels 
+are still similar to those in the private cache. As with private caches, it is 
+possible for an adversary to exploit the ability of a higher level security 
+domain to access entries owned by a lower level domain to determine which 
+addresses are used. However the lower level domain can cause interference while 
+the secure domain is executing, not just between context switches. This allows 
+the attacker to have finer-grained control over when interference takes place, 
+potentially allowing for faster exfiltration of secrets. Similarly, if a domain 
+evicts cache entries owned by another concurrently executing domain with which 
+the former domain shares the cache, the latter domain can observe this and 
+potentially extract secret information. As with private caches, the timing of a 
+single security domain depends on it's shared cache access pattern, and 
+therefore, overall timing is correlated with data values even without 
+interference.
+
+\subsection{Main Memory}
+The main memory is shared between concurrently executing security domains, and 
+analagous to the timing disparity between cache hits and misses page faults in 
+main memory take substantially longer than accessing entries that are present 
+in main memory. 
