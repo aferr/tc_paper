@@ -16,13 +16,18 @@ finite and requests for data that is present in the cache finish more quickly
 than requests for data that is not in the cache. Caches typically contain data 
 that is likely to be accessed in the future. The data that is used by a program 
 depends on actual data values which are potentially secret (for example through 
-control flow). 
+control flow). So, there is a dependence between cache timing and data.  
+However, forcing all cache accesses to take the same amount of time (the time 
+for a cache miss) is equivalent to removing the cache, and this has 
+unacceptable performance implications.
 
-The primary sources of timing channels are data sharing from lower class 
-security domains to higher class security domains, cache line eviction, and 
-total execution time variation. The examples presented in this section are 
-based on the DRM usage scenario and threat model, but the timing channel 
-sources are generalizable to many cases.
+Fortunately, we can view the sources of timing channels in the cache 
+differently, and from this extract more efficient countermeasures. The primary 
+sources of timing channels are data sharing from lower class security domains 
+to higher class security domains, cache line eviction, and total execution time 
+variation. The examples presented in this section are based on the DRM usage 
+scenario and threat model, but the timing channel sources are generalizable to 
+many cases.
 
 The cache timing behavior observable by one security domain depends on the data 
 the other security domain operates on. This causes a timing channel. For 
@@ -72,6 +77,34 @@ interference.
 
 \subsection{Main Memory}
 The main memory is shared between concurrently executing security domains, and 
-analagous to the timing disparity between cache hits and misses page faults in 
+analogous to the timing disparity between cache hits and misses, page faults in 
 main memory take substantially longer than accessing entries that are present 
-in main memory. 
+in main memory. So the main memory has sources of timing channels that are 
+similar to the shared cache. However, the memory controller has additional 
+timing channels due to resource contention. Wang et. al. classify timing 
+channel sources as queueing structure interference, scheduler arbitration 
+interference, and DRAM Device interference. These timing channel sources are 
+summarized here.
+
+A typical memory controller queueing structure groups memory requests by bank 
+and schedules them to achieve the best performance regardless of which security 
+domain the requests came from. This queueing structure interference causes the 
+time that requests from one domain are scheduled to depend on the presence of 
+requests from another domain. Interference can be observed whenever a request 
+from one domain is chosen over a request from another, or whenever one domain 
+consumes the entire capacity of the queueing structure (thereby causing 
+requests from other domains to stall).
+
+Scheduler arbitration interference causes timing channels in a conventional 
+memory controller whenever requests from two different security domains for 
+different banks arrive at the queue at similar times. Depending on the specific 
+scheduler policy, the one request will be favored causing the other request to 
+be delayed.
+
+Lastly, contention for finite resources in the DRAM device (e.g., the command 
+bus, data bus, banks, and ranks) causes interference among security domains and 
+timing channels. For example, two requests to the same bank cannot be scheduled 
+at the same time. If two security domains make a request for the same bank at 
+the same time, one of them must be delayed.
+
+\subsection{On Chip Network \& System Bus}
