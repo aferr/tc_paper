@@ -45,14 +45,13 @@
     problems addressed in this work and viable solutions already exist 
     \cite{needed}. Since all software attacks are possible, the adversary is 
     capable of performing timing channel attacks. 
-    % Timing channel attacks can be 
-    % classified as internal (if the adversary requires shared resources to 
-    % exploit them) or external (if they can be exploit by an adversary that does 
-    % not share resources with the victim). Both classes of timing channels are 
-    % important to consider, however, here we only address internal timing 
-    % channels.
+    % Timing channel attacks can be classified as internal (if the adversary 
+    % requires shared resources to exploit them) or external (if they can be 
+    % exploit by an adversary that does not share resources with the victim). 
+    % Both classes of timing channels are important to consider, however, here 
+    % we only address internal timing channels.
 
-    \subsubsection{Baseline Security Mechanisms}
+    \subsubsection{DRM Protection Security Mechanisms}
     AMD TrustZone \cite{trustzone} exemplifies a state of the practice solution 
     that can enforce these security properties, however, TrustZone does not 
     offer protection against timing channel attacks. Since the adversary can 
@@ -86,9 +85,9 @@
     \begin{figure}
         \begin{center}
             \includegraphics[width=3in]{figs/tz_tags.pdf}
-            \caption{Baseline Security Mechnamisms. The baseline architecture 
-            is extended with tags that control explicit information flows between the 
-            secure and normal worlds.}
+            \caption{DRM Protection Mechnamisms. The baseline architecture 
+            is extended with tags that control explicit information flows 
+        between the secure and normal worlds.}
             \label{fig:baseline}
         \end{center}
     \end{figure}
@@ -110,12 +109,12 @@
     the tag is set in the cache. If it is either a hit or a miss and the 
     security level does not meet the requirements, the access fails.
 
-    The two virtual machines may share the same physical processor in time-multiplexed 
-    way through context switching. Context switches between these VMs are entered by a special 
-    instruction that invokes the monitor mode.  Typically, the monitor mode 
-    will save the general purpose registers and any processor configuration 
-    registers. The TLB and caches are not flushed since the tags protect 
-    illegal data accesses.
+    The two virtual machines may share the same physical processor in 
+    time-multiplexed way through context switching. Context switches between 
+    these VMs are entered by a special instruction that invokes the monitor 
+    mode.  Typically, the monitor mode will save the general purpose registers 
+    and any processor configuration registers. The TLB and caches are not 
+    flushed since the tags protect illegal data accesses.
 
     To play the DRM protected video, it is sent to the device through an 
     encrypted stream. The key used for decryption is stored inside the secure 
@@ -127,8 +126,8 @@
     loads the encrypted data into the cache, decrypts it with a key that is 
     only readable by the secure world, tags it as readable by the normal world, 
     and invokes the monitor to return execution to the normal world. Note that 
-    the data is not cleared from the TLB or cache during context switches. 
-    The normal world and secure world VMs can execute in separate cores which 
+    the data is not cleared from the TLB or cache during context switches.  The 
+    normal world and secure world VMs can execute in separate cores which 
     communicate through the shared cache instead of context switching, however, 
     since they operate on the same data, it is generally better if they share 
     the same core allowing them to both access the data quickly in the private 
