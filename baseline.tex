@@ -24,11 +24,11 @@
     Often, this policy entails of a lattice of security levels such as 
     $\mathtt{normal} \sqsubseteq \mathtt{secure}$, where the information 
     available to a security domain includes any information available to 
-    security domains at it's own level and all levels that preceed it in the 
+    security domains at its own level and all levels that preceed it in the 
     lattice order.  In another model, security domains can be mutually 
     distrusting and no information can be shared between them. (This cannot be 
     expressed as a lattice, since even if you have domains which are all 
-    incomparable, each pair of elements does not have a supremum and infimum). 
+    incomparable, each pair of elements does not have a supremum and infimum).  
     As shown in Figure \ref{fig:baseline}, it is possible for a security domain 
     to have multiple virtual machines which may be allocated to different 
     cores. It is also possible for security domains to be time multiplexd on 
@@ -48,11 +48,11 @@
     attacker is the owner of the mobile device who would either like to access 
     content without paying for a subscription. The adversary is capable of any 
     software attack in addition to simple physical attacks, for example, by 
-    making power measurements at the terminals of the SoC to carry out a side 
-    channel attack. However, power side channel attacks are orthogonal to the 
-    problems addressed in this work and viable solutions already exist 
-    \cite{needed}. Since all software attacks are possible, the adversary is 
-    capable of performing timing channel attacks. 
+    making power measurements at the terminals of the SoC to carry out a 
+    differential power analysis attack. However, power side channel attacks are 
+    orthogonal to the problems addressed in this work and viable solutions 
+    already exist \cite{needed}. Since all software attacks are possible, the 
+    adversary is capable of performing timing channel attacks. 
 
     \subsubsection{DRM Protection Security Mechanisms}
     AMD TrustZone \cite{trustzone} exemplifies a state of the practice solution 
@@ -83,9 +83,9 @@
     if they are time multiplexed on the same core. The security levels of these 
     domains form a lattice such that the level of the normal world precedes the 
     level of the secure world (i.e. information available to the normal world 
-    is available to the secure world). All of the secure world code 
-    is small to reduce the chance of vulnerabilities. The secure world must 
-    only allow the normal world to play the video if the subscription is valid. 
+    is available to the secure world). All of the secure world code is small to 
+    reduce the chance of vulnerabilities. The secure world must only allow the 
+    normal world to play the video if the subscription is valid. 
 
 
     \begin{figure}

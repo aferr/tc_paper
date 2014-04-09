@@ -4,53 +4,103 @@ The baseline architecture is vulnerable to microarchitectural timing channels
 caused by shared resources including the private and shared caches, the on chip 
 network, the system bus, and the main memory. Furthermore, data-dependent 
 variations in the timing parameters of microarchitectural components can cause 
-timing channels even in the absence of sharing.
+timing channels even in the absence of sharing. In general, all 
+microarchitectural timing channels may be classified as state based timing 
+channels, resource contention based timing channels, or termination channels.  
+We later present approaches to address timing channels of each of these kinds.
+
+In a state based timing channel:
+\begin{itemize}
+    \item The time required to access a resource with state depends on the 
+        contents of that state. 
+    \item An adversary can observe the time required to complete requests to 
+        that resource made by one security domain (that it controls).
+    \item Another security domain operating on secret data can modify this 
+        state, and these modifications can possibly affect the request timings 
+        observable by the adversary.
+    \item These modifications can possibly depend on the secret.
+\end{itemize}
+When all of these conditions are met, the timings that the adversary can 
+observe correlate with the secret, and sensitive information may be leaked.
+
+There is a resource contention based timing channel whenever:
+\begin{itemize}
+    \item A resource can concurrently service a finite number of requests and 
+        this limitation can affect the time required to service a request (e.g.  
+        if a request can be delayed because the resource is servicing another 
+        request).
+    \item An adversary can observe the time required for requests to that 
+        resource made by one security domain (that it controls).
+    \item Another security domain that directly operates on a secret contends 
+        for the same resource and this contention can affect the timings 
+        observable by the adversary.
+    \item Usage of this resource by the security domain operating on the secret 
+        can possibly correlate with the secret.
+\end{itemize}
+Together, these conditions imply that the adversary can make requests to use a 
+resource with a contention based timing channel and extract secrets from these 
+timings.
+
+If instead the adversary can directly observe the time required for the 
+security domain operating on a secret to complete any action (e.g. run an 
+entire program or complete a memory request), this is a termination channel.  
+This differs from state based and resource contention based timing channels 
+wherein an adversary can only measure the timings of a security domain that it 
+controls, but not the security domain directly operating on a secret. The rest 
+of this section classifies the timing channel vulnerabilities due to each 
+microarchitectural component into this taxonomy, and provides elucidating 
+examples of these classes of timing channels.
 
 \subsection{Private Caches}
 The baseline private caches are shared among security domains whenever a core 
 context switches between them. Despite the lack of concurrent sharing, private 
 caches cause information leakage between context switches and through variation 
-in timing not due to sharing. 
+in timing not due to sharing.
 
-The fundamental cause of all cache timing channels is that cache space is 
-finite and requests for data that is present in the cache finish more quickly 
-than requests for data that is not in the cache. Caches typically contain data 
-that is likely to be accessed in the future. The data that is used by a program 
-depends on actual data values which are potentially secret (for example through 
-control flow). So, there is a dependence between cache timing and data.  
-However, forcing all cache accesses to take the same amount of time (the time 
-for a cache miss) is equivalent to removing the cache, and this has 
-unacceptable performance implications.
+Private caches impose a state based timing channel even if each security domain 
+has a totally disjoint address space (i.e. no security domain can read or write 
+any memory address that another security domain can read or write). Requests to 
+the memory hierarchy for addresses that are stored in the cache (cache hits) 
+are returned faster than requests that are not stored in the cache (cache 
+misses). So, the time required to access the cache depends on its state. An 
+adversary controlling a security domain can use conventional time measurement 
+libraries to record cache access timings and determine which requests are hits.
+The adversary controlled security domain can be context switched out for one 
+that will operate on some secret. This other domain can read new memory 
+addresses into the cache which may evict some of the old entries that occupied 
+the cache. The memory addresses used by this domain can depend on the actual 
+data of the secret, for example, through a branch condition. (In the attack 
+proposed by Bernstein \cite{bernstein} the addresses read by an AES algorithm 
+depend on the secret key through sboxes). Therefore, this satisfies the 
+definition of a state based timing channel.
 
-Fortunately, we can view the sources of timing channels in the cache 
-differently, and from this extract more efficient countermeasures. The primary 
-sources of timing channels are data sharing from lower class security domains 
-to higher class security domains, cache line eviction, and total execution time 
-variation. The examples presented in this section are based on the DRM usage 
-scenario and threat model, but the timing channel sources are generalizable to 
-many cases.
+The adversary can exploit this timing channel by loading an array from memory 
+that occupies as many cache lines as possible. The adversary then waits until 
+the virtual machine he or she controls is context switched out and replaced 
+with the security domain that will operate on the secret. This security domain 
+may evict some of the cache lines of the array. When the adversarial security 
+domain context switches back, the adversary can learn which cache lines were 
+evicted by making requests to read each element of the array and measuring the 
+timing. It will take longer to read the elements which were evicted. Unless the 
+cache is fully associative, the particular cache lines that were evicted will 
+depend on the addresses operated on by the victim security domain. Even if the 
+cache is fully associative, the adversary can use an array that completely 
+fills the cache and learn the number of cache lines read by the adversary - a 
+quantity that can also depend on a secret.
 
-The cache timing behavior observable by one security domain depends on the data 
-the other security domain operates on. This causes a timing channel. For 
-example, the normal world VM can load various sets of addresses into the cache 
-and make the same request from the secure world VM while monitoring the time 
-required to fulfill the request each time.  Since normal world entries may be 
-used by the secure world, the time spent in secure world depends on whether or 
-not the data loaded by the normal world is used by the secure world.
-Since memory addresses operated on by the secure world may depend on sensitive 
-data (e.g. through branch conditions), sensitive data may be leaked. 
-
-In addition, it is possible for the secure world VM to evict cache lines which 
-were brought into the cache by the normal world.  Which cache lines are evicted 
-depends on the data operated on by the secure world, so the cache replacement 
-policy also causes a timing channel
-
-Even if interference were eliminated, the total time required to complete a 
-request in secure world depends on the cache state and therefore the data 
-operated on by the secure world. Since the adversary can observe the time spent 
-in secure world, attacks which aim to correlate execution time to the secret 
-(such as the attack proposed by Bernstein \cite{bernstein}) are possible.
-
+Additionally, private caches also cause termination channel vulnerabilities if 
+the adversary can measure the duration of an event performed by a security 
+domain that operates on some secret and includes one or more private cache
+accesses. In the DRM video playback usage case, an example of such an event is 
+a function call in the secure world that handles a request made by the normal 
+world. The adversary can measure the time between making the request (invoking
+the monitor to context switch the adversarial security domain out) and being 
+context switched back in. The total time required to complete the function will 
+depend on the cache hit ratio which depends on program control flow and 
+therefore possibly the secret. This termination channel has the interesting 
+property in that it requires no interference or resource sharing between the 
+two security domains at all.
+ 
 \subsection{TLBs and Branch Predictors}
 As with private caches, TLBs and branch predictors are shared among security 
 domains between context switches and have state that causes the total execution 
