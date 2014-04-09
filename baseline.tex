@@ -21,6 +21,14 @@
     based system). Software modules within the same security domain trust each 
     other, but information flows between security domains must be controlled 
     according to a policy that meets the security requirements of the system.
+    Often, this policy entails of a lattice of security levels such as 
+    $\mathtt{normal} \sqsubseteq \mathtt{secure}$, where the information 
+    available to a security domain includes any information available to 
+    security domains at it's own level and all levels that preceed it in the 
+    lattice order.  In another model, security domains can be mutually 
+    distrusting and no information can be shared between them. (This cannot be 
+    expressed as a lattice, since even if you have domains which are all 
+    incomparable, each pair of elements does not have a supremum and infimum). 
     As shown in Figure \ref{fig:baseline}, it is possible for a security domain 
     to have multiple virtual machines which may be allocated to different 
     cores. It is also possible for security domains to be time multiplexd on 
@@ -45,11 +53,6 @@
     problems addressed in this work and viable solutions already exist 
     \cite{needed}. Since all software attacks are possible, the adversary is 
     capable of performing timing channel attacks. 
-    % Timing channel attacks can be classified as internal (if the adversary 
-    % requires shared resources to exploit them) or external (if they can be 
-    % exploit by an adversary that does not share resources with the victim). 
-    % Both classes of timing channels are important to consider, however, here 
-    % we only address internal timing channels.
 
     \subsubsection{DRM Protection Security Mechanisms}
     AMD TrustZone \cite{trustzone} exemplifies a state of the practice solution 
@@ -77,17 +80,20 @@
     and the libraries do not require any operating system support (e.g. they 
     may not have system calls). The secure world also contains software for a 
     simple monitor mode that handles context switching between the two domains 
-    if they are time multiplexed on the same core. All of the secure world code 
+    if they are time multiplexed on the same core. The security levels of these 
+    domains form a lattice such that the level of the normal world precedes the 
+    level of the secure world (i.e. information available to the normal world 
+    is available to the secure world). All of the secure world code 
     is small to reduce the chance of vulnerabilities. The secure world must 
-    only allow the normal world to play the video if the subscription is valid.
+    only allow the normal world to play the video if the subscription is valid. 
 
 
     \begin{figure}
         \begin{center}
             \includegraphics[width=3in]{figs/tz_tags.pdf}
-            \caption{DRM Protection Mechnamisms. The baseline architecture 
-            is extended with tags that control explicit information flows 
-        between the secure and normal worlds.}
+            \caption{DRM Protection Mechnamisms. The baseline architecture is 
+            extended with tags that control explicit information flows between 
+        the secure and normal worlds.}
             \label{fig:baseline}
         \end{center}
     \end{figure}
