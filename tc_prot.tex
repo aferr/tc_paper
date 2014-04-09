@@ -1,0 +1,48 @@
+\section{Timing Channel Protection Mechanisms}
+This section proposes mechanisms that prevent all microarchitectural timing 
+channels. Sources of timing channels may be viewed as either state based or 
+resource contention based. In a state based timing channel, information leakage 
+occurs whenever the timing of some machine operation depends on the state of a 
+microarchitectural component, and one security domain can affect that state in 
+a way that is observable to another security domain. The TLB, branch 
+predictors, caches, and DRAM state all cause state based timing channels.  
+Whenever there is a finite resource and contention between security domains for 
+that resource can affect the timing of either security domain, there is a 
+resource contention based timing channel. The on chip network, system bus, and 
+memory controller all have resource contention based timing channel 
+vulnerabilities. For some usage models, termination channels are also 
+problematic. Termination channels occur whenever one security domain can 
+observe when another security domain finishes executing and the termination 
+time can depend on secrets.
+
+At a high level, our approach to handling state-based timing channels is to 
+apply static partitioning (or flushing where appropriate for resoureces that 
+are private to a core), and our approach to handling resource contention 
+based timing channels is to use time division multiplexing.  Termination 
+channels are resolved by determining a worst case time for the operation and 
+always returning at the worst case time. However, implementing these techniques 
+for each microarchitectural component is a nuanced problem with subtle details 
+that must be addressed for both efficiency and correctnes. In this section we 
+discuss these techniques and show how they may be applied to each component in 
+detail.
+
+\subsection{State Based Timing Channel Protection}
+\subsubsection{Static Partitioning}
+The private and shared caches, TLBs, and branch predictors of each core in the 
+system have the state based timing channels mentioned in Section 
+\ref{sec:tc_sources}.  These timing channels can be eliminated by allocating 
+static partitions to each security domian in the state of each of these 
+resources. In states where entries may be evicted (e.g. caches and TLBs), a 
+security domain may only evict entries in its own partition (and it may not 
+evict entries of another partition even if the other partition has a lower 
+security level).
+
+This technique applied to the cache eliminates attacks that attempt to observe 
+cache line evictions. Formerly, an adversary that controls one security domain 
+could load a large array into the cache and observe which entries are evicted 
+by the other domain. Now, if an adversary attempts the same attack, it will 
+only be able to fill cache lines in its own domain and the other domain can 
+only evict cache lines in its own domain. So, the adversary learns nothing with 
+this attack. The same reasoning applies to attacks based on branch predictor 
+table capacity and TLB entry eviction.
+
