@@ -102,12 +102,18 @@ property in that it requires no interference or resource sharing between the
 two security domains at all.
  
 \subsection{TLBs and Branch Predictors}
-As with private caches, TLBs and branch predictors are shared among security 
-domains between context switches and have state that causes the total execution 
-time of tasks to correlate with private data. As a result, similar approaches 
-can be taken to prevent timing channels in all three of these per-core 
-resources, however, different approaches may be desirable because each resource 
-affects performance differently.
+As with private caches, TLBs are shared among security domains between context 
+switches. The TLB effectively caches address translations, and since page table 
+hits are faster than misses, it can be shown through similar reasoning as 
+Section \ref{sec:priv_cache} that the TLB causes state based timing channels 
+and termination channels. The branch predictor is also shared by domains 
+between context switching. It stores branch prediction history in a branch 
+prediction table, the contents of which are used to decide whether 
+or not a branch should be taken. This prediction can positively or adversely 
+affect execution time, and space in the branch prediction history table is 
+finite, so evictions must be made. Again, similar reasoning can be applied to 
+see that the branch predictor also causes state based and termination timing 
+channels.
 
 \subsection{Shared Caches}
 Unlike the private caches, shared caches allow concurrently executing security 
