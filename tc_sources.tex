@@ -12,7 +12,7 @@ We later present approaches to address timing channels of each of these kinds.
 In a state based timing channel:
 \begin{itemize}
     \item The time required to access a resource with state depends on the 
-        contents of that state. 
+        contents of that state.
     \item An adversary can observe the time required to complete requests to 
         that resource made by one security domain (that it controls).
     \item Another security domain operating on secret data can modify this 
@@ -108,29 +108,29 @@ hits are faster than misses, it can be shown through similar reasoning as
 Section \ref{sec:priv_cache} that the TLB causes state based timing channels 
 and termination channels. The branch predictor is also shared by domains 
 between context switching. It stores branch prediction history in a branch 
-prediction table, the contents of which are used to decide whether 
-or not a branch should be taken. This prediction can positively or adversely 
-affect execution time, and space in the branch prediction history table is 
-finite, so evictions must be made. Again, similar reasoning can be applied to 
-see that the branch predictor also causes state based and termination timing 
-channels.
+prediction table, the contents of which are used to decide whether or not a 
+branch should be taken. This prediction can positively or adversely affect 
+execution time, and space in the branch prediction history table is finite, so 
+evictions must be made. Again, similar reasoning can be applied to see that the 
+branch predictor also causes state based and termination timing channels.
 
 \subsection{Shared Caches}
 Unlike the private caches, shared caches allow concurrently executing security 
-domains to interfere with one another. However, the sources of timing channels 
-are still similar to those in the private cache. As with private caches, it is 
-possible for an adversary to exploit the ability of a higher level security 
-domain to access entries owned by a lower level domain to determine which 
-addresses are used. However the lower level domain can cause interference while 
-the secure domain is executing, not just between context switches. This allows 
-the attacker to have finer-grained control over when interference takes place, 
-potentially allowing for faster exfiltration of secrets. Similarly, if a domain 
-evicts cache entries owned by another concurrently executing domain with which 
-the former domain shares the cache, the latter domain can observe this and 
-potentially extract secret information. As with private caches, the timing of a 
-single security domain depends on it's shared cache access pattern, and 
-therefore, overall timing is correlated with data values even without 
-interference.
+domains to interfere with one another, although it induces similar state based 
+and termination timing channels. As with private caches, if an operation 
+performed on a secret by a victim security domain is  comprised with one or 
+more shared cache accesses, the overall time to complete that action is 
+possibly correlated with the secret. This termination channel is present even 
+without any interference or resource sharing among security domains.
+Also, one security domain can evict the cache lines of another security domain, 
+however, in the shared cache this can happen while both are executing 
+concurrently. This allows the attacker to have finer-grained control over when 
+interference takes place, potentially allowing for faster exfiltration of 
+secrets. However, since the shared cache is larger it has a higher access time, 
+and since it is higher in the memory hierarchy the private cache reduces the 
+chance of a shared cache access. Both of these factors decrease the 
+exfiltration rate, so it is unclear if shared cache timing channels are more 
+efficient than private cache timing channels.
 
 \subsection{Main Memory}
 The main memory is shared between concurrently executing security domains, and 
@@ -140,28 +140,56 @@ in main memory. So the main memory has sources of timing channels that are
 similar to the shared cache. However, the memory controller has additional 
 timing channels due to resource contention. Wang et. al. classify timing 
 channel sources as queueing structure interference, scheduler arbitration 
-interference, and DRAM Device interference. These timing channel sources are 
-summarized here.
+interference, and DRAM Device interference. In this section these timing 
+channel sources are summarized, and it is shown that each may also be thought
+of as a resource contention based timing channel or a state based timing 
+channel.
 
-A typical memory controller queueing structure groups memory requests by bank 
-and schedules them to achieve the best performance regardless of which security 
-domain the requests came from. This queueing structure interference causes the 
-time that requests from one domain are scheduled to depend on the presence of 
-requests from another domain. Interference can be observed whenever a request 
-from one domain is chosen over a request from another, or whenever one domain 
-consumes the entire capacity of the queueing structure (thereby causing 
-requests from other domains to stall).
+A memory controller queueing structure collects incoming requests for the DRAM 
+and stores them in a queue. The state elements of the queue can accommodate 
+only a finite number of requests. If the queue is completely filled, any 
+incoming request must be stalled. Therefore, the time required to make a memory 
+request depends on the state in the queueing structure. An adversary can 
+measure the time required for its memory requests and learn if a victim 
+security domain has completely occupied the queue or not (since the delay will 
+be greater if the queue is full). This can indicate whether or not a secret 
+dependent control flow segment led the victim program to a memory intensive 
+region of of the program or not. These conditions imply that the finite queue 
+space induces a state based timing channel.
 
 Scheduler arbitration interference causes timing channels in a conventional 
 memory controller whenever requests from two different security domains for 
 different banks arrive at the queue at similar times. Depending on the specific 
 scheduler policy, the one request will be favored causing the other request to 
-be delayed.
+be delayed. Often, this policy is designed to exploit row buffer locality. When 
+a memory access takes place, the row being accessed is stored in a row buffer 
+(sense amplifier). Accesses to rows that are already stored in the row buffer 
+are faster than those which are not. This causes another state based timing 
+channel.
 
-Lastly, contention for finite resources in the DRAM device (e.g., the command 
-bus, data bus, banks, and ranks) causes interference among security domains and 
-timing channels. For example, two requests to the same bank cannot be scheduled 
-at the same time. If two security domains make a request for the same bank at 
-the same time, one of them must be delayed.
+
+Lastly, the queueing structure and scheduler arbitration both resolve 
+contention for finite resources in the DRAM device (e.g., the command bus, data
+bus, banks, and ranks).
+For example, two requests to the same bank cannot be scheduled at the same 
+time. If two security domains make a request for the same bank at the same 
+time, one of them must be delayed.  When a victim security domain operating on 
+a secret makes a memory request, the request will be mapped to a particular 
+bank based on the address of the request. An adversary can employ a security 
+domain he or she controls to simultaneously issue requests to the memory 
+controller and measure the timing to determine if there is interference that 
+might imply the victim is using a particular bank. This is a resource 
+contention based timing channel, and similar arguments can be made to show that 
+the other finite resources also cause resource contention based timing 
+channels. 
+
+The command bus and data bus timing channels are subtly different from the rank 
+and bank timing channels. The particular rank and bank accessed by the victim 
+security domain depend on the memory address, but the command and data bus are 
+simply occupied by a request or not. These buses can still cause delays that 
+imply the presence or absence of a victim request, and so these resources also 
+cause timing variation which may depend on a secret.
 
 \subsection{On Chip Network \& System Bus}
+This section must still be completed, but it is likely that these timing 
+channels can be viewed as resource contention based timing channels.
