@@ -1,23 +1,8 @@
 \section{Timing Channel Protection Mechanisms}
 This section proposes mechanisms that prevent all microarchitectural timing 
-channels. Sources of timing channels may be viewed as either state based or 
-resource contention based. In a state based timing channel, information leakage 
-occurs whenever the timing of some machine operation depends on the state of a 
-microarchitectural component, and one security domain can affect that state in 
-a way that is observable to another security domain. The TLB, branch 
-predictors, caches, and DRAM state all cause state based timing channels.  
-Whenever there is a finite resource and contention between security domains for 
-that resource can affect the timing of either security domain, there is a 
-resource contention based timing channel. The on chip network, system bus, and 
-memory controller all have resource contention based timing channel 
-vulnerabilities. For some usage models, termination channels are also 
-problematic. Termination channels occur whenever one security domain can 
-observe when another security domain finishes executing and the termination 
-time can depend on secrets.
-
-At a high level, our approach to handling state-based timing channels is to 
-apply static partitioning (or flushing where appropriate for resoureces that 
-are private to a core), and our approach to handling resource contention 
+channels. At a high level, our approach to handling state-based timing channels 
+is to apply static partitioning (or flushing where appropriate for resoureces 
+that are private to a core), and our approach to handling resource contention 
 based timing channels is to use time division multiplexing.  Termination 
 channels are resolved by determining a worst case time for the operation and 
 always returning at the worst case time. However, implementing these techniques 
@@ -29,13 +14,12 @@ detail.
 \subsection{State Based Timing Channel Protection}
 \subsubsection{Static Partitioning}
 The private and shared caches, TLBs, and branch predictors of each core in the 
-system have the state based timing channels mentioned in Section 
-\ref{sec:tc_sources}.  These timing channels can be eliminated by allocating 
-static partitions to each security domian in the state of each of these 
-resources. In states where entries may be evicted (e.g. caches and TLBs), a 
-security domain may only evict entries in its own partition (and it may not 
-evict entries of another partition even if the other partition has a lower 
-security level).
+system induce state based timing channels.  These timing channels can be 
+eliminated by allocating static partitions to each security domian in the state 
+of each of these resources. In states where entries may be evicted (e.g. caches 
+and TLBs), a security domain may only evict entries in its own partition (and 
+it may not evict entries of another partition even if the other partition has a 
+lower security level).
 
 This technique applied to the cache eliminates attacks that attempt to observe 
 cache line evictions. Formerly, an adversary that controls one security domain 
@@ -44,5 +28,72 @@ by the other domain. Now, if an adversary attempts the same attack, it will
 only be able to fill cache lines in its own domain and the other domain can 
 only evict cache lines in its own domain. So, the adversary learns nothing with 
 this attack. The same reasoning applies to attacks based on branch predictor 
-table capacity and TLB entry eviction.
+table capacity and TLB entry eviction. For each of these microarchitectural 
+timing channels, the security domain operating on a secret cannot make any 
+modifications to the state that are observable by any other domain. This 
+implies the state based timing channel has been eliminated.
 
+\subsubsection{Flushing}
+The private caches, TLBs, and branch predictors have the unique property that 
+they are only shared among security domains between context switches. We can 
+leverage this by flushing the state elements in each of these whenever  a 
+context switch happens rather than statically partitioning them. This increases 
+the maximum space a security domain can consume at a given time, but when a 
+context switch happens there are two performance penalties. The time required 
+to perform the context switch potentially increases if flushing the state 
+cannot be done instantly or in parallel with other steps, and there is a 
+penalty in performance due to the actual loss of state. In the private cache, 
+this performance loss is a sequence of compulsory cache misses - misses that 
+cannot be avoided at the beginning of execution because the cache is empty - 
+that lasts until the cache is refilled with data that is useful to the current 
+security domain. The TLB similarly suffers from a now empty table of address 
+translations, and the branch prediction accuracy is weakened by a loss of 
+history. 
+
+Clearly there is a tradeoff between these two approaches. If context switches 
+are expected to be infrequent (as may be the case if the security domains are 
+not working together and the context switches are due to normal hypervisor 
+management), it is likely that flushing is preferable since the performance 
+loss will also be infrequent. However, if the context switches happen often (as 
+in the case of the DRM processor with only a single core that context switches 
+out the normal world any time the secure world must handle a request) the 
+performance impact of the lost state and flush time may be more significant 
+than that of the capacity lost to partitioning.
+
+\subsubsection{Flattening}
+The last technique to addressing state based timing channels eliminates the 
+dependence of access time on the state by making every access take the same 
+amount of time. This can be applied to a cache by treating every access as a 
+cache miss. This is equivalent to eliminating the cache entirely. This has dire 
+performance implications and is not likely an effective solution to address 
+cache induced state based timing channels. However, this flattening technique 
+is a suitable solution for the state based timing channel in the row buffer of 
+the memory controller. Static partitioning cannot sensibly be applied to the 
+row buffer since it contains exactly one row. Unlike caches and other state 
+based timing channels, the performance lost from neglecting the caching effect 
+of the row buffer is tolerable. Flattening may be applied to the row buffer by 
+using a closed page row buffer management policy.
+
+\subsection{Resource Contention Based Timing Channel Protection}
+\subsubsection{Time Division Multiplexing}
+This section is not yet completed, but we already know how this applies to 
+memory controllers and on chip networks, so this is just a matter of writing.
+
+\subsection{Termination Channel Protection}
+Termination channels are problematic for certain usage scenarios (such as the 
+DRM processor) where an adversary can observe the timing of a victim security 
+domain action directly.  The private and shared caches, TLBs, branch 
+predictors, and memory controller all induce termination channels whenever the 
+adversary can observe the time required to complete an action that depends on a 
+secret and is comprised of one or more requests to use one of these resources. 
+In the DRM processor, the normal world makes requests for the secure world to 
+perform some function. An adversarial normal world can measure the time it 
+takes for this request to be handled, and handling the request may depend on 
+any number of requests to use any of the aforementioned resources. In general, 
+this timing channel can be addressed by finding a conservative upper bound on 
+the action that causes the termination channel. The action must be forced to 
+appear to take the worst case time on each execution. In the DRM processor 
+case, this means a worst case time estimation for each secure world operation 
+must be found before execution. Then whenever a secure world operation would 
+normally terminate before the worst case time, it must be stalled until the 
+worst case is reached.

@@ -52,6 +52,7 @@ microarchitectural component into this taxonomy, and provides elucidating
 examples of these classes of timing channels.
 
 \subsection{Private Caches}
+\label{sec:priv_cache}
 The baseline private caches are shared among security domains whenever a core 
 context switches between them. Despite the lack of concurrent sharing, private 
 caches cause information leakage between context switches and through variation 
@@ -189,6 +190,9 @@ security domain depend on the memory address, but the command and data bus are
 simply occupied by a request or not. These buses can still cause delays that 
 imply the presence or absence of a victim request, and so these resources also 
 cause timing variation which may depend on a secret.
+
+(* There is also a state based timing channel due to paging in the main memory 
+ this will be added to the writing later *)
 
 \subsection{On Chip Network \& System Bus}
 This section must still be completed, but it is likely that these timing 
