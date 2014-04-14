@@ -24,17 +24,13 @@
     Often, this policy entails of a lattice of security levels such as 
     $\mathtt{normal} \sqsubseteq \mathtt{secure}$, where the information 
     available to a security domain includes any information available to 
-    security domains at its own level and all levels that preceed it in the 
-    lattice order.  In another model, security domains can be mutually 
-    distrusting and no information can be shared between them. (This cannot be 
-    expressed as a lattice, since even if you have domains which are all 
-    incomparable, each pair of elements does not have a supremum and infimum).  
-    As shown in Figure \ref{fig:baseline}, it is possible for a security domain 
-    to have multiple virtual machines which may be allocated to different 
-    cores. It is also possible for security domains to be time multiplexd on 
-    the same core (e.g.  by context switching VMs), but it is not possible for 
-    security domains to execute concurrently on the same core (e.g. through 
-    SMT).
+    security domains with an equal security level and with levels that preceed 
+    it in the lattice order. As shown in Figure \ref{fig:baseline}, it is 
+    possible for a security domain to have multiple virtual machines which may 
+    be allocated to different cores. It is also possible for security domains 
+    to be time multiplexd on the same core (e.g.  by context switching VMs), 
+    but it is not possible for security domains to execute concurrently on the 
+    same core (e.g. through SMT).
 
 \section{Usage Scenarios and Threat Models}
 
@@ -47,20 +43,15 @@
     he or she has a valid subscription to the service. In this case, the 
     attacker is the owner of the mobile device who would either like to access 
     content without paying for a subscription. The adversary is capable of any 
-    software attack in addition to simple physical attacks, for example, by 
-    making power measurements at the terminals of the SoC to carry out a 
-    differential power analysis attack. However, power side channel attacks are 
-    orthogonal to the problems addressed in this work and viable solutions 
-    already exist \cite{needed}. Since all software attacks are possible, the 
-    adversary is capable of performing timing channel attacks. 
+    software attack which includes the exploitation of timing channels.
 
     \subsubsection{DRM Protection Security Mechanisms}
-    AMD TrustZone \cite{trustzone} exemplifies a state of the practice solution 
-    that can enforce these security properties, however, TrustZone does not 
-    offer protection against timing channel attacks. Since the adversary can 
-    carry out any software attack and timing channels can be exploited with 
-    software attacks, timing channel protection is necessary to meet the 
-    security requirements. 
+    % AMD TrustZone \cite{trustzone} exemplifies a state of the practice 
+    % solution that can enforce these security properties, however, TrustZone 
+    % does not offer protection against timing channel attacks. Since the 
+    % adversary can carry out any software attack and timing channels can be 
+    % exploited with software attacks, timing channel protection is necessary 
+    % to meet the security requirements. 
 
     \begin{figure}
         \begin{center}
@@ -69,23 +60,27 @@
             \label{fig:tz_domains}
         \end{center}
     \end{figure}
-    
+   
+    ARM TrustZone \cite{trustzone} exemplifies a state of the practice solution 
+    that can enforce security properties that support this DRM video playback 
+    usage model.
     TrustZone separates the software modules into two security domains as shown 
     in Figure \ref{fig:tz_domains} . The first security domain is called the 
-    normal world and it has a virtual machine that contains the operating 
+    normal world and it has a virtual processor that contains the operating 
     system and all user-space applications. The other security domain, the 
-    secure world, contains a virtual machine that contains only a small 
+    secure world, contains a virtual processor that contains only a small 
     execution environment and a set of very simple libraries for handling 
-    protected operations. This VM does not contain a complete operating system 
-    and the libraries do not require any operating system support (e.g. they 
-    may not have system calls). The secure world also contains software for a 
-    simple monitor mode that handles context switching between the two domains 
-    if they are time multiplexed on the same core. The security levels of these 
-    domains form a lattice such that the level of the normal world precedes the 
-    level of the secure world (i.e. information available to the normal world 
-    is available to the secure world). All of the secure world code is small to 
-    reduce the chance of vulnerabilities. The secure world must only allow the 
-    normal world to play the video if the subscription is valid. 
+    protected operations. This virtual processor does not contain a complete 
+    operating system and the libraries do not require any operating system 
+    support (e.g. they may not have system calls). The secure world also 
+    contains software for a simple monitor mode that handles context switching 
+    between the two domains if they are time multiplexed on the same core. The 
+    security levels of these domains form a lattice such that the level of the 
+    normal world precedes the level of the secure world (i.e. information 
+    available to the normal world is available to the secure world). All of the 
+    secure world code is small to reduce the chance of vulnerabilities. The 
+    secure world must only allow the normal world to play the video if the 
+    subscription is valid. 
 
 
     \begin{figure}
@@ -94,7 +89,7 @@
             \caption{DRM Protection Mechnamisms. The baseline architecture is 
             extended with tags that control explicit information flows between 
         the secure and normal worlds.}
-            \label{fig:baseline}
+            \label{fig:tz_uarch}
         \end{center}
     \end{figure}
 
@@ -115,26 +110,51 @@
     the tag is set in the cache. If it is either a hit or a miss and the 
     security level does not meet the requirements, the access fails.
 
-    The two virtual machines may share the same physical processor in 
+    The two virtual processors may share the same physical processor in 
     time-multiplexed way through context switching. Context switches between 
-    these VMs are entered by a special instruction that invokes the monitor 
-    mode.  Typically, the monitor mode will save the general purpose registers 
-    and any processor configuration registers. The TLB and caches are not 
-    flushed since the tags protect illegal data accesses.
+    these virtual processors are entered by a special instruction that invokes 
+    the monitor mode.  Typically, the monitor mode will save the general 
+    purpose registers and any processor configuration registers. The TLB and 
+    caches are not flushed since the tags protect illegal data accesses.
 
-    To play the DRM protected video, it is sent to the device through an 
-    encrypted stream. The key used for decryption is stored inside the secure 
-    world VM. To play the video, the user space application loads the encrypted 
-    data into the cache, tagging it as normal world readable. It then issue a 
-    special instruction to interact with the secure world which decrypts the 
-    stream. This invokes the monitor mode which then context switches out the 
-    normal world VM replacing it with the secure world VM. The secure world VM 
-    loads the encrypted data into the cache, decrypts it with a key that is 
-    only readable by the secure world, tags it as readable by the normal world, 
-    and invokes the monitor to return execution to the normal world. Note that 
-    the data is not cleared from the TLB or cache during context switches.  The 
-    normal world and secure world VMs can execute in separate cores which 
-    communicate through the shared cache instead of context switching, however, 
-    since they operate on the same data, it is generally better if they share 
-    the same core allowing them to both access the data quickly in the private 
-    cache.
+    To play the DRM protected video, the secure world must first authenticate 
+    the user's subscription. The normal world loads authentication data (such 
+    as a username and password) into the cache and requests that the secure 
+    world authenticate the user through a special instruction. This invokes the 
+    monitor mode which context switches out the normal world virtual processor 
+    and replaces it with the secure world virtual processor. The secure world 
+    processor communicates with a remote server to authenticate the user.  
+    Unless authentication has succeeded, any subsequent requests to play a 
+    video will fail.
+    % Adding an explanation of authentication seems to add complicated details 
+    % like communication with a remote server, and it takes up a lot of writing 
+    % space. Maybe we can skip this part and just cover the video playback part 
+    % since this is only here as an example anyway.
+
+    The video itself is sent to the device through an encrypted stream. The key 
+    used for decryption is stored inside the secure world virtual processor .  
+    To play the video, the user space application loads the encrypted data into 
+    the cache, tagging it as normal world readable. It then issues a special 
+    instruction to interact with the secure world which decrypts the stream, 
+    which context switches to the secure world virtual processor as before. The 
+    secure world virtual processor
+    reads the encrypted data in the cache, decrypts it with a key that is only 
+    readable by the secure world, tags it as readable by the normal world, and 
+    invokes the monitor to return execution to the normal world. Note that the 
+    data is not cleared from the TLB or cache during context switches.  The 
+    normal world and secure world virtual processors can execute in separate 
+    cores which communicate through the shared cache instead of context 
+    switching, however, since they operate on the same data, it is generally 
+    better if they share the same core allowing them to both access the data 
+    quickly in the private cache. 
+
+    This TrustZone inspired baseline protects the confidentiality of the secret 
+    key and minimizes the trusted code base to a small software library.  
+    However, it does not defend against timing channel attacks.
+    For example, the adversary could measure the time spent in the secure world 
+    while decrypting the video with a key. This depends on cache timing which 
+    can be correlated with the key \cite{bernstein,others}.
+    Since the adversary is capable of any software attack and 
+    microarchitectural timing channels can be exploited in software, these 
+    channels must be eliminated to meet all the security requirements of the 
+    system.
