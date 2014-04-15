@@ -15,72 +15,54 @@
     through an on-chip network. The multicore processor is connected to the 
     main memory and a DMA module through the system bus. 
 
-    The hardware is concurrently shared by multiple security domains. A 
-    security domain consists of one or more software modules (such as processes 
-    or threads in a single OS system or virtual machines in a virtualization 
-    based system). Software modules within the same security domain trust each 
-    other, but information flows between security domains must be controlled 
-    according to a policy that meets the security requirements of the system.
-    Often, this policy entails of a lattice of security levels such as 
-    $\mathtt{normal} \sqsubseteq \mathtt{secure}$, where the information 
-    available to a security domain includes any information available to 
-    security domains with an equal security level and with levels that preceed 
-    it in the lattice order. As shown in Figure \ref{fig:baseline}, it is 
-    possible for a security domain to have multiple virtual machines which may 
-    be allocated to different cores. It is also possible for security domains 
-    to be time multiplexd on the same core (e.g.  by context switching VMs), 
-    but it is not possible for security domains to execute concurrently on the 
-    same core (e.g. through SMT).
+    The hardware is concurrently shared by multiple timing compartments. As 
+    shown in Figure \ref{fig:baseline}, it is possible for a timing compartment 
+    to have multiple software modules which may be allocated to different 
+    cores. It is also possible for timing compartments to be time multiplexd on 
+    the same core (e.g.  by context switching VMs), but it is not possible for 
+    timing compartments to execute concurrently on the same core (e.g. through 
+    SMT).
 
-\section{Usage Scenarios and Threat Models}
-
-    This section describes some example applications for the architecture and 
-    the thread model for each usage scenario.
-
-    \subsection{DRM Video Playback}
-    Mobile devices often support applications that playback videos with
-    DRM restrictions. For example, a user may only be able to play a video if 
-    he or she has a valid subscription to the service. In this case, the 
-    attacker is the owner of the mobile device who would either like to access 
-    content without paying for a subscription. The adversary is capable of any 
-    software attack which includes the exploitation of timing channels.
-
-    \subsubsection{DRM Protection Security Mechanisms}
-    % AMD TrustZone \cite{trustzone} exemplifies a state of the practice 
-    % solution that can enforce these security properties, however, TrustZone 
-    % does not offer protection against timing channel attacks. Since the 
-    % adversary can carry out any software attack and timing channels can be 
-    % exploited with software attacks, timing channel protection is necessary 
-    % to meet the security requirements. 
+    \subsection{ARM TrustZone}
+    ARM TrustZone exemplifies a state of the practice solution that can enforce 
+    a diverse range of security properties by restricting explicit information 
+    flows between software modules. The security mechanisms of TrustZone may be 
+    combined with the mechanisms proposed in this work to control both explicit 
+    information flows and timing channels.
 
     \begin{figure}
         \begin{center}
             \includegraphics[width=3in]{figs/worlds.pdf}
-            \caption{The security domains of TrustZone-like processor.}
+            \caption{The explicit flow compartments of TrustZone-like 
+            processor.}
             \label{fig:tz_domains}
         \end{center}
     \end{figure}
-   
-    ARM TrustZone \cite{trustzone} exemplifies a state of the practice solution 
-    that can enforce security properties that support this DRM video playback 
-    usage model.
-    TrustZone separates the software modules into two security domains as shown 
-    in Figure \ref{fig:tz_domains} . The first security domain is called the 
-    normal world and it has a virtual processor that contains the operating 
-    system and all user-space applications. The other security domain, the 
-    secure world, contains a virtual processor that contains only a small 
-    execution environment and a set of very simple libraries for handling 
-    protected operations. This virtual processor does not contain a complete 
+
+    TrustZone separates the software modules of a system into two explicit flow 
+    compartments, the secure world and the normal world, as shown in Figure 
+    \ref{fig:tz_domains}.
+    This division minimizes the trusted computing base for some sensitive
+    operations to a few small modules in the secure world.
+    The first explicit flow compartment is called the normal world and it has a 
+    virtual processor that contains the operating system and all user-space 
+    applications. The other explicit flow compartment, the secure world, 
+    contains a virtual processor that contains only a small execution 
+    environment and a set of very simple libraries for handling protected 
+    operations. This secure world virtual processor does not contain a complete 
     operating system and the libraries do not require any operating system 
     support (e.g. they may not have system calls). The secure world also 
-    contains software for a simple monitor mode that handles context switching 
-    between the two domains if they are time multiplexed on the same core. The 
-    security levels of these domains form a lattice such that the level of the 
-    normal world precedes the level of the secure world (i.e. information 
-    available to the normal world is available to the secure world). All of the 
-    secure world code is small to reduce the chance of vulnerabilities. The 
-    secure world must only allow the normal world to play the video if the 
-    subscription is valid. 
+    contains a software module called the monitor mode that handles context switching 
+    between the two compartments if they are time multiplexed on the same core.
+
+    The security levels of these compartments form a lattice such that the 
+    level of the normal world precedes the level of the secure world (i.e. 
+    information available to the normal world is available to the secure 
+    world). All of the secure world code is small to reduce the chance of 
+    vulnerabilities. The secure world must only allow the normal world to play 
+    the video if the subscription is valid. It is worth noting that the normal 
+    world OS is not trusted by the secure world and the secure world does not 
+    depend on any support from the normal world OS.
 
 
     \begin{figure}
@@ -95,17 +77,18 @@
 
     TrustZone extends the baseline cores of Figure \ref{fig:baseline} to
     those shown in Figure \ref{fig:tz_uarch}. The core logic contains a tag to 
-    store which world is currently executing. Each cache entry has a tag to 
-    indicate if the entry can be accessed by the normal world or not. To make 
+    store which compartment is currently executing. Each cache entry has a tag to 
+    indicate if the entry can be accessed by the normal world compartment or not. To make 
     an access to the memory hierarchy, the core sends the virtual address and 
-    the current world to the TLB. The TLB gets the physical address as normal 
+    the current compartment to the TLB. The TLB gets the physical address as normal 
     (performing a page table walk if needed). The physical address and current 
-    security domain are sent to the cache. If the cache contains the physical 
-    address and the tag of the entry indicates that the current world has 
-    sufficient rights to accesss the entry, the access proceeds normally.  
+    explicit flow compartment are sent to the cache. If the cache contains the 
+    physical address and the tag of the entry indicates that the current 
+    compartment 
+    has sufficient rights to accesss the entry, the access proceeds normally.  
     Otherwise, if it is a cache miss, the cache sends the physical address and 
-    the current world to the system bus to access the main memory. If the tag 
-    of the address in main memory indicates that the current world has 
+    the current compartment to the system bus to access the main memory. If the tag 
+    of the address in main memory indicates that the current compartment has 
     sufficient rights, the cache block is brought into the cache as normal and 
     the tag is set in the cache. If it is either a hit or a miss and the 
     security level does not meet the requirements, the access fails.
@@ -116,6 +99,24 @@
     the monitor mode.  Typically, the monitor mode will save the general 
     purpose registers and any processor configuration registers. The TLB and 
     caches are not flushed since the tags protect illegal data accesses.
+
+\section{Usage Scenarios and Threat Models}
+
+    This section describes some example applications for the architecture and 
+    the threat model for each usage scenario.
+
+    \subsection{DRM Video Playback}
+    Mobile devices often support applications that playback videos with
+    DRM restrictions. For example, a user may only be able to play a video if 
+    he or she has a valid subscription to the service. In this case, the 
+    attacker is the owner of the mobile device who would either like to access 
+    content without paying for a subscription. The adversary is capable of any 
+    software attack which includes the exploitation of timing channels.
+
+
+    \subsubsection{DRM Protection Security Mechanisms}
+
+    *** This section is not yet complete
 
     To play the DRM protected video, the secure world must first authenticate 
     the user's subscription. The normal world loads authentication data (such 
