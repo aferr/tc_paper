@@ -5,18 +5,16 @@ is to apply static partitioning (or flushing where appropriate for resoureces
 that are private to a core), and our approach to handling resource contention 
 based timing channels is to use time division multiplexing. Direct observation
 channels are resolved by determining a worst case time for the victim 
-observation and always returning at the worst case time. However, implementing 
-these techniques for each microarchitectural component is a nuanced problem 
-with subtle details that must be addressed for both efficiency and correctnes. 
-In this section we discuss these techniques and show how they may be applied to 
-each component in detail.
+observation and always returning at the worst case time. By classifying a 
+timing channel with the proposed taxonomy, one can directly find a high level 
+approach to address it. 
 
 \subsection{State Based Timing Channel Protection}
 \subsubsection{Static Partitioning}
 The private and shared caches, TLBs, and branch predictors of each core in the 
-system induce state based timing channels.  These timing channels can be 
+system induce state based timing channels. These timing channels can be 
 eliminated by allocating static partitions to each timing compartment in the 
-state of each of these resources. In states where entries may be evicted (e.g. 
+state of each of these resources. In states where entries may be evicted (e.g.  
 caches and TLBs), a timing compartment may only evict entries in its own 
 partition (and it may not evict entries of another partition even if the other 
 partition has a lower security level).
@@ -81,19 +79,19 @@ memory controllers and on chip networks, so this is just a matter of writing.
 
 \subsection{Direct Observation Protection}
 Direct Observation channels are problematic for certain usage scenarios (such 
-as the DRM processor) where an adversary can observe the timing of a victim 
-timing compartment action directly.  The private and shared caches, TLBs, 
-branch predictors, and memory controller all induce direct observation channels 
-whenever the adversary can observe the time required to complete an action that 
-depends on a secret and is comprised of one or more requests to use one of 
-these resources.  In the DRM processor, the normal world makes requests for the 
-secure world to perform some function. An adversarial normal world can measure 
-the time it takes for this request to be handled, and handling the request may 
-depend on any number of requests to use any of the aforementioned resources. In 
-general, this timing channel can be addressed by finding a conservative upper 
-bound on the action that causes the direct observation channel. The action must 
-be forced to appear to take the worst case time on each execution. In the DRM 
-processor case, this means a worst case time estimation for each secure world 
-operation must be found before execution. Then whenever a secure world 
-operation would normally terminate before the worst case time, it must be 
-stalled until the worst case is reached.
+as the DRM processor) where an adversary can observe the timing of an action 
+taken by a victim timing compartment action directly.  The private and shared 
+caches, TLBs, branch predictors, and memory controller all induce direct 
+observation channels whenever the adversary can observe the time required to 
+complete an action that depends on a secret and is comprised of one or more 
+requests to use one of these resources.  In the DRM processor, the normal world 
+makes requests for the secure world to perform some function. An adversarial 
+normal world can measure the time it takes for this request to be handled, and 
+handling the request may depend on any number of requests to use any of the 
+aforementioned resources. In general, this timing channel can be addressed by 
+finding a conservative upper bound on the action that causes the direct 
+observation channel. The action must be forced to appear to take the worst case 
+time on each execution. In the DRM processor case, this means a worst case time 
+estimation for each secure world operation must be found before execution. 
+Then, whenever a secure world operation would normally terminate before the 
+worst case time, it must be stalled until the worst case is reached.

@@ -1,6 +1,4 @@
 \section{Usage Scenarios and Threat Models}
-    *** This section is not yet complete
-
     This section describes some example applications for the architecture and 
     the threat model for each usage scenario.
 
@@ -10,10 +8,17 @@
     he or she has a valid subscription to the service. In this case, the 
     attacker is the owner of the mobile device who would either like to access 
     content without paying for a subscription. The adversary is capable of any 
-    software attack which includes the exploitation of timing channels.
+    software attack and is capable of controlling the primary OS of the device 
+    (the normal world OS in a TrustZone based system) as well as any user space 
+    applications. Since the protection mechanisms will be based on ARM 
+    TrustZone, the adversary is not capable of modifying secure world 
+    components which include a small set of security libraries and the monitor 
+    mode software. The necessary security properties include confidentiality of 
+    the protected video and authenticity of the data used to validate the 
+    subscription.
 
     \subsubsection{DRM Protection Security Mechanisms}
-
+    
     To play the DRM protected video, the secure world must first authenticate 
     the user's subscription. The normal world loads authentication data (such 
     as a username and password) into the cache and requests that the secure 
