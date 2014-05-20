@@ -1,5 +1,30 @@
 \section{Timing Compartments}
-    Definition Here
+
+    We present a new primitive to isolate software modules that might otherwise 
+    leak information through timing channels called a timing compartment. A 
+    timing compartment consists of one or more software modules (such as 
+    processes or threads in a single OS system or virtual machines in a 
+    virtualization based system).  Software modules within the same timing 
+    compartment may leak information through timing channels (because they 
+    trust eachother), but timing channels between timing compartments must be 
+    controlled according to a policy that meets the security requirements of 
+    the system. This policy entails of a lattice of security levels such as 
+    $\mathtt{normal} \sqsubseteq \mathtt{secure}$, where the information 
+    available to a timing compartment includes any information available to 
+    timing compartments with an equal security level and with levels that 
+    preceed it in the lattice order.
+
+    Timing compartments only address timing channels; they do not control 
+    information flow through explicit channels. Handling these concerns 
+    separately allows for more flexibility in the overall system design. 
+    When designing a secure system, implementors 
+    must consider how the cost required to carry out a particular attack 
+    compares with other attacks, the potential damage that could be caused by 
+    an attack, and the cost and performance impact of implementing the security 
+    mechanisms needed to stop it. Separating the primitives that control timing 
+    channels and explicit information flow allows system implementors to handle 
+    them at different granularities, or with different requirements.
+
     \subsection{ Applications }
     \subsubsection{ARM TrustZone}
     ARM TrustZone exemplifies a state of the practice solution that can enforce 
