@@ -1,0 +1,371 @@
+\begin{filecontents}{\jobname.bib}
+@IEEEtranBSTCTL{IEEEexample:BSTcontrol,
+    CTLdash_repeated_names= "no",
+}
+
+------------------------------------------------------------------------------
+General
+------------------------------------------------------------------------------
+@article{confine,
+    author = {Lampson, Butler W.},
+    title = {A Note on the Confinement Problem},
+    journal = {Communications of the ACM},
+    year = {1973},
+} 
+
+@article{archimpl,
+    author = {Norman E. Proctor},
+    title = {Architectural Implications of Covert Channels},
+    journal = {National Computer Security Conference},
+    year = {1992}
+}
+
+@inproceedings{heyyou,
+    author = {Ristenpart, Thomas and Tromer, Eran and Shacham, Hovav and 
+        Savage, Stefan},
+    title = {Hey, you, get off of my cloud: exploring information leakage in 
+        third-party compute clouds},
+    series = {CCS '09},
+}
+
+@inproceedings{mls,
+    author = { LaPadula, L. J. and Bell, D. E. },
+    title = {Secure Computer Systems: A Mathematical Model},
+    journal = {Reprinted in J. of Computer Security},
+    year = {1996},
+}
+
+@inproceedings{katsuba,
+    author = { Karatsuba, A. and Ofman, Yu. },
+    title = { Multiplication of Many-Digital Numbers by Automatic Computers },
+    journal = { Proceedings of the USSR Academy of Sciences },
+    year = { 1963 }
+}
+
+@inproceedings{crt,
+}
+
+------------------------------------------------------------------------------
+Covert Channel Attacks
+------------------------------------------------------------------------------
+@inproceedings{DPA,
+    author = {Kocher, Paul C. and Jaffe, Joshua and Jun, Benjamin},
+    title = {Differential Power Analysis},
+    series = {CRYPTO '99},
+}
+
+------------------------------------------------------------------------------
+Network Timing Channel Attacks
+------------------------------------------------------------------------------
+@inproceedings{trctc,
+    author = {Cabuk, Serdar and Brodley, Carla E. and Shields, Clay},
+    title = {Network Covert Channels: Design, Analysis, Detection, and 
+        Elimination},
+    series = {PhD Thesis, '05}
+}
+
+@inproceedings{jitterbug,
+    author = {Shah, Gaurav and Molina, Andres and Blaze, Matt},
+    title = {Keyboards and Covert Channels},
+    series = {USENIX-SS'06}
+} 
+
+@inproceedings{armatoblahut,
+    author = {Blahut, R.E.},
+    title = {Computation of Channel Capacity and Rate-Distortion Functions},
+    booktitle = {IEEE Transactions on Information Theory},
+    year = {1972}
+}
+
+@inproceedings{watermark1,
+    author = {Wang, Xinyuan and Chen, Shiping and Jajodia, Sushil},
+    title = {Tracking Anonymous Peer-to-peer VoIP Calls on the Internet},
+    series = {CCS '05},
+} 
+
+@inproceedings{watermark2,
+    author = {Wang, Xinyuan and Reeves, Douglas S.},
+    title = {Robust Correlation of Encrypted Attack Traffic Through Stepping 
+        Stones by Manipulation of Interpacket Delays},
+    series = {CCS '03},
+} 
+------------------------------------------------------------------------------
+Microarchitecture Attacks
+------------------------------------------------------------------------------
+@inproceedings{percival,
+    author = {Colin Percival},
+    title = {Cache missing for fun and profit},
+    booktitle = {BSDCan},
+    year = {2005}
+}
+
+@TECHREPORT{bernstein,
+    author = {Daniel J. Bernstein},
+    title = {Cache-timing attacks on AES},
+    year = {2005}
+}
+
+@inproceedings{busmon,
+    author = {Fryer, Richard E.},
+    title = {The Memory Bus Monitor: A New Device for Developing Real-time 
+        Systems},
+    series = {AFIPS '73},
+}
+
+@inproceedings{caseofaes,
+     author = {Osvik, Dag Arne and Shamir, Adi and Tromer, Eran},
+     title = {Cache Attacks and Countermeasures: The Case of AES},
+     series = {CT-RSA'06},
+}
+
+@inproceedings{remoteaes,
+    author = { Acii\c{c}mez, Onur and Schindler, W. and Ko\c{c}, \c{C}etin 
+        Kaya},
+    title = { Cache Based Remote Timing Attack on the AES. },
+    series = { CT-RSA, '07 }
+}
+
+@inproceedings{remotepractical,
+    author = {Brumley, David and Boneh, Dan},
+    title = {Remote Timing Attacks Are Practical},
+    series = {SSYM'03},
+}
+
+@inproceedings{analyticalcache,
+     author = {Tiri, Kris and Acii\c{c}mez, Onur and Neve, Michael and 
+         Andersen, Flemming},
+     title = {An Analytical Model for Time-driven Cache Attacks},
+     series = {FSE'07}
+}
+
+@inproceedings{collision,
+    author = {Bonneau, Joseph and Mironov, Ilya},
+    title = {Cache-collision Timing Attacks Against AES},
+    series = {CHES'06}
+}
+
+@inproceedings{branchpred,
+     author = {Acii\c{c}mez, Onur and Ko\c{c}, \c{C}etin Kaya and Seifert, 
+         Jean-Pierre},
+     title = {On the Power of Simple Branch Prediction Analysis},
+     series = {ASIACCS '07},
+}
+
+@inproceedings{predictingbranch,
+     author = {Acii\c{c}mez, Onur and Ko\c{c}, \c{C}etin Kaya and Seifert, 
+         Jean-Pierre},
+     title = {Predicting Secret Keys via Branch Prediction},
+     series = {CT-RSA '07}
+}
+
+@inproceedings{icache,
+   author = {Acii\c{c}mez, Onur},
+   title = {Yet Another MicroArchitectural Attack:: Exploiting I-Cache},
+   series = {CSAW '07},
+}
+
+@inproceedings{deconstructing,
+   author = {Kong, Jingfei and Aciicmez, Onur and Seifert, Jean-Pierre and 
+       Zhou, Huiyang},
+   title = {Deconstructing New Cache Designs for Thwarting Software Cache-based 
+       Side Channel Attacks},
+   series = {CSAW '08}
+}
+
+@inproceedings{cachegames,
+   author = {Gullasch, David and Bangerter, Endre and Krenn, Stephan},
+   title = {Cache Games -- Bringing Access-Based Cache Attacks on AES to 
+       Practice},
+   series = {SP '11}
+}
+
+@inproceedings{crossvm,
+     author = {Zhang, Yinqian and Juels, Ari and Reiter, Michael K. and 
+         Ristenpart, Thomas},
+     title = {Cross-VM Side Channels and Their Use to Extract Private Keys},
+     series = {CCS '12}
+} 
+
+@inproceedings{whispers,
+     author = {Wu, Zhenyu and Xu, Zhang and Wang, Haining},
+     title = {Whispers in the Hyper-space: High-speed Covert Channel Attacks in 
+         the Cloud},
+     series = {Security'12},
+}
+
+@inproceedings{pipelines,
+     author = {Wang, Zhenghong and Lee, Ruby B.},
+     title = {Covert and Side Channels Due to Processor Architecture},
+     series = {ACSAC '06},
+}
+
+@inproceedings{yaonocs,
+    author = {Wang, Yao and Suh, Edward G.}
+}
+
+@inproceedings{ushpca14,
+    author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward G.}
+}
+
+------------------------------------------------------------------------------
+HDL 
+------------------------------------------------------------------------------
+@inproceedings{caisson,
+    author = {Li, Xun and Tiwari, Mohit and Oberg, Jason K. and Kashyap, 
+        Vineeth and Chong, Frederic T. and Sherwood, Timothy and Hardekopf, 
+        Ben},
+    title = {Caisson: A Hardware Description Language for Secure Information 
+        Flow},
+    series = {PLDI '11},
+}
+
+@inproceedings{rightabstraction,
+     author = {Li, Xun and Tiwari, Mohit and Hardekopf, Ben and Sherwood, 
+         Timothy and Chong, Frederic T.},
+     title = {Secure Information Flow Analysis for Hardware Design: Using the 
+         Right Abstraction for the Job},
+     series = {PLAS '10},
+}
+
+@inproceedings{sapper,
+     author = {Li, Xun and Kashyap, Vineeth and Oberg, Jason K. and Tiwari, 
+         Mohit and Rajarathinam, Vasanth Ram and Kastner, Ryan and Sherwood, 
+         Timothy and Hardekopf, Ben and Chong, Frederic T.},
+      title = {Position Paper: Sapper -- a Language for Provable Hardware 
+          Policy Enforcement},
+      series = {PLAS '13},
+} 
+
+@inproceedings{secverilog,
+    author = { Anonymized },
+    title = { A Hardware Design Language for Efficient Control of Timing 
+        Channels },
+    series = { In submission }
+}
+
+------------------------------------------------------------------------------
+Language Based Information Flow
+------------------------------------------------------------------------------
+@article{sabandmyers,
+    author = { Andrei Sablefield, Andrew Myers },
+    title = { Language-Based Information-Flow Security },
+    journal = { Journal on Selected Areas in Communications },
+    year = {2003}
+}
+@article{mlsprove,
+    author = { Feiertag, R. J. },
+    title = { A Technique for Proving Specifications are Multilevel Secure },
+    journal = {Tech. Rep. CSL-109, SRI International COmputer Science Lab},
+    year = {1980}
+}
+@article{infogypsy,
+    author = {McHugh, J. and Good, D.I.},
+    title = { An Information Flow Tool for Gypsy },
+    series = {S\&P, 1985}
+}
+@article{denninganddenning,
+    author = {Denning, Dorothy E. and Denning, Peter J.},
+    title = {Certification of Programs for Secure Information Flow},
+    journal = {Commun. ACM},
+    year = {1977},
+} @inproceedings{noninterference,
+    author = {Goguen, J.A and Meseguer, J.},
+    title = {Security Policies and Security Models},
+    series = {S\&P, 1982}
+}
+@inproceedings{termsens,
+    author = {Volpano, Dennis and Smith, Geoffrey},
+    title = {Eliminating Covert Flows with Minimum Typings},
+    series = {CSFW '97},
+}
+@inproceedings{timesens,
+    author = {Volpano, Dennis and Smith, Geoffrey},
+    title = {Probabilistic Noninterference in a Concurrent Language},
+    journal = {J. Comput. Secur.},
+    year = {1999},
+}
+@inproceedings{timetrans,
+    author = {Agat, Johan},
+    title = {Transforming out Timing Leaks},
+    series = {POPL '00},
+}
+@inproceedings{probmulti,
+     author = {Sabelfeld, Andrei and Sands, David},
+     title = {Probabilistic Noninterference for Multi-Threaded Programs},
+     series = {CSFW '00},
+}
+@inproceedings{staticdist,
+    author = {Sablefield, A. and Mantel, H.},
+    title = { Static confidentiality enforcement for distributed programs },
+    journal = { Symp. on Static Analysis },
+    year = {2002}
+}
+@inproceedings{covertcap,
+    author = {Millen, J.K},
+    title = {Covert Channel Capacity},
+    series = {S\&P '87}
+}
+@inproceedings{quantleaks,
+    author = {Pierro, Alessandra and Hankin, Chris and Wiklicky, Herbert},
+    title = {Quantifying Timing Leaks and Cost Optimisation},
+    series = {ICICS '08}
+}
+@inproceedings{mitigation1,
+    author = {Askarov, Aslan and Zhang, Danfeng and Myers, Andrew C.},
+    title = {Predictive Black-box Mitigation of Timing Channels},
+    series = {CCS '10}
+}
+
+@inproceedings{mitigation2,
+     author = {Zhang, Danfeng and Askarov, Aslan and Myers, Andrew C.},
+     title = {Predictive Mitigation of Timing Channels in Interactive Systems},
+     series = {CCS '11}
+}
+
+@inproceedings{mitigation3,
+    author = {Zhang, Danfeng and Askarov, Aslan and Myers, Andrew C.},
+    title = {Language-based Control and Mitigation of Timing Channels},
+    journal = {SIGPLAN Not.},
+    year = {2012}
+} 
+
+------------------------------------------------------------------------------
+Microarchitecture Techniques
+------------------------------------------------------------------------------
+@inproceedings{newcache,
+    author    = {Zhenghong Wang and Ruby B. Lee},
+    title     = {New cache designs for thwarting software cache-based side
+                channel attacks},
+    booktitle = {ISCA},
+    year      = {2007}
+}
+
+@inproceedings{yaonocs,
+    author = {Wang, Yao and Suh, Edward},
+    title  = {Efficient Timing Channel Protection for On-Chip Networks}
+}
+
+@inproceedings{ushpca14,
+    author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward}
+}
+------------------------------------------------------------------------------
+Statistical Techniques
+------------------------------------------------------------------------------
+@inproceedings{ccentropy,
+    author = {Gianvecchio, Steven and Wang, Haining},
+    title = {Detecting Covert Timing Channels: An Entropy-based Approach},
+    series = {CCS '07},
+}
+
+@inproceedings{kstest,
+    author = {Peng, Pai and Ning, Peng and Reeves, Douglas S.},
+    title = {On the Secrecy of Timing-Based Active Watermarking Trace-Back 
+        Techniques},
+    series = {SP '06},
+}
+
+@inproceedings{regularity,
+    author = {Cabuk, Serdar and Brodley, Carla E. and Shields, Clay},
+    title = {IP Covert Timing Channels: Design and Detection},
+    series = {CCS '04},
+}

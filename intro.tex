@@ -1,1 +1,35 @@
 \section{Introduction}
+Though once considered only a problem for small embeded devices like 
+smartcards, microarchitectural timing channel attacks have become a severe 
+threat to general purpose computing devices in diverse range of application 
+domains.Computer hardware is increasingly shared among distrusting parties, and 
+since a large subset of microarchitectural timing channel attacks are due to 
+interference in shared resources the problem has grown.  End users download 
+untrusted applications from the internet which can then execute on the same 
+hardware as tax software that will handle the user's senitive financial data.
+System on chip platforms tightly integrate hardware designed by directly 
+competing companies necessitating sharing among the drivers and proprietary 
+algorithms owned by these distrusting companies.
+In cloud computing, mutually distrusting parties own virutal machines on shared 
+hardware. The hypervisor performs physical address translation on behalf of the 
+virtual machines to isolate the virtual machines in the physical memory.  
+Hypervisors also use access controls to isolate virtual machines, typically 
+relying on hardware abstractions such as protection rings. However, these 
+security mechanisms are not enough. They do nothing to prevent coresident VMs 
+from leaking secret information through timing channels induced by hardware 
+sharing.
+
+We present Timing Compartments, an architecture abstraction to 
+provide timing channel isolation among software modules that share hardware.
+Timing Compartments provide an interface to software designers that allows them 
+to specify a timing channel protection policy that, when coupled with 
+conventional access controls, provides total software isolation. To implement 
+Timing Compartments, we present a full microprocessor design that eliminates 
+microarchitectural timing channels in every shared hardware resource, and we 
+evaluate its overhead.
+
+Other work has focused on eliminating timing channel attacks in a specific 
+microarchitectural component such as shared caches 
+\cite{icache,newcache,deconstructing,cachegames}, processor pipelines 
+\cite{pipelines}, branch predictors~\cite{branchpred,predictingbranch}, 
+on chip networks~\cite{yaonocs}, and memory controllers~\cite{ushpca14}.
