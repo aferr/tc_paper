@@ -7,17 +7,23 @@
 \usepackage{bbold}
 \usepackage{graphicx}
 
+%***********************************************************************************
+% Anonymization Macros
+% Usage : \ifanonymized{anonymized}{notanonymized}
+% Uncomment one of the following
+
+\newcommand{\ifanonymized}[2]{#1} % Anonymized
+% \newcommand{\ifanonymized}[2]{#2} % Not Anonymized
+%***********************************************************************************
+
+\pagestyle{empty}
+
+\setlength{\pdfpagewidth}{8.5in}
+\setlength{\pdfpageheight}{11in}
+
 \begin{document}
 
-\title{
-    Timing Compartments: An Architecture Primitive for Complete Software 
-    Isolation
-}
-\author{
-}
-\date{}
-\maketitle
-
+\input{title.tex}
 \input{intro.tex}
 \input{threat_model.tex}
 \input{timing_compartments.tex}
