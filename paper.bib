@@ -1,4 +1,4 @@
-\begin{filecontents}{\jobname.bib}
+%\begin{filecontents}{\jobname.bib}
 @IEEEtranBSTCTL{IEEEexample:BSTcontrol,
     CTLdash_repeated_names= "no",
 }
@@ -42,9 +42,6 @@ General
     year = { 1963 }
 }
 
-@inproceedings{crt,
-}
-
 ------------------------------------------------------------------------------
 Covert Channel Attacks
 ------------------------------------------------------------------------------
@@ -54,41 +51,6 @@ Covert Channel Attacks
     series = {CRYPTO '99},
 }
 
-------------------------------------------------------------------------------
-Network Timing Channel Attacks
-------------------------------------------------------------------------------
-@inproceedings{trctc,
-    author = {Cabuk, Serdar and Brodley, Carla E. and Shields, Clay},
-    title = {Network Covert Channels: Design, Analysis, Detection, and 
-        Elimination},
-    series = {PhD Thesis, '05}
-}
-
-@inproceedings{jitterbug,
-    author = {Shah, Gaurav and Molina, Andres and Blaze, Matt},
-    title = {Keyboards and Covert Channels},
-    series = {USENIX-SS'06}
-} 
-
-@inproceedings{armatoblahut,
-    author = {Blahut, R.E.},
-    title = {Computation of Channel Capacity and Rate-Distortion Functions},
-    booktitle = {IEEE Transactions on Information Theory},
-    year = {1972}
-}
-
-@inproceedings{watermark1,
-    author = {Wang, Xinyuan and Chen, Shiping and Jajodia, Sushil},
-    title = {Tracking Anonymous Peer-to-peer VoIP Calls on the Internet},
-    series = {CCS '05},
-} 
-
-@inproceedings{watermark2,
-    author = {Wang, Xinyuan and Reeves, Douglas S.},
-    title = {Robust Correlation of Encrypted Attack Traffic Through Stepping 
-        Stones by Manipulation of Interpacket Delays},
-    series = {CCS '03},
-} 
 ------------------------------------------------------------------------------
 Microarchitecture Attacks
 ------------------------------------------------------------------------------
@@ -148,6 +110,8 @@ Microarchitecture Attacks
      author = {Acii\c{c}mez, Onur and Ko\c{c}, \c{C}etin Kaya and Seifert, 
          Jean-Pierre},
      title = {On the Power of Simple Branch Prediction Analysis},
+     booktitle = {},
+     year = {},
      series = {ASIACCS '07},
 }
 
@@ -169,13 +133,16 @@ Microarchitecture Attacks
        Zhou, Huiyang},
    title = {Deconstructing New Cache Designs for Thwarting Software Cache-based 
        Side Channel Attacks},
-   series = {CSAW '08}
+   series = {CSAW '08},
+   booktitle = {},
+   year = {}
 }
 
 @inproceedings{cachegames,
    author = {Gullasch, David and Bangerter, Endre and Krenn, Stephan},
    title = {Cache Games -- Bringing Access-Based Cache Attacks on AES to 
        Practice},
+   booktitle = {},
    series = {SP '11}
 }
 
@@ -197,14 +164,8 @@ Microarchitecture Attacks
      author = {Wang, Zhenghong and Lee, Ruby B.},
      title = {Covert and Side Channels Due to Processor Architecture},
      series = {ACSAC '06},
-}
-
-@inproceedings{yaonocs,
-    author = {Wang, Yao and Suh, Edward G.}
-}
-
-@inproceedings{ushpca14,
-    author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward G.}
+     booktitle = {},
+     year = {}
 }
 
 ------------------------------------------------------------------------------
@@ -268,10 +229,6 @@ Language Based Information Flow
     title = {Certification of Programs for Secure Information Flow},
     journal = {Commun. ACM},
     year = {1977},
-} @inproceedings{noninterference,
-    author = {Goguen, J.A and Meseguer, J.},
-    title = {Security Policies and Security Models},
-    series = {S\&P, 1982}
 }
 @inproceedings{termsens,
     author = {Volpano, Dennis and Smith, Geoffrey},
@@ -347,25 +304,4 @@ Microarchitecture Techniques
 
 @inproceedings{ushpca14,
     author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward}
-}
-------------------------------------------------------------------------------
-Statistical Techniques
-------------------------------------------------------------------------------
-@inproceedings{ccentropy,
-    author = {Gianvecchio, Steven and Wang, Haining},
-    title = {Detecting Covert Timing Channels: An Entropy-based Approach},
-    series = {CCS '07},
-}
-
-@inproceedings{kstest,
-    author = {Peng, Pai and Ning, Peng and Reeves, Douglas S.},
-    title = {On the Secrecy of Timing-Based Active Watermarking Trace-Back 
-        Techniques},
-    series = {SP '06},
-}
-
-@inproceedings{regularity,
-    author = {Cabuk, Serdar and Brodley, Carla E. and Shields, Clay},
-    title = {IP Covert Timing Channels: Design and Detection},
-    series = {CCS '04},
 }
