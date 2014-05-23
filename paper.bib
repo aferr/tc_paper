@@ -43,15 +43,6 @@ General
 }
 
 ------------------------------------------------------------------------------
-Covert Channel Attacks
-------------------------------------------------------------------------------
-@inproceedings{DPA,
-    author = {Kocher, Paul C. and Jaffe, Joshua and Jun, Benjamin},
-    title = {Differential Power Analysis},
-    series = {CRYPTO '99},
-}
-
-------------------------------------------------------------------------------
 Microarchitecture Attacks
 ------------------------------------------------------------------------------
 @inproceedings{percival,
@@ -262,6 +253,10 @@ Language Based Information Flow
     title = {Covert Channel Capacity},
     series = {S\&P '87}
 }
+
+------------------------------------------------------------------------------
+Language level Timing Channel Prevention/Detection
+------------------------------------------------------------------------------
 @inproceedings{quantleaks,
     author = {Pierro, Alessandra and Hankin, Chris and Wiklicky, Herbert},
     title = {Quantifying Timing Leaks and Cost Optimisation},
@@ -287,6 +282,27 @@ Language Based Information Flow
 } 
 
 ------------------------------------------------------------------------------
+Secure Processors
+------------------------------------------------------------------------------
+@inproceedings{ascend,
+ author = {Fletcher, Christopher W. and Dijk, Marten van and Devadas, Srinivas},
+ title = {A Secure Processor Architecture for Encrypted Computation on Untrusted Programs},
+ booktitle = {Proceedings of the Seventh ACM Workshop on Scalable Trusted Computing},
+ series = {STC '12},
+ year = {2012},
+ isbn = {978-1-4503-1662-0},
+ location = {Raleigh, North Carolina, USA},
+ pages = {3--8},
+ numpages = {6},
+ url = {http://doi.acm.org/10.1145/2382536.2382540},
+ doi = {10.1145/2382536.2382540},
+ acmid = {2382540},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {encrypted computation, secure processors},
+} 
+
+------------------------------------------------------------------------------
 Microarchitecture Techniques
 ------------------------------------------------------------------------------
 @inproceedings{newcache,
@@ -297,11 +313,38 @@ Microarchitecture Techniques
     year      = {2007}
 }
 
+@inproceedings{execution_leases,
+ author = {Tiwari, Mohit and Li, Xun and Wassel, Hassan M. G. and Chong, Frederic T. and Sherwood, Timothy},
+ title = {Execution Leases: A Hardware-supported Mechanism for Enforcing Strong Non-interference},
+ booktitle = {Proceedings of the 42Nd Annual IEEE/ACM International Symposium on Microarchitecture},
+ series = {MICRO 42},
+ year = {2009},
+ isbn = {978-1-60558-798-1},
+ location = {New York, New York},
+ pages = {493--504},
+ numpages = {12},
+ url = {http://doi.acm.org/10.1145/1669112.1669174},
+ doi = {10.1145/1669112.1669174},
+ acmid = {1669174},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {covert channels, gate level information flow tracking, high assurance systems, timing channels},
+} 
+
 @inproceedings{yaonocs,
     author = {Wang, Yao and Suh, Edward},
-    title  = {Efficient Timing Channel Protection for On-Chip Networks}
+    title  = {Efficient Timing Channel Protection for On-Chip Networks},
+    booktitle = { Proceedings of the 6th ACM/IEEE International Symposium on 
+        Networks-on-Chip. },
+    series = {NOCS},
+    year = {2012}
 }
 
 @inproceedings{ushpca14,
-    author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward}
+    author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward},
+    title  = {Timing Channel Protection for a Shared Memory Controller},
+    booktitle = {Proceedings of the 20th International Symposium on High Performance 
+        Computer Architecture},
+    series = {HPCA 20},
+    year = {2014}
 }

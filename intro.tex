@@ -1,16 +1,15 @@
 \section{Introduction}
-Timing channel attacks have become increasingly important as physical hardware 
-is increasingly shared by distrusting entities. For example, end users download 
-untrusted applications from the internet which can then execute on the same 
-hardware as other software that will handle the user's sensitive financial 
-data. System on chip platforms tightly integrate hardware designed by directly 
-competing companies. This necessitates sharing among the drivers and 
-proprietary algorithms owned by these distrusting companies. In cloud 
-computing, mutually distrusting parties own virtual machines on shared 
-hardware. Further, timing channels can be exploited by remote adversaries, 
-unlike power based side channels or similar vulnerabilities that require 
-physical access. So timing channels vulnerabilities are not only prevalent, but 
-easy to exploit.
+Timing channel attacks have become a major threat as hardware is increasingly 
+shared by distrusting entities. For example, end users download untrusted 
+applications from the internet which can then execute on the same hardware as 
+software that will handle the user's sensitive financial data. System on chip 
+platforms tightly integrate hardware designed by directly competing companies.  
+This necessitates hardware sharing among the drivers and proprietary algorithms 
+owned by these distrusting companies. In cloud computing, mutually distrusting 
+parties own virtual machines on shared hardware. Further, timing channels can 
+be exploited by remote adversaries, unlike power based side channels or similar 
+vulnerabilities that require physical access. So timing channels 
+vulnerabilities are not only prevalent, but easy to exploit.
 
 Many of these systems that are vulnerable to timing channels do take security 
 measures to prevent explicit channel attacks. In a cloud platform, the 
@@ -22,11 +21,11 @@ mechanisms are not enough. They do nothing to prevent coresident VMs from
 leaking secret information through timing channels induced by hardware sharing.
 
 We present timing compartments (TCs), an architecture abstraction to provide 
-timing channel isolation among software modules that share hardware.
+timing channel isolation among software entities that share hardware.
 Timing compartments provide an interface to software designers that allows them 
 to specify a timing channel protection policy that, when coupled with 
 conventional access controls, provides total software isolation. The software 
-implementor confines software modules (such as a virtual machines in a 
+implementor confines software entities (such as a virtual machines in a 
 hypervisor system or threads in a single OS server) into timing
 compartments based on ownership (for example, VMs owned by the same user go 
 into the same TC). The hardware prevents all internal microarchitectural timing 
@@ -46,9 +45,9 @@ networks~\cite{yaonocs}, and memory controllers~\cite{ushpca14}.
 However, little work has been done to prevent all microarchitectural timing 
 channels in a complete system. Ascend~\cite{ascend} considers external timing 
 channel attacks, but does not prevent timing channels due to shared resources.  
-Execution Leases~\cite{execution_leases} provide an architecture abstraction
+Execution leases~\cite{execution_leases} provide an architecture abstraction
 that prevents external timing channels by bounding the execution time of a code 
-segment, but Execution Leases do not prevent the internal timing channels 
+segment, but Execution leases do not prevent the internal timing channels 
 caused by shared hardware. GLIFT \cite{citation_needed} can be used to identify 
 timing channels, but does not prevent them. Further, the area, power, and 
 performance overheads are prohibitively large.
@@ -62,10 +61,12 @@ architecture technique to reach this goal. This work is also the first to
 experimentally evaluate the cost of applying timing channel protection to every 
 vulnerable component. Further, we show that integrating these protection 
 mechanisms to form a complete system with minimal performance overheads is 
-nontrivial and requires careful coordination. In addition to these 
-contributions we extend the taxonomy of timing channels and show how this 
-taxonomy can be used to identify techniques that can eliminate timing channels 
-in any additional components (e.g. accelerators).
+nontrivial and requires careful coordination. In the process of designing an 
+integrated timing channel protection system we identified two novel 
+microarchitectural timing channels. In addition to these contributions we 
+extend the taxonomy of timing channels and show how this taxonomy can be used 
+to identify techniques that can eliminate timing channels in any additional 
+components (e.g. accelerators).
 
 Section 2 describes the taxonomy of timing channels. It then describes our 
 threat model and gives examples of attacks that are prevented by timing 
