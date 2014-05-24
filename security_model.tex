@@ -145,19 +145,20 @@ other timing compartments, it also requires timing channel protection.
 \subsection{Example Scenarios}
 This section describes several application domains and scenarios that conform 
 to our threat model and can be secured with timing compartments.
+
 \subsubsection{Cloud Computing}
 In platform as a service (PaaS) cloud computing, a cloud provider owns hardware 
 which is shared by virtual machines that are managed by a hypervisor. The cloud 
 provider leases out the virtual machines with a pre-configured software stack 
 to third parties. The VMs are inexpensive since the cloud provider leverages an 
-economy of scale.
-However tenants in a PaaS environment have no control over the VMs they 
-co-reside with; they may share hardware with competitors or attackers that want 
-to extract sensitive data. One purpose of machine virtualization is to isolate 
-separate OS environments, but the platform as a whole is still less secure than 
-executing on separate hardware. Timing channels can violate VM isolation.
-For some clients without strong security requirements, this is not a concern, 
-but for others, this security threat makes cloud computing inviable.
+economy of scale. However tenants in a PaaS environment have no control over 
+the VMs they co-reside with; they may share hardware with competitors or 
+attackers that want to extract sensitive data. One purpose of machine 
+virtualization is to isolate separate OS environments, but the platform as a 
+whole is still less secure than executing on separate hardware. Timing channels 
+can violate VM isolation. For some clients without strong security 
+requirements, this is not a concern, but for others, this security threat makes 
+cloud computing inviable.
 
 Figure \ref{fig:cloud_scenario} shows an example cloud computing environment 
 with four virtual machines with different platforms and security requirements.
