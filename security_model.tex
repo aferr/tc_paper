@@ -87,11 +87,19 @@ timing channel.
 
 \subsection{Threat Model}
 The goal of this work is to completely isolate distrusting software entities, 
-such as threads, processes, or virtual machines that share
-hardware. The system should be no less secure than running the software 
-entities on separate hardware. 
+such as threads, processes, or virtual machines that share hardware. The system 
+should be no less secure than running the software entities on separate 
+hardware. 
 
-Figure \ref{fig:baseline} shows a general hardware/software architecture on 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3in]{figs/threat_model.pdf}
+        \caption{The Timing Compartments threat model.}
+        \label{fig:threat_model}
+    \end{center}
+\end{figure}
+
+Figure \ref{fig:threat_model} shows a general hardware/software architecture on 
 which we base our threat model. The hardware architecture has multiple cores, 
 each with private resources such as a branch predictor, one or more private 
 caches, a TLB, and the core logic. Each processor is connected to a shared 
@@ -100,29 +108,39 @@ main memory and a DMA module through the system bus. The hardware is
 concurrently shared by multiple software entities. It is possible for software 
 entities to be time multiplexed on the same core (e.g.  by context switching 
 VMs), but the system does not allow software entities to execute concurrently 
-on the same core (e.g. through simultaneous multithreading).
+on the same core (e.g. through simultaneous multithreading). 
 
 We assume that conventional software isolation abstractions such as threads, 
 processes, and machine virtualization along with access controls provide 
 isolation through explicit channels. However, these approaches to isolate 
 software do not address timing channels that leverage shared hardware. To 
-guarantee total isolation, internal timing channels must also be eliminated.
-
-%% External timing channels not handled
+guarantee total isolation, internal timing channels must also be eliminated.  
+Since our goal is to make shared hardware as secure as separate hardware, 
+timing channels that are external to the hardware are not addressed. Any timing 
+channels that are external to the hardware in this system would also be present 
+if the software entities executed on separate hardware. If necessary, external 
+timing channels can be controlled in software.
 
 Our approach to controlling timing channels is to group software entities
-as VMs) into a hardware/software architecture primitive called a timing 
-compartment (TC). A small, software trusted computing base, called the timing 
-compartment manager (TCM) (see Figure \ref{baseline}) , sets up these timing 
-compartments and initializes the hardware to track actions performed on behalf 
-of these timing compartments at the hardware level.  Then, the hardware 
-architecture controls how the timing compartments use shared resources to 
-eliminate interference and provide timing channel isolation.  Timing 
-compartments are described in further detail in the following section.  
+into a hardware/software architecture primitive called a timing compartment 
+(TC) which controls timing channel leakage out of the compartment. The system 
+requires a trusted software layer (see Figure \ref{threat_model}) comprised of 
+the software that controls explicit channels (e.g.  the OS or hypervisor) and 
+is extended to include a timing compartment manager (TCM). The TCM sets up 
+these timing compartments and initializes the hardware to track actions 
+performed on behalf of these timing compartments at the hardware level. Then, 
+the hardware architecture controls how the timing compartments use shared 
+resources to eliminate interference and provide timing channel isolation.  
+Timing compartments are described in further detail in the following section.  
 Intuitively, a single timing compartment contains only software entities that 
 trust each other explicitly (such as all the VMs on a machine owned by the same 
 user) or implicitly (all the VMs that do not want to pay for protection), 
 however, timing channel leakage between entities in different timing 
-compartments must be controlled. The entities in all timing compartments must 
-trust the TCM, but since the TCM distrusts all other timing compartments, it 
-also requires timing channel protection.
+compartments must be controlled. Figure \ref{threat_model} shows a system with 
+4 software entities grouped into 3 timing compartments. Entities 2 and 3 trust 
+each other.2 and 3 trust each other.2 and 3 trust each other. The entities in 
+all timing compartments must trust the TCM, but since the TCM distrusts all 
+other timing compartments, it also requires timing channel protection.
+
+\subsection{Example Scenarios}
+\subsubsection{Cloud Computing}
