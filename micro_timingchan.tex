@@ -121,7 +121,86 @@ can be solved in software by forcing the observable execution time to wait
 until the worst case time is reached.
 
 \subsection{Microarchitectural Timing Channels and Solutions}
+We now describe the specific timing channel vulnerabilities of the baseline 
+architecture and show how these generalized approaches can be adapted to solve 
+each individual timing channel.
 \subsubsection{Shared Caches}
+The shared caches of the baseline have a state based timing channel. Requests 
+to the memory hierarchy for addresses that are stored in the cache (cache hits) 
+are returned faster than requests for entries not stored in the cache (cache 
+misses). So, the time required to access the cache depends on its state. The 
+cache can only accommodate a finite number of entries, so when new entries must 
+be stored, old ones are evicted. One software entity can evict the entries of 
+another, causing timing channel leakage.
+
+This state based timing channel should be closed by partitioning the cache 
+among the timing compartments. At least two cache partitioning techniques exist: 
+way partitioning and set partitioning 
+\cite{rtas_cache_framework,dynamic_partitioning}. Set associative caches divide 
+the cache into ways. Each way as a single slot for each cache set. A cache 
+block may be stored in any way, but the set it belongs to is determined by a 
+segment of its address bits called the index. Since many addresses are mapped 
+to the same set, another segment of the address, the tag, is used to detect 
+cache hits (i.e. if a specific address is present in the cache).
+
+Way partitioning allocates a subset of the ways to each entity 
+\cite{citation_needed}. This results in a reduction in the effective 
+associativity utilized by each entity, and thus, causes more conflict misses 
+and weakens performance. Set partitioning manipulates virtual to physical 
+address translation to restrict the sets that a particular entity can occupy.  
+When done at the granularity of a page, this is called page coloring, and this 
+has been proposed for performance \cite{citation_needed} and real-time systems 
+\cite{rtas_cache_framework}.  Although both techniques increase the number of 
+capacity misses, set partitioning does not increase the number of conflict 
+misses, so we chose this technique for our implementation.
+
+Though this state based timing channel is well known, non-blocking caches have 
+an additional contention timing channel that has not yet been described in the 
+literature. On a cache miss, a blocking cache will stall the processor until 
+the data arrives from memory. A nonblocking cache allows the processor to 
+continue executing while resolving a miss.
+
+To do so, miss status holding registers (MSHRs), are used to track information 
+about the in-flight cache misses (memory requests). This information is  needed 
+to allow the cache to correctly send back a response when completed and to 
+handle subsequent requests to the same block while the memory request is still 
+in-flight.
+% With only a single MSHR, the system can tolerate a single outstanding cache 
+% miss (hit under miss). With more MSHRs, it can tolerate multiple outstanding 
+% misses (miss under miss). In any case, the system can tolerate only finite 
+% outstanding misses at a time. 
+The number of outstanding cache misses the system can tolerate depends on the 
+number of MSHRs. If the MSHRs are exhausted, the CPU must instead stall on a 
+miss. If one entity fills the MSHRs (partially or fully), the other entities 
+can detect this by inducing some number of cache misses and checking for a 
+stall. To close this contention based timing channel, the MSRHs are simply 
+duplicated per timing compartment.
+
+The cache ports cause a another contention based timing channel yet to be 
+discussed in the literature. Conventional caches have CPU-side ports and 
+memory-side ports both of which are split into request and response ports. On 
+the cache miss path, the cache receives a request through the CPU-side request 
+port, and detects a miss. The cache issues a request to the memory through its 
+memory-side request port and then receives a response through its memory-side 
+response port. Finally, the cache responds to the CPU through its CPU-side 
+response port.
+
+Each port can communicate a single response/request at a time, so there can be 
+contention for these ports. Requests to the cache are controlled through the on 
+chip network, so any contention for this port may be controlled there. However, 
+there is uncontrolled contention in the CPU-side response port. Typically cache 
+accesses return more data than can be sent over a bus in a single cycle, 
+necessitating multi-cycle transfer (for example a cache block may consist of 
+several words and the bus may allow only a single word to be transferred each 
+bus cycle). Since the cache is nonblocking, it is possible for a response from 
+memory to return to the cache and require the cache response port while the 
+data from a cache hit is being transferred. Conventional caches address this 
+contention with a queueing structure, but this queue is shared by multiple 
+entities causing interference. To handle this timing channel, we use smaller 
+duplicate queues for each timing compartment and apply time multiplexing to 
+select which timing compartment can use the response port (i.e. which queue is 
+checked for responses).
+
 \subsubsection{On Chip Networks}
 \subsubsection{Main Memories \& Memory Controllers}
 \subsubsection{Private Per-Core Resources}
@@ -137,7 +216,7 @@ until the worst case time is reached.
 % 
 % Private caches impose a state based timing channel even if each software 
 % module has a totally disjoint address space (i.e. no software module can read 
-% or write any memory address that another software module can read or write). 
+% or write any memory address that another software module can read or write).  
 % Requests to the memory hierarchy for addresses that are stored in the cache 
 % (cache hits) are returned faster than requests that are not stored in the 
 % cache (cache misses). So, the time required to access the cache depends on 
@@ -273,7 +352,7 @@ until the worst case time is reached.
 % be observed in the scheduler as well. However, there is another distinct 
 % state based timing channel. Depending on the specific scheduler policy, one 
 % request will be issued by the scheduler potentially causing other requests to 
-% be delayed.  Often, this policy is designed to exploit row buffer locality. 
+% be delayed.  Often, this policy is designed to exploit row buffer locality.  
 % When a memory access takes place, the row being accessed is stored in a row 
 % buffer (sense amplifier). Accesses to rows that are already stored in the row 
 % buffer are faster than those which are not. The decisions made by the 
