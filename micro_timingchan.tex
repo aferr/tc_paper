@@ -1,6 +1,20 @@
-\section{Microarchitectural Timing Channels and their Sources}
-Discuss a baseline first. Include a figure.
-%Mention private per-core resources
+\section{Microarchitectural Timing Channels, Sources and Solutions}
+Figure \ref{fig:baseline} shows a baseline architecture that is vulnerable to 
+timing channels. It has multiple cores each with a branch predictor, core 
+logic, a TLB, and one or more private caches. A trusted software layer (such as 
+an operating system) allocates software entities (such as processes) to the 
+cores. Software entities may be time multiplexed on cores (e.g. by context 
+switching), but only one software entity may reside on a core at a time. The 
+cores are connected to a shared cache via an on chip network. A shared system 
+bus connects the shared cache to a memory controller that manages requests to 
+main memory.
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=1.62in]{figs/baseline.pdf}
+            \caption{The timing-channel vulnerable baseline architecture.}
+            \label{fig:baseline}
+        \end{center}
+    \end{figure}
 
 
 Many microarchitectural timing channels and corresponding solutions are 
@@ -20,24 +34,23 @@ processes may be context switched in and out of the same core). These can be
 resolved by flushing the state elements of these resources on before moving a 
 new software entity onto the core.
 
-One could envision a straightforward approach to eliminating 
-timing channels that simply combines all of these known approaches. However, 
-this is not enough. Without carefully coordinating time multiplexed components, 
-the system is subject to unnecessarily high overheads or total starvation.  
-Further, we expose three new microarchitectural timing channels that are not 
-addressed by known solutions. The rest of this section develops a unified 
-framework for identifying solutions to microarchitectural timing channels based 
-on the taxonomy. It then details the timing channel vulnerabilities of the 
-baseline architecture and corresponding solutions.
+One could envision a straightforward approach to eliminating timing channels 
+that simply combines all of these known approaches. However, this is not 
+enough. Without carefully coordinating time multiplexed components, the system 
+is subject to unnecessarily high overheads or total starvation.  Further, we 
+expose three new microarchitectural timing channels that are not addressed by 
+known solutions. The rest of this section develops a unified framework for 
+identifying solutions to microarchitectural timing channels based on the 
+taxonomy. It then details the timing channel vulnerabilities of the baseline 
+architecture and corresponding solutions.
 
 \subsection{General Approaches}
 The classification of a timing channel in the taxonomy can be used to identify 
-a general solution to resolving the timing channel. This is useful for 
-applying timing channel protection to new components not 
-present in our baseline. 
+a general solution to resolving the timing channel. This is useful for applying 
+timing channel protection to new components not present in our baseline.  
 \subsubsection{State Based Timing Channels}
 Caches, TLBs, and branch predictors all have state based timing channels. In 
-each, requests that use an entry that is present in the state elements (e.g. 
+each, requests that use an entry that is present in the state elements (e.g.  
 cache hits) are faster than requests to entries not present (e.g. cache 
 misses). The state elements can contain a finite number of entries, so entries 
 must be evicted and replaced with new ones. One software entity can evict 
@@ -49,37 +62,63 @@ flushing.
 Flattening eliminates the dependence of access time on the state by forcing 
 every access to take the same amount of time. For some components, this is a 
 brute-force approach. Applied to caches, every access must be treated as a 
-misss, so this is equivalent to removing the cache. However, for vulnerable 
-components, such as the row buffers of main memories, this is the most 
-sensible approach.
+misss, so this is equivalent to removing the cache. However, for some 
+vulnerable components, such as the row buffers of main memories, this is the 
+most sensible approach.
 
 Partitioning prevents software entities that share state elements from 
 interfering. Static partitioning is realized by dividing the state elements 
 into separate partitions for each software entity. Entities are only allowed to 
 evict entries within their own partitions. Partitions must either be static, or 
-at least not resized or moved based on the dynamic behaviour of an entity. If a 
-partition is increased for an entity intensively using the state elements, the 
-other entities can detect that their partitions have been resized and 
-information is leaked. However, partitions do not need to be heterogeneous and 
-can be sized according to static performance characterizations of each software 
-entity (assuming this information can be made public).
+at least not resized or moved based on the dynamic behaviour of an entity.
+% If a partition is increased for an entity intensively using the state 
+% elements, the other entities can detect that their partitions have been 
+% resized and information is leaked.
+However, partitions do not need to be heterogeneous and can be sized according 
+to static performance characterizations of each software entity (assuming this 
+information can be made public).
 
 Flushing can be applied to state based resources that are shared only through 
-time multiplexing (such as private caches shared through context switches). 
-At the end of a time quantum, the state elements are completely cleared before 
-passing ownership of the state elements to the entity in the next time quantum. 
+time multiplexing (such as private caches shared through context switches).  At 
+the end of a time quantum, the state elements are completely cleared before 
+passing ownership of the state elements to the entity in the next time quantum.  
 Resources that can be flushed can also be partitioned, and there are tradeoffs 
-between these approaches. Flushing increases the time wasted at the end of a 
-time quantum if flushing cannot be done in less than one clock cycle. Clearing 
-the state between time quanta also increases the number of slower accesses at 
-the start of the quanta (e.g. it causes more cold cache misses). However, 
-partitioning reduces the total number of state elements that can be allocated 
-to each entity. If the time quanta are longer (e.g. if context switching is 
-infrequent), flushing is preferable, but partitioning may offer better 
-performance for shorter time quanta.
+between these approaches.
+% Flushing increases the time wasted at the end of a time quantum if flushing 
+% cannot be done in less than one clock cycle. Clearing the state between time 
+% quanta also increases the number of slower accesses at the start of the 
+% quanta (e.g. it causes more cold cache misses). However, partitioning reduces 
+% the total number of state elements that can be allocated to each entity. 
+If the time quanta are longer (e.g. if context switching is infrequent), 
+flushing is preferable to increase the total usable space, but partitioning may 
+offer better performance for shorter time quanta by eliminating the time needed 
+to flush and lessening the cold misses.
 
 \subsubsection{Contention Based Timing Channels}
+Contention based timing channels arise whenever a resource that is shared among 
+multiple software entities can only handle a finite number of requests at a 
+time. Contention based timing channels can be resolved by either duplication or 
+time division multiplexing (TDM). In some cases, it may be possible to resolve 
+contention for a resource by simply adding duplicate resources for each 
+software entity. However, this has obvious area overhead implications. If 
+duplication is infeasible, time division multiplexing should be used. TDM 
+defines a schedule where each software entitiy is guaranteed a period of time, 
+called a time quantum, where only that entity can use the resource. The 
+schedule of time quanta must either be static or at least independent of the 
+dynamic behavior of software entities.
+
 \subsubsection{External Timing Channels}
+Though timing channels external to hardware are outside the scope of this 
+paper, there are a class of timing channels that are internal to hardware, but 
+appear as external timing channels between two software entities. This form of 
+external timing channel exists in systems where distrusting software entities 
+must communicate. For example, one software entity might be a user space 
+process and another might be a process that performs only high-assurance 
+operations. The user space process requests the high-assurance process to 
+perform some operation on its behalf. The user space process can directly 
+observe the execution time of the other process. This type of timing channel 
+can be solved in software by forcing the observable execution time to wait 
+until the worst case time is reached.
 
 \subsection{Microarchitectural Timing Channels and Solutions}
 \subsubsection{Shared Caches}
@@ -92,100 +131,103 @@ performance for shorter time quanta.
 % \subsection{Private Caches}
 % \label{sec:priv_cache}
 % The baseline private caches are shared among software modules whenever a core 
-% context switches between them. Despite the lack of concurrent sharing, private 
-% caches cause information leakage between context switches and through variation 
-% in timing not due to sharing.
+% context switches between them. Despite the lack of concurrent sharing, 
+% private caches cause information leakage between context switches and through 
+% variation in timing not due to sharing.
 % 
-% Private caches impose a state based timing channel even if each software module 
-% has a totally disjoint address space (i.e. no software module can read or write 
-% any memory address that another software module can read or write). Requests to 
-% the memory hierarchy for addresses that are stored in the cache (cache hits) 
-% are returned faster than requests that are not stored in the cache (cache 
-% misses). So, the time required to access the cache depends on its state. An 
-% adversary controlling a software module can use conventional time measurement 
-% libraries to record cache access timings and determine which requests are hits.
+% Private caches impose a state based timing channel even if each software 
+% module has a totally disjoint address space (i.e. no software module can read 
+% or write any memory address that another software module can read or write). 
+% Requests to the memory hierarchy for addresses that are stored in the cache 
+% (cache hits) are returned faster than requests that are not stored in the 
+% cache (cache misses). So, the time required to access the cache depends on 
+% its state. An adversary controlling a software module can use conventional 
+% time measurement libraries to record cache access timings and determine which 
+% requests are hits.
 % The adversary controlled software module can be context switched out for one 
-% that will operate on some secret. This other can read new memory addresses into 
-% the cache which may evict some of the old entries that occupied the cache. The 
-% memory addresses used by this module can depend on the actual data of the 
-% secret, for example, through a branch condition. (In the attack proposed by 
-% Bernstein \cite{bernstein} the addresses read by an AES algorithm depend on the 
-% secret key through sboxes). Therefore, this satisfies the definition of a state 
-% based timing channel.
+% that will operate on some secret. This other can read new memory addresses 
+% into the cache which may evict some of the old entries that occupied the 
+% cache. The memory addresses used by this module can depend on the actual data 
+% of the secret, for example, through a branch condition. (In the attack 
+% proposed by Bernstein \cite{bernstein} the addresses read by an AES algorithm 
+% depend on the secret key through sboxes). Therefore, this satisfies the 
+% definition of a state based timing channel.
 % 
 % The adversary can exploit this timing channel by loading an array from memory 
 % that occupies as many cache lines as possible. The adversary then waits until 
 % the virtual machine he or she controls is context switched out and replaced 
-% with the software module that will operate on the secret. This software module 
-% may evict some of the cache lines of the array. When the adversarial software 
-% module context switches back, the adversary can learn which cache lines were 
-% evicted by making requests to read each element of the array and measuring the 
-% timing. It will take longer to read the elements which were evicted. Unless the 
-% cache is fully associative, the particular cache lines that were evicted will 
-% depend on the addresses operated on by the victim software module. Even if the 
-% cache is fully associative, the adversary can use an array that completely 
-% fills the cache and learn the number of cache lines read by the adversary - a 
-% quantity that can also depend on a secret.
+% with the software module that will operate on the secret. This software 
+% module may evict some of the cache lines of the array. When the adversarial 
+% software module context switches back, the adversary can learn which cache 
+% lines were evicted by making requests to read each element of the array and 
+% measuring the timing. It will take longer to read the elements which were 
+% evicted. Unless the cache is fully associative, the particular cache lines 
+% that were evicted will depend on the addresses operated on by the victim 
+% software module. Even if the cache is fully associative, the adversary can 
+% use an array that completely fills the cache and learn the number of cache 
+% lines read by the adversary - a quantity that can also depend on a secret.
 % 
 % Additionally, private caches also cause direct observation timing channel 
-% vulnerabilities if the adversary can measure the duration of an event performed 
-% by a software module that operates on some secret and includes one or more 
-% private cache
-% accesses. In the DRM video playback usage case, an example of such an event is 
-% a function call in the secure world that handles a request made by the normal 
-% world. The adversary can measure the time between making the request (invoking
+% vulnerabilities if the adversary can measure the duration of an event 
+% performed by a software module that operates on some secret and includes one 
+% or more private cache
+% accesses. In the DRM video playback usage case, an example of such an event 
+% is a function call in the secure world that handles a request made by the 
+% normal world. The adversary can measure the time between making the request 
+% (invoking
 % the monitor to context switch the adversarial software module out) and being 
-% context switched back in. The total time required to complete the function will 
-% depend on the cache hit ratio which depends on program control flow and 
+% context switched back in. The total time required to complete the function 
+% will depend on the cache hit ratio which depends on program control flow and 
 % therefore possibly the secret. This direct observation timing channel has the 
 % interesting property in that it requires no interference or resource sharing 
 % between the two software modules at all.
 %  
 % \subsection{TLBs and Branch Predictors}
-% As with private caches, TLBs are shared among software modules between context 
-% switches. The TLB effectively caches address translations, and since page table 
-% hits are faster than misses, it can be shown through similar reasoning as 
-% Section \ref{sec:priv_cache} that the TLB causes state based timing channels 
-% and direct observation timing channels. The branch predictor is also shared by 
-% software modules between context switching. It stores branch prediction history 
-% in a branch prediction table, the contents of which are used to decide whether 
-% or not a branch should be taken. This prediction can positively or adversely 
-% affect execution time, and space in the branch prediction history table is 
-% finite, so evictions must be made. Again, similar reasoning can be applied to 
-% see that the branch predictor also causes state based and termination timing 
-% channels.
+% As with private caches, TLBs are shared among software modules between 
+% context switches. The TLB effectively caches address translations, and since 
+% page table hits are faster than misses, it can be shown through similar 
+% reasoning as Section \ref{sec:priv_cache} that the TLB causes state based 
+% timing channels and direct observation timing channels. The branch predictor 
+% is also shared by software modules between context switching. It stores 
+% branch prediction history in a branch prediction table, the contents of which 
+% are used to decide whether or not a branch should be taken. This prediction 
+% can positively or adversely affect execution time, and space in the branch 
+% prediction history table is finite, so evictions must be made. Again, similar 
+% reasoning can be applied to see that the branch predictor also causes state 
+% based and termination timing channels.
 % 
 % \subsection{Shared Caches}
 % Shared caches cause timing channel vulnerabilities that are similar to the 
 % vulnerabilities of the private caches (the state based timing channel and the 
-% direct observation timing channel). However, unlike the private caches, shared 
-% caches are subject to interference due to concurrently executing software 
-% modules. This allows the attacker to have finer-grained control over when 
-% interference takes place, potentially allowing for faster exfiltration of 
-% secrets. However, since the shared cache is larger it has a higher access time, 
-% and since it is higher in the memory hierarchy the private cache reduces the 
-% chance of a shared cache access. Both of these factors decrease the 
-% exfiltration rate, so it is unclear if shared cache timing channels are more 
-% efficient than private cache timing channels.
+% direct observation timing channel). However, unlike the private caches, 
+% shared caches are subject to interference due to concurrently executing 
+% software modules. This allows the attacker to have finer-grained control over 
+% when interference takes place, potentially allowing for faster exfiltration 
+% of secrets. However, since the shared cache is larger it has a higher access 
+% time, and since it is higher in the memory hierarchy the private cache 
+% reduces the chance of a shared cache access. Both of these factors decrease 
+% the exfiltration rate, so it is unclear if shared cache timing channels are 
+% more efficient than private cache timing channels.
 % 
 % \subsection{CPU Logic}
-% There is a direct observation timing channel here as we discussed. This is just 
-% a placeholder for now.
+% There is a direct observation timing channel here as we discussed. This is 
+% just a placeholder for now.
 % 
 % \subsection{Main Memory}
-% The main memory is shared between concurrently executing software modules, and 
-% analogous to the timing disparity between cache hits and misses, page faults in 
-% main memory take substantially longer than accessing entries that are present 
-% in main memory. So the main memory has sources of timing channels that are 
-% similar to the shared cache. However, the memory controller has additional 
-% timing channels due to resource contention as well as other state based timing 
-% channels. Wang et. al. classify timing channel sources as queueing structure 
-% interference, scheduler arbitration interference, and DRAM device interference.  
-% In this section these timing channel sources are summarized, and it is shown 
-% that the timing channels of the memory controller may also be thought of as 
-% resource contention or state based timing channels.
+% The main memory is shared between concurrently executing software modules, 
+% and analogous to the timing disparity between cache hits and misses, page 
+% faults in main memory take substantially longer than accessing entries that 
+% are present in main memory. So the main memory has sources of timing channels 
+% that are similar to the shared cache. However, the memory controller has 
+% additional timing channels due to resource contention as well as other state 
+% based timing channels. Wang et. al. classify timing channel sources as 
+% queueing structure interference, scheduler arbitration interference, and DRAM 
+% device interference.  In this section these timing channel sources are 
+% summarized, and it is shown that the timing channels of the memory controller 
+% may also be thought of as resource contention or state based timing channels.
 % 
-% The DRAM device contains several finite resources (e.g., the command bus, data
+% The DRAM device contains several finite resources (e.g., the command bus, 
+% data
 % bus, banks, and ranks), and contention for these resources is resolved by the 
 % queueing structure and scheduler. Each of these resources causes a resource 
 % contention based timing channel that may be observed in both the queing 
@@ -193,50 +235,50 @@ performance for shorter time quanta.
 % be scheduled at the same time causing a timing channel observable in the 
 % queueing structure. Suppose the queueing structure contains a request from a 
 % victim owned software module for a bank. If an adversarial software module 
-% issues a request to the same bank, it will be delayed, informing the adversary 
-% that such a victim request exists.  Similarly, contention for the command bus 
-% causes a timing channel that may be observed in the scheduler. If a request 
-% from one software module arrives at the scheduler in the same cycle as a 
-% request from another software module and for a different bank, one of the 
-% requests is scheduled and the other is delayed since only a single command can 
-% occupy the command bus at a time.
+% issues a request to the same bank, it will be delayed, informing the 
+% adversary that such a victim request exists.  Similarly, contention for the 
+% command bus causes a timing channel that may be observed in the scheduler. If 
+% a request from one software module arrives at the scheduler in the same cycle 
+% as a request from another software module and for a different bank, one of 
+% the requests is scheduled and the other is delayed since only a single 
+% command can occupy the command bus at a time.
 % 
-% A memory controller queueing structure collects incoming requests for the DRAM 
-% and stores them in a queue until. As noted, timing channels due to contention 
-% for resources in the
+% A memory controller queueing structure collects incoming requests for the 
+% DRAM and stores them in a queue until. As noted, timing channels due to 
+% contention for resources in the
 % DRAM may be observed in the queue. However, even if these timing channels are 
 % closed, there is still a distinct state based timing channel in the queue. To 
-% see this, suppose the resources of the DRAM are no longer finite, that is, the 
-% ranks, banks, command bus, and data bus can each handle infinitely many 
+% see this, suppose the resources of the DRAM are no longer finite, that is, 
+% the ranks, banks, command bus, and data bus can each handle infinitely many 
 % requests at the same time. (Though one may argue that the queue is no longer 
-% necessary at all under these circumstances, practical techniques to address the 
-% aforementioned channels do not involve infite resources and queues will still 
-% be necessary. The intent here is merely to show that there is still a distinct 
-% timing channel even in the absennce of this resource contention).
+% necessary at all under these circumstances, practical techniques to address 
+% the aforementioned channels do not involve infite resources and queues will 
+% still be necessary. The intent here is merely to show that there is still a 
+% distinct timing channel even in the absennce of this resource contention).
 % The state elements of the queue can accommodate only a finite number of 
 % requests. If the queue is completely filled, any incoming request must be 
 % stalled. Therefore, the time required to make a memory request depends on the 
-% state in the queueing structure. An adversary can measure the time required for 
-% its memory requests and learn if a victim software module has completely 
+% state in the queueing structure. An adversary can measure the time required 
+% for its memory requests and learn if a victim software module has completely 
 % occupied the queue or not (since the delay will be greater if the queue is 
-% full). This can indicate whether or not a secret dependent control flow segment 
-% led the victim program to a memory intensive region of of the program or not.  
-% These conditions imply that the finite queue space induces a state based timing 
-% channel. Note that although one might be inclined to think of queue slots as 
-% finite resources, the timing varition that is observable here depends on the 
-% system behavior in previous cycles so it is not a resource contention based 
-% timing channel.
+% full). This can indicate whether or not a secret dependent control flow 
+% segment led the victim program to a memory intensive region of of the program 
+% or not.  These conditions imply that the finite queue space induces a state 
+% based timing channel. Note that although one might be inclined to think of 
+% queue slots as finite resources, the timing varition that is observable here 
+% depends on the system behavior in previous cycles so it is not a resource 
+% contention based timing channel.
 % 
-% The resource contention timing channels for the ranks, banks, and buses may be 
-% observed in the scheduler as well. However, there is another distinct state 
-% based timing channel. Depending on the specific scheduler policy, one request 
-% will be issued by the scheduler potentially causing other requests to be 
-% delayed.  Often, this policy is designed to exploit row buffer locality. When a 
-% memory access takes place, the row being accessed is stored in a row buffer 
-% (sense amplifier). Accesses to rows that are already stored in the row buffer 
-% are faster than those which are not. The decisions made by the scheduler depend 
-% on this state (and therefore the behavior of the system in previous cycles).  
-% This causes a state based timing channel.
+% The resource contention timing channels for the ranks, banks, and buses may 
+% be observed in the scheduler as well. However, there is another distinct 
+% state based timing channel. Depending on the specific scheduler policy, one 
+% request will be issued by the scheduler potentially causing other requests to 
+% be delayed.  Often, this policy is designed to exploit row buffer locality. 
+% When a memory access takes place, the row being accessed is stored in a row 
+% buffer (sense amplifier). Accesses to rows that are already stored in the row 
+% buffer are faster than those which are not. The decisions made by the 
+% scheduler depend on this state (and therefore the behavior of the system in 
+% previous cycles).  This causes a state based timing channel.
 % 
 % \subsection{On Chip Network \& System Bus}
 % This section must still be completed, but it is likely that these timing 
