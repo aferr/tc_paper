@@ -142,7 +142,8 @@ each other.2 and 3 trust each other.2 and 3 trust each other. The entities in
 all timing compartments must trust the TCM, but since the TCM distrusts all 
 other timing compartments, it also requires timing channel protection.
 
-\subsection{Example Scenarios}
+\subsection{Example Vulnerable Systems}
+\label{sec:cloud_scenario}
 This section describes several application domains and scenarios that conform 
 to our threat model and can be secured with timing compartments.
 
@@ -160,7 +161,7 @@ others, this security threat makes cloud computing inviable.
 
     \begin{figure}
         \begin{center}
-            \includegraphics[width=2.3in]{figs/cloud_scenario.pdf}
+            \includegraphics[width=2.1in]{figs/cloud_scenario.pdf}
             \caption{A cloud environment with timing channel vulnerabilites. 
              VM1 and VM2 have high security requirements, but VM3 and VM4 do 
              not.}
@@ -169,7 +170,8 @@ others, this security threat makes cloud computing inviable.
     \end{figure}
 
 Figure \ref{fig:cloud_scenario} shows an example cloud computing environment 
-with four virtual machines with different security requirements. VM1 and VM2 
+with four virtual machines with different security requirements. Each VM in the 
+system implicitly trusts the hypervisor. VM1 and VM2 
 are running programs with high security requirements. VM1 and VM2 are mutually 
 distrusting and distrust all other VMs in the environment. Unfortunately, the 
 system has microarchitectural timing channels (e.g. in the network on chip) 
