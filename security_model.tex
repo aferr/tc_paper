@@ -2,7 +2,7 @@
 \subsection{Taxonomy of Timing Channels}
     \begin{figure}
         \begin{center}
-            \includegraphics[width=2.6in]{figs/taxonomy.pdf}
+            \includegraphics[width=2.2in]{figs/taxonomy.pdf}
             \caption{The taxonomy of timing channels}
             \label{fig:taxonomy}
         \end{center}
@@ -91,14 +91,6 @@ such as threads, processes, or virtual machines that share hardware. The system
 should be no less secure than running the software entities on separate 
 hardware. 
 
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=3in]{figs/threat_model.pdf}
-        \caption{The Timing Compartments threat model.}
-        \label{fig:threat_model}
-    \end{center}
-\end{figure}
-
 Figure \ref{fig:threat_model} shows a general hardware/software architecture on 
 which we base our threat model. The hardware architecture has multiple cores, 
 each with private resources such as a branch predictor, one or more private 
@@ -161,11 +153,11 @@ others, this security threat makes cloud computing inviable.
 
     \begin{figure}
         \begin{center}
-            \includegraphics[width=2.1in]{figs/cloud_scenario.pdf}
+            \includegraphics[width=1.6in]{figs/cloud_tcs.pdf}
             \caption{A cloud environment with timing channel vulnerabilites. 
              VM1 and VM2 have high security requirements, but VM3 and VM4 do 
              not.}
-            \label{fig:cloud_scenario}
+            \label{fig:cloud_tcs}
         \end{center}
     \end{figure}
 

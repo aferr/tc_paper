@@ -62,7 +62,7 @@ paper.bbl: $(BIBFILES) $(TEXFILES) Makefile done.flag
 
 paper.pdf: $(TEXFILES) $(PDFFIGFILES) paper.bbl Makefile done.flag
 	@echo Running latex once.; \
-	while ( pdflatex -interaction=nonstopmode paper.tex; grep Rerun paper.log ) ; do \
+	while ( pdflatex -interaction=nonstopmode paper.tex; grep "Rerun to get cross" paper.log ) ; do \
           echo; \
           echo "*********************************"; \
           echo "*********************************"; \
@@ -77,6 +77,6 @@ paper.pdf: $(TEXFILES) $(PDFFIGFILES) paper.bbl Makefile done.flag
 	make printerrors 
 			
 clean:
-	rm -f *.lof *.lot *.pfg *~ *.aux *.dvi *.blg *.log *.bbl *.bak paper.ps paper.pdf *.toc *.swp done.flag
+	rm -f *.lof *.lot *.pfg *~ *.aux *.dvi *.blg *.log *.bbl *.bak paper.ps paper.pdf *.toc *.swp done.flag paper.out
 
 
