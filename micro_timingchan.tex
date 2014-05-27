@@ -254,7 +254,7 @@ and stores them in a queue until the request can be issued.  As noted, timing
 channels due to contention for resources in the
 DRAM may be observed in the queue. However, even if these timing channels are 
 closed, there is still a distinct state based timing channel in the queue.  If 
-the queue is completely filled, any incoming request must be stalled. 
+the queue is completely filled, any incoming request must be stalled.  
 Therefore, the time required to make a memory request depends on the state in 
 the queueing structure. This timing channel can be closed replacing the shared 
 queue with separate, smaller queues for each timing compartment.
@@ -276,7 +276,20 @@ after every access and each memory request is treated as a row buffer miss.
 
 \subsubsection{Private Per-Core Resources}
 
-
+The private caches, TLBs, and branch predictors of each core are not 
+concurrently shared by timing compartments since only one timing compartment 
+may be active on a core at a time. However, timing compartments share these 
+components indirectly since TCs may be time multiplexed on cores.  Each of 
+these components have state elements that can accommodate a finite number of 
+entries and therefore must occasionally evict some entries. In the baseline 
+architecture, the state of each of these components is kept between context 
+switches. An adversarial TC owner can deliberately fill the state elements of 
+each of these resources, and until it is replaced with the victim TC. The 
+victim TC may cause evictions before the adversarial TC is given ownership of 
+the core again, and the adversarial TC can then learn which state elements were 
+evicted. To eliminate this timing channel, each of these resources must be 
+flushed before each context switch. This is described more fully in Section 
+\ref{sec:integration_tcm}.
 
 % \subsection{Private Caches}
 % \label{sec:priv_cache}
