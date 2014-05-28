@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{jpaper}[2013/06/06 HPCA submission template]
+\ProvidesClass{jpaper}[2012/04/23 Micro submission template]
 
 % jpaper provides two modes:
 % In addition to the usual options leqno and fleqn, jpaper also provides the
@@ -25,7 +25,7 @@
 \DeclareOption{nopageno}{\togglefalse{jp@pageno}}
 \DeclareOption{hyperref}{\toggletrue{jp@hyperref}}
 \DeclareOption{nohyperref}{\togglefalse{jp@hyperref}}
-\ExecuteOptions{nolineno,pageno,nohyperref}
+\ExecuteOptions{nolineno,pageno,hyperref}
 \ProcessOptions
 
 % Load the underlying article class.
@@ -63,10 +63,7 @@
 \RequirePackage{titling}
 \setlength{\droptitle}{-3.5em}
 
-\pretitle{\begin{center}\vspace{-.5in}
-HPCA Submission \#\hpcasubmissionnumber -- Confidential Draft -- Do Not Distribute!!\\
-\vspace{.35in}
-\normalfont\Large\bfseries}
+\pretitle{\begin{center}\normalfont\Large\bfseries}
 \posttitle{\par\end{center}}
 \preauthor{\begin{center}\normalfont\large%
     \begin{tabular}[t]{c}}
