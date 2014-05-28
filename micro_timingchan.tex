@@ -153,8 +153,51 @@ equal the worst case execution time, stalling if necessary.
 \subsection{Microarchitectural Timing Channels and Solutions}
 We now describe the specific timing channel vulnerabilities of the baseline 
 architecture and show how these generalized approaches can be adapted to solve 
-each individual timing channel.
+each individual timing channel. The timing channels and their solutions are 
+summarized in Table \ref{table:timing_chan_summary}.
+
+\def\novelcolor{Green}
+\begin{table*}
+\begin{tabular}{l|l|l|l}
+    \hline
+    Component & Timing Channel & Classification & Solution\\
+    \hline
+    \multirow{3}{*}{Shared Caches}
+    & Replacement & State  & Set Partitioning \\
+    \hhline{~---}
+    & {\color{\novelcolor}MSHRs}
+    & {\color{\novelcolor}Contention }
+    & {\color{\novelcolor}Duplicate MSHR Banks} \\
+    \hhline{~---}
+    & {\color{\novelcolor}Response Ports}
+    & {\color{\novelcolor}Contention }
+    & {\color{\novelcolor}Separate Queues \& Time Multiplexing}\\
+    \hline
+    \multirow{5}{*}{DRAM \& Memory Controller}
+    & Page Faults & State  & Address Space Partitioning \\
+    \hhline{~---}
+    & DRAM Resources & Contention  & Time Multiplexing \\
+    \hhline{~---}
+    & Queueing Structure & State  & Partitioned Queue \\
+    \hhline{~---}
+    & Row Buffer & State & Closed Page Policy (Flattening)\\
+    \hhline{~---}
+    & {\color{\novelcolor} Response Ports} 
+    & {\color{\novelcolor} Contention }
+    & {\color{\novelcolor} Separate Queues \& Time Multiplexing}\\
+    \hline
+    \multirow{2}{*}{Network} 
+    & Interconnect Contention & Contention & Time Multiplexing \\
+    \hhline{~---}
+    & Queueing Structure & State & Partitioned Queue \\
+\end{tabular}
+    \caption{Summary of Timing Channels and Solutions.}
+    \label{table:timing_chan_summary}
+\end{table*}
+
 \subsubsection{Shared Caches}
+\mbox{}\newline
+\textbf{Replacement Timing Channel}
 The shared caches of the baseline have a state based timing channel. Requests 
 to the memory hierarchy for addresses that are stored in the cache (cache hits) 
 are returned faster than requests for entries not stored in the cache (cache 
@@ -184,6 +227,7 @@ has been proposed for performance \cite{citation_needed} and real-time systems
 capacity misses, set partitioning does not increase the number of conflict 
 misses, so we chose this technique for our implementation.
 
+\textbf{MSHR Contention Timing Channel}
 Though this state based timing channel is well known, non-blocking caches have 
 an additional contention timing channel that has not yet been described in the 
 literature. On a cache miss, a blocking cache will stall the processor until 
@@ -206,6 +250,7 @@ can detect this by inducing some number of cache misses and checking for a
 stall. To close this contention based timing channel, the MSRHs are simply 
 duplicated per timing compartment.
 
+\textbf{Response Port Contention Timing Channel}
 The cache ports cause a another contention based timing channel yet to be 
 discussed in the literature. Conventional caches have CPU-side ports and 
 memory-side ports both of which are split into request and response ports. On 
@@ -248,6 +293,7 @@ timing channel sources are summarized, and it is shown that the timing channels
 of the memory controller may also be thought of as resource contention or state 
 based timing channels.
 
+\textbf{DRAM Contention Timing Channels}
 The DRAM device contains several finite resources (e.g., the command bus, data
 bus, banks, and ranks), and contention for these resources is resolved by the 
 queueing structure and scheduler. Each of these resources causes a resource 
@@ -279,6 +325,7 @@ taking place. Since the refresh timing is public information, the dead time of
 each time quantum where a refresh takes place is increased to guarantee the 
 refresh completes.
 
+\textbf{Queueing State Timing Channel}
 A memory controller queueing structure collects incoming requests for the DRAM 
 and stores them in a queue until the request can be issued.  As noted, timing 
 channels due to contention for resources in the
@@ -289,6 +336,7 @@ Therefore, the time required to make a memory request depends on the state in
 the queueing structure. This timing channel can be closed replacing the shared 
 queue with separate, smaller queues for each timing compartment.
 
+\textbf{Row Buffer State Timing Channel}
 There is another distinct state based timing channel caused by the memory 
 scheduling policy. Depending on the specific scheduler policy, one request will 
 be issued by the scheduler potentially causing other requests to be delayed.  
@@ -302,7 +350,6 @@ To resolve this timing channel, a flattening technique is applied. Row buffer
 flushes must be paced far apart to meet power constraints, and partitioning is 
 impossible. A closed page policy is chosen so that the row buffer is precharged 
 after every access and each memory request is treated as a row buffer miss.
-
 
 \subsubsection{Private Per-Core Resources}
 
@@ -320,3 +367,4 @@ the core again, and the adversarial TC can then learn which state elements were
 evicted. To eliminate this timing channel, each of these resources must be 
 flushed before each context switch. This is handled by the timing compartment 
 manager and described more fully in Section \ref{sec:integration_tcm}.
+
