@@ -16,6 +16,11 @@ main memory.
         \end{center}
     \end{figure}
 
+The multicore system of interest consists of hardware resources that are
+concurrently shared by multiple software entities. It is possible for software 
+entities to be time multiplexed on the same core (e.g.  by context switching 
+VMs), but the system does not allow software entities to execute concurrently 
+on the same core (e.g. through simultaneous multithreading). 
 
 Many microarchitectural timing channels and corresponding solutions are 
 well-known. Shared caches create a state-based timing channel where interfering 
@@ -45,6 +50,30 @@ taxonomy. It then details the timing channel vulnerabilities of the baseline
 architecture and corresponding solutions.
 
 \subsection{General Approaches}
+
+% Moved from the taxonomy. Need to be cleaned up.
+
+Internal microarchitectural timing channels can either be state based, or 
+contention based. In a \emph{state based} timing channel, the victim and 
+adversary share some hardware state element with access timing that depends on 
+its contents. Conventional shared caches have state based timing channels; 
+accesses to memory addresses in the cache are faster than those that are not.
+In a \emph{contention based} timing channel, the victim and adversary share a 
+resource that can handle only a finite number of requests at a time.  Requests 
+made to the resource while it is already handling a request are delayed. 
+Conventional buses have contention based timing channels since a finite number 
+of requests can be transferred at a time while the remaining requests are 
+delayed in a queue.
+
+%% Not sure if the covert channel paragraph is needed
+We show how this taxonomy can be used to identify general approaches to prevent 
+each type of timing channel in Section \ref{sec:tc_sources}. Though the use of 
+a victim and an adversary in these definitions may seem to limit this taxonomy 
+to timing side channels, it is equally valid for categorizing timing covert 
+channels. To categorize covert channels, the victim is replaced with an 
+adversary that intentionally sends messages to a second adversary through the 
+timing channel.
+
 The classification of a timing channel in the taxonomy can be used to identify 
 a general solution to resolving the timing channel. This is useful for applying 
 timing channel protection to new components not present in our baseline.  
