@@ -1,26 +1,154 @@
-\section{Microarchitectural Timing Channels, Sources and Solutions}
-Figure \ref{fig:baseline} shows a baseline architecture that is vulnerable to 
-timing channels. It has multiple cores each with a branch predictor, core 
-logic, a TLB, and one or more private caches. A trusted software layer (such as 
-an operating system) allocates software entities (such as processes) to the 
-cores. Software entities may be time multiplexed on cores (e.g. by context 
-switching), but only one software entity may reside on a core at a time. The 
-cores are connected to a shared cache via an on chip network. A shared system 
-bus connects the shared cache to a memory controller that manages requests to 
-main memory.
+\section{Microarchitectural Timing Channels}
+
+This section discusses internal timing channels in typical
+multi-core processors and mechanisms to control them.
+
+\subsection{Baseline Architecture}
+
     \begin{figure}
         \begin{center}
             \includegraphics[width=1.62in]{figs/baseline.pdf}
-            \caption{The timing-channel vulnerable baseline architecture.}
+            \caption{Baseline multi-core architecture.}
             \label{fig:baseline}
         \end{center}
     \end{figure}
 
-The multicore system of interest consists of hardware resources that are
-concurrently shared by multiple software entities. It is possible for software 
-entities to be time multiplexed on the same core (e.g.  by context switching 
-VMs), but the system does not allow software entities to execute concurrently 
-on the same core (e.g. through simultaneous multithreading). 
+Figure \ref{fig:baseline} shows a baseline multi-core architecture that we
+consider to implement timing compartments in this paper. The architecture
+has multiple cores, each with a core pipeline, a branch predictor, a TLB,
+and one or more private caches. 
+The cores are connected to a shared cache via an on chip network. A shared system 
+bus connects the shared cache to a memory controller that manages requests to 
+main memory.
+We assume that each core may be time-multiplexed to run multiple timing
+compartments over time, but only one timing compartment runs on each core
+at a time. This assumption can be relaxed if more timing channel protections
+are added to per-core resources.
+
+%A trusted software layer (such as 
+%an operating system) allocates software entities (such as processes) to the 
+%cores. 
+
+\subsection{General Protection Approaches}
+
+Here, we discuss general approaches to control internal timing channels
+at the microarchitecture level. We follow these approaches to design our
+protection mechanisms. These approaches also provide guidelines to
+develop new protection mechanisms for components that are not included in
+our baseline architecture.
+%However, both classes of timing channels have different solutions, 
+%each with tradeoffs that may make one more favorable than another for a 
+%particular component. 
+
+\subsubsection{Types of Timing Interference}
+
+There exists an internal timing channel from one timing compartment (say $TC1$)
+to another ($TC2$) when the timing of $TC2$'s event can be affected by $TC1$'s
+event. There are two types of such timing interference in hardware: state-based
+and contention-based.
+A \emph{state-based} timing channel happens when a state element whose content
+affects timing is dynamically shared among multiple timing compartments. 
+For example, a conventional shared cache has state-based timing channels because 
+its access time depends on the content.
+A \emph{contention based} timing channel happens when multiple timing compartments
+share a resource that can handle only a finite number of requests at a time.
+%Requests made to the resource while it is already handling other requests are delayed.  
+Conventional buses have contention-based timing channels.
+
+
+\subsubsection{State-Based Timing Channel Protection}
+
+%Caches, TLBs, and branch predictors all have state-based timing channels. 
+%In 
+%each, requests that use an entry that is present in the state elements (e.g.  
+%cache hits) are faster than requests to entries not present (e.g. cache 
+%misses). The state elements can contain a finite number of entries, so entries 
+%must be evicted and replaced with new ones. One software entity can evict 
+%entries owned by another, causing interference and timing channel leakage if 
+%the choice of entries evicted correlates with a secret. 
+In general, the state-based 
+timing channels can be removed by applying flattening, partitioning, or 
+flushing.
+Flattening eliminates the dependence of access time on the state by forcing 
+every access to take the same amount of time. For example, to remove timing 
+interference in row buffers in DRAM, all DRAM accesses may be treated as 
+a row buffer miss.
+%For some components, this is a 
+%brute-force approach. Applied to caches, every access must be treated as a 
+%misss, so this is equivalent to removing the cache. However, for some 
+%vulnerable components, such as the row buffers of main memories, this is the 
+%most sensible approach.
+
+Partitioning removes interference by ensuring that each timing compartment can
+only affect a disjoint subset of state elements. To be secure, the partitions
+should not change dynamically depending on run-time demands of timing compartments.
+In the simplest case, partitions can be static. Alternatively, partitions may
+be adjusted based on public information such as static performance characteristics
+of an application that does not depend on sensitive data.
+
+%prevents software entities that share state elements from 
+%interfering. Static partitioning is realized by dividing the state elements 
+%into separate partitions for each software entity. Entities are only allowed to 
+%evict entries within their own partitions. Partitions must either be static, or 
+%at least not resized or moved based on the dynamic behaviour of an entity.
+%% If a partition is increased for an entity intensively using the state 
+%% elements, the other entities can detect that their partitions have been 
+%% resized and information is leaked.
+%However, partitions do not need to be heterogeneous and can be sized according 
+%to static performance characterizations of each software entity (assuming this 
+%information can be made public).
+
+Flushing can remove state-based timing channels when a resource that is time-shared.
+For example, a branch predictor table may be cleared on a context switch.
+%At the end of a time quantum, the state elements are completely cleared before 
+%passing ownership of the state elements to the entity in the next time quantum.  
+%Resources that can be flushed can also be partitioned, and there are tradeoffs 
+%between these approaches.
+% Flushing increases the time wasted at the end of a time quantum if flushing 
+% cannot be done in less than one clock cycle. Clearing the state between time 
+% quanta also increases the number of slower accesses at the start of the 
+% quanta (e.g. it causes more cold cache misses). However, partitioning reduces 
+% the total number of state elements that can be allocated to each entity. 
+In general, there exists a trade-off between partitioning and flushing.
+For long time slices (e.g. when context switching is infrequent), 
+flushing is preferable because it allows the full capacity can be used by
+each timing compartment. On the other hand, partitioning may
+offer better performance for short time slices by reducing cold misses.
+%time to reload
+%the state on a context switch.
+
+\subsubsection{Contention-Based Timing Channel Protection}
+
+%Contention based timing channels arise whenever a resource that is shared among 
+%multiple software entities can only handle a finite number of requests at a 
+%time. 
+Contention based timing channels can be removed by duplication or 
+time division multiplexing (TDM). Duplication removes interference by
+allowing dedicated resources for each timing compartment.
+However, this has obvious area overhead implications. If 
+duplication is infeasible, time division multiplexing can be used.
+%TDM 
+%defines a schedule where each software entitiy is guaranteed a period of time, 
+%called a time quantum, where only that entity can use the resource. The 
+The schedule of time slices must either be static or independent of the 
+dynamic behavior of timing compartments.
+
+%\subsubsection{External Timing Channel Protection}
+%
+%Though external timing channels are outside the scope of this 
+%paper, there are a class of timing channels that are internal to hardware, but 
+%appear as external timing channels between two software entities. This form of 
+%external timing channel exists in systems where distrusting software entities 
+%must communicate. For example, one software entity might be a user space 
+%process and another might be a process that performs only high-assurance 
+%operations. The user space process requests the high-assurance process to 
+%perform some operation on its behalf. The user space process can directly 
+%observe the execution time of the other process. This type of timing channel 
+%can be solved in software by forcing the observable execution time to 
+%equal the worst case execution time, stalling if necessary.
+
+
+\subsection{Full-Processor Protection}
 
 Many microarchitectural timing channels and corresponding solutions are 
 well-known. Shared caches create a state-based timing channel where interfering 
@@ -52,105 +180,7 @@ details the timing channel vulnerabilities of the baseline architecture, and
 shows how the general solutions of the framework may be applied to close each 
 specific timing channel.
 
-\subsection{General Approaches}
-
-% Moved from the taxonomy. Need to be cleaned up.
-During this study of microarchitectural timing channels we observed 
-characteristics of timing channels that inform general solutions that can be 
-applied to fix them.
-We characterisze internal microarchitectural timing channels as either state 
-based, or contention based. In a \emph{state based} timing channel, the victim 
-and adversary share some hardware state element with access timing that depends 
-on its contents. Conventional shared caches have state based timing channels; 
-accesses to memory addresses in the cache are faster than those that are not.
-In a \emph{contention based} timing channel, the victim and adversary share a 
-resource that can handle only a finite number of requests at a time.  Requests 
-made to the resource while it is already handling a request are delayed.  
-Conventional buses have contention based timing channels since a finite number 
-of requests can be transferred at a time while the remaining requests are 
-delayed in a queue.
-
-State based and contention based timing channels each have a set of approaches 
-that can be used to address them. These approaches can be applied to fix
-microarchitecture timing channels in components that are not included in our 
-baseline. However, both classes of timing channels have different solutions, 
-each with tradeoffs that may make one more favorable than another for a 
-particular component. The rest of this subsection describes these general 
-approaches.
-
-\subsubsection{State Based Timing Channels}
-Caches, TLBs, and branch predictors all have state based timing channels. In 
-each, requests that use an entry that is present in the state elements (e.g.  
-cache hits) are faster than requests to entries not present (e.g. cache 
-misses). The state elements can contain a finite number of entries, so entries 
-must be evicted and replaced with new ones. One software entity can evict 
-entries owned by another, causing interference and timing channel leakage if 
-the choice of entries evicted correlates with a secret. Generally, state based 
-timing channels can be closed by applying flattening, partitioning, or 
-flushing.
-
-Flattening eliminates the dependence of access time on the state by forcing 
-every access to take the same amount of time. For some components, this is a 
-brute-force approach. Applied to caches, every access must be treated as a 
-misss, so this is equivalent to removing the cache. However, for some 
-vulnerable components, such as the row buffers of main memories, this is the 
-most sensible approach.
-
-Partitioning prevents software entities that share state elements from 
-interfering. Static partitioning is realized by dividing the state elements 
-into separate partitions for each software entity. Entities are only allowed to 
-evict entries within their own partitions. Partitions must either be static, or 
-at least not resized or moved based on the dynamic behaviour of an entity.
-% If a partition is increased for an entity intensively using the state 
-% elements, the other entities can detect that their partitions have been 
-% resized and information is leaked.
-However, partitions do not need to be heterogeneous and can be sized according 
-to static performance characterizations of each software entity (assuming this 
-information can be made public).
-
-Flushing can be applied to state based resources that are shared only through 
-time multiplexing (such as private caches shared through context switches).  At 
-the end of a time quantum, the state elements are completely cleared before 
-passing ownership of the state elements to the entity in the next time quantum.  
-Resources that can be flushed can also be partitioned, and there are tradeoffs 
-between these approaches.
-% Flushing increases the time wasted at the end of a time quantum if flushing 
-% cannot be done in less than one clock cycle. Clearing the state between time 
-% quanta also increases the number of slower accesses at the start of the 
-% quanta (e.g. it causes more cold cache misses). However, partitioning reduces 
-% the total number of state elements that can be allocated to each entity. 
-If the time quanta are longer (e.g. if context switching is infrequent), 
-flushing is preferable to increase the total usable space, but partitioning may 
-offer better performance for shorter time quanta by eliminating the time needed 
-to flush and lessening the cold misses.
-
-\subsubsection{Contention Based Timing Channels}
-Contention based timing channels arise whenever a resource that is shared among 
-multiple software entities can only handle a finite number of requests at a 
-time. Contention based timing channels can be resolved by either duplication or 
-time division multiplexing (TDM). In some cases, it may be possible to resolve 
-contention for a resource by simply adding duplicate resources for each 
-software entity. However, this has obvious area overhead implications. If 
-duplication is infeasible, time division multiplexing should be used. TDM 
-defines a schedule where each software entitiy is guaranteed a period of time, 
-called a time quantum, where only that entity can use the resource. The 
-schedule of time quanta must either be static or at least independent of the 
-dynamic behavior of software entities.
-
-\subsubsection{External Timing Channels}
-Though timing channels external to hardware are outside the scope of this 
-paper, there are a class of timing channels that are internal to hardware, but 
-appear as external timing channels between two software entities. This form of 
-external timing channel exists in systems where distrusting software entities 
-must communicate. For example, one software entity might be a user space 
-process and another might be a process that performs only high-assurance 
-operations. The user space process requests the high-assurance process to 
-perform some operation on its behalf. The user space process can directly 
-observe the execution time of the other process. This type of timing channel 
-can be solved in software by forcing the observable execution time to 
-equal the worst case execution time, stalling if necessary.
-
-\subsection{Microarchitectural Timing Channels and Solutions}
+%\subsection{Microarchitectural Timing Channels and Solutions}
 We now describe the specific timing channel vulnerabilities of the baseline 
 architecture and show how these generalized approaches can be adapted to solve 
 each individual timing channel. The timing channels and their solutions are 
