@@ -141,6 +141,14 @@ timing compartments this is wasteful, but tolerable, however, this becomes
 problematic as the number of timing compartments scales. A request may have to 
 wait through each other compartment's time quantum. 
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.4675in]{figs/hit_timing.pdf}
+        \caption{Cache hit timing sequence.}
+        \label{fig:hit_timing}
+    \end{center}
+\end{figure}
+
 For ease of analysis, we examine the shared cache hit path before covering the 
 complete shared cache miss path. Figure \ref{fig:hit_timing} shows the timing 
 of $N$ requests through the shared cache hit path, where $N$ is the number of 
@@ -151,6 +159,14 @@ available to be sent. The response port transfers all the responses in $N\times
 T_{CBT}$ cycles, where $T_{CBT}$ is the time required to transfer a cache block 
 over the bus.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.2624in]{figs/hit_schedule.pdf}
+        \caption{Cache hit timing path schedule.}
+        \label{fig:hit_schedule}
+    \end{center}
+\end{figure}
+
 To improve over the naïve scheme, the schedule must coordinate each of these 
 resources to 1) allow a request to proceed through common paths unblocked and 
 2) repeat this alignment for each TC. Figure \ref{fig:hit_schedule} shows a 
@@ -160,13 +176,14 @@ guarantee that the behavior of a schedule repeats for the time quanta of each
 TC, the durations of the time quanta for each resource must share a common 
 factor number of cycles. For example, if $N \times T_{CBT}$ (and this is the 
 time quanta duration for the response port and layer) is 16 and $T_{bus}$ is 3, 
-the actual time quanta duration for the request port should be 4, 8, or 16 even 
-though the request port cannot do useful work for these extra cycles.
+the actual time quanta duration for the request layer, $T_{req}$, should be 4, 
+8, or 16 even though the request port cannot do useful work for these extra 
+cycles.
 
 The analysis for the segment of the shared cache miss path between the shared 
 cache and the memory controller is similar. The most significant difference is 
 that unlike the cache, the memory controller itself is time multiplexed. Figure 
-\ref{fig:} shows the timing for this segment of the shared cache mis path. The 
+\ref{fig:miss_timing} shows the timing for this segment of the shared cache miss path. The 
 time quanta of the memory controller have a duration that is chosen to be 
 $T_{MCL}$. This optimal value may depend on the design, and
 the authors of \ref{ushpca14} discuss the selection of this value. $M$ is the 
@@ -183,19 +200,27 @@ compartment's time quantum on the shared cache memory side request port
 finishes. This prevents blocking along the request path of the membus.
 Similarly, to prevent blocking along the response path, the time quantum of the 
 shared cache response port should begin just after the time quantum of the same 
-timing compartment on the memory bus response layer ends. Figure \ref{fig:??} 
+timing compartment on the memory bus response layer ends. Figure 
+\ref{fig:coordination}
 shows a high level view of a full coordinated schedule.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.9475in]{figs/coordination.pdf}
+        \caption{A coordinated cache miss path schedule.}
+        \label{fig:coordination}
+    \end{center}
+\end{figure}
 
 To meet the first criterion, the cache hit path timing sequence shown in 
 \ref{fig:hit_timing} should be aligned with the start of the corresponding 
 memory bus time quantum. To repeat this behavior for each cache hit path timing 
-sequence, the total time of this sequence ($T_{bus}+T_{L3L}+N\times T_{CBT}$)
+sequence, the total time of this sequence ($T_{L2L3bus}=T_{bus}+T_{L3L}+N\times T_{CBT}$)
 and the total time of the membus timing sequence
 ($T_{bus}+T_{L3L}+N\times T_{CBT}$) should share a common factor. Since cache 
 hits are more frequent than misses, the performance of the cache hit path 
 should not be weakened to accomplish this. Instead, the length of the membus 
 timing sequence should be increased (e.g. by increasing the memory controller 
-time quantum). 
-The second criterion is met if the maximum number of active timing compartments 
-in the system (i.e. the number of cores) is a factor of the period of the 
-membus timing sequence.
+time quantum). The second criterion is met if the maximum number of active 
+timing compartments in the system (i.e. the number of cores) is a factor of the 
+period of the membus timing sequence.
