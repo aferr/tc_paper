@@ -54,8 +54,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="153.6682"
-     inkscape:cy="86.215333"
+     inkscape:cx="183.80782"
+     inkscape:cy="74.303848"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -144,27 +144,6 @@
        d="m 110.63201,210.88481 c -6.06092,0 -6.06092,0 -6.06092,0"
        id="path3913"
        inkscape:connector-curvature="0" />
-    <rect
-       style="opacity:0.5;fill:#ff0000;stroke:none"
-       id="rect3919"
-       width="41.921329"
-       height="16.162441"
-       x="179.30208"
-       y="174.03455" />
-    <rect
-       y="228.82262"
-       x="298.33112"
-       height="16.162441"
-       width="92.428955"
-       id="rect4445"
-       style="opacity:0.5;fill:#ff0000;stroke:none" />
-    <rect
-       style="opacity:0.5;fill:#ff0000;stroke:none"
-       id="rect4493"
-       width="91.065117"
-       height="16.162441"
-       x="207.08127"
-       y="260.38232" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
        d="m 106.05764,359.90261 c 284.80468,0 284.80468,0 284.80468,0"
@@ -210,14 +189,14 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="332.71396"
-       y="288.67676"
+       x="332.20889"
+       y="284.88867"
        id="text5395"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan5397"
-         x="332.71396"
-         y="288.67676">N*T<tspan
+         x="332.20889"
+         y="284.88867">N*T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan5399">CBT</tspan></tspan></text>
     <path
@@ -279,29 +258,44 @@
          id="tspan6868"
          x="96.338318"
          y="305.495">mem respPort</tspan></text>
-    <rect
-       style="opacity:0.5;fill:#ff0000;stroke:none"
-       id="rect6870"
-       width="92.428955"
-       height="16.162441"
-       x="297.99503"
-       y="293.73761" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="241.80029"
-       y="345.90106"
+       x="223.61755"
+       y="345.14343"
        id="text6872"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6874"
-         x="241.80029"
-         y="345.90106">T<tspan
+         x="223.61755"
+         y="345.14343">T<tspan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="tspan6555">miss</tspan>=T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan6876">bus</tspan>+T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan6878">MCL</tspan>+N*T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan6880">CBT</tspan>+1</tspan></text>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6557"
+       d="m 181.07649,189.17672 c 24.63075,0 24.63075,0 24.63075,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)"
+       d="m 211.44289,268.47369 c 82.33833,0 82.33833,0 82.33833,0"
+       id="path7079"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path7081"
+       d="m 301.13734,232.36074 c 86.03958,0 86.03958,0 86.03958,0"
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)"
+       d="m 300.89855,290.94959 c 87.26208,0 87.26208,0 87.26208,0"
+       id="path7083"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
