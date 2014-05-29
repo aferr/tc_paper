@@ -196,7 +196,7 @@
          sodipodi:role="line"
          id="tspan5397"
          x="332.20889"
-         y="284.88867">N*T<tspan
+         y="284.88867">M*T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan5399">CBT</tspan></tspan></text>
     <path
@@ -222,14 +222,14 @@
     <text
        sodipodi:linespacing="125%"
        id="text5419"
-       y="222.51176"
-       x="340.77487"
+       y="224.53207"
+       x="332.4411"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        xml:space="preserve"><tspan
-         y="222.51176"
-         x="340.77487"
+         y="224.53207"
+         x="332.4411"
          id="tspan5421"
-         sodipodi:role="line">N*T<tspan
+         sodipodi:role="line">M*T<tspan
    id="tspan5423"
    style="font-size:65.00091553%;baseline-shift:sub">CBT</tspan></tspan></text>
     <path
@@ -274,9 +274,9 @@
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan6876">bus</tspan>+T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6878">MCL</tspan>+N*T<tspan
+   id="tspan6878">MCL</tspan>+M*T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6880">CBT</tspan>+1</tspan></text>
+   id="tspan6880">CBT</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path6557"

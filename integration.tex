@@ -131,7 +131,9 @@ response layer), the response ports of the cache and memory controller, and the
 memory controller itself are all time multiplexed. A naïve system design might 
 determine an optimal time quantum duration and round robin schedule for each 
 resource independently of one another as shown in figure 
-\ref{fig:naive_scheme}.
+\ref{fig:naive_scheme}. The L2-L3 bus is the bus connecting the private caches 
+to the shared cache, and the membus connects the shared cache to the memory 
+controller.
 
 \begin{figure}
     \begin{center}
@@ -141,15 +143,15 @@ resource independently of one another as shown in figure
     \end{center}
 \end{figure}
 
-Notably, the time quanta are not aligned with each of the L2-L3 bus time 
-quanta.  During a shared cache hit on behalf of $TC1$, occasionally the $TC1$ 
-shared cache response port time quantum will be aligned with the $TC1$ L2-L3 
-bus time quantum allowing it to proceed along the path without unneeded stalls.  
-However, sometimes these are not well-aligned and $TC1$ will have to wait for 
-$TC2$ to finish before it can proceed along the shared cache miss path. For two 
-timing compartments this is wasteful, but tolerable, however, this becomes 
-problematic as the number of timing compartments scales. A request may have to 
-wait through each other compartment's time quantum. 
+Notably, the time quanta of each component are not aligned with each of the 
+L2-L3 bus time quanta.  During a shared cache hit on behalf of $TC1$, 
+occasionally the $TC1$ shared cache response port time quantum will be aligned 
+with the $TC1$ L2-L3 bus time quantum allowing it to proceed along the path 
+without unneeded stalls.  However, sometimes these are not well-aligned and 
+$TC1$ will have to wait for $TC2$ to finish before it can proceed. This becomes 
+even more wasteful
+as the number of timing compartments scales. A request may have to wait through 
+each other compartment's time quantum. 
 
 \begin{figure}
     \begin{center}
@@ -167,7 +169,8 @@ L2-L3 bus takes $T_{bus}$ cycles.  The cache then takes $T_{L3L}$ cycles after
 receiving the request before the data for the first of the $N$ requests is 
 available to be sent. The response port transfers all the responses in $N\times 
 T_{CBT}$ cycles, where $T_{CBT}$ is the time required to transfer a cache block 
-over the bus.
+over the bus. $T_{hit}$, the total period of the the cache hit timing sequence 
+is $T_{bus}+T_{L3L}+N\times T_{CBT}$.
 
 \begin{figure}
     \begin{center}
@@ -188,7 +191,7 @@ factor number of cycles. For example, if $N \times T_{CBT}$ (and this is the
 time quanta duration for the response port and layer) is 16 and $T_{bus}$ is 3, 
 the actual time quanta duration for the request layer, $T_{req}$, should be 4, 
 8, or 16 even though the request port cannot do useful work for these extra 
-cycles.
+cycles. 
 
 \begin{figure}
     \begin{center}
@@ -201,12 +204,14 @@ cycles.
 The analysis for the segment of the shared cache miss path between the shared 
 cache and the memory controller is similar. The most significant difference is 
 that unlike the cache, the memory controller itself is time multiplexed. Figure 
-\ref{fig:miss_timing} shows the timing for this segment of the shared cache miss path. The 
-time quanta of the memory controller have a duration that is chosen to be 
-$T_{MCL}$. This optimal value may depend on the design, and
+\ref{fig:miss_timing} shows the timing for this segment of the shared cache 
+miss path. The time quanta of the memory controller have a duration that is 
+chosen to be $T_{MCL}$. This optimal value may depend on the design, and
 the authors of \cite{ushpca14} discuss the selection of this value. $M$ is the 
 number of memory requests that can be handled in a single memory controller 
 time quantum.
+$T_{miss}$, the total period of the cache miss timing sequence is 
+$T_{bus}+T_{MCL}+M\times T_{CBT}$.
 
 The schedule of the entire system should allow the shared cache miss path to be 
 traversed unblocked.
@@ -233,9 +238,8 @@ shows a high level view of a full coordinated schedule.
 To meet the first criterion, the cache hit path timing sequence shown in 
 \ref{fig:hit_timing} should be aligned with the start of the corresponding 
 memory bus time quantum. To repeat this behavior for each cache hit path timing 
-sequence, the total time of this sequence ($T_{L2L3bus}=T_{bus}+T_{L3L}+N\times T_{CBT}$)
-and the total time of the membus timing sequence
-($T_{bus}+T_{L3L}+N\times T_{CBT}$) should share a common factor. Since cache 
+sequence, $T_{hit}$ and $T_{miss}$
+should share a common factor. Since cache 
 hits are more frequent than misses, the performance of the cache hit path 
 should not be weakened to accomplish this. Instead, the length of the membus 
 timing sequence should be increased (e.g. by increasing the memory controller 
