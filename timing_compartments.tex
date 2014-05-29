@@ -202,53 +202,106 @@ physical side-channel attacks through power consumption or electromagnetic emiss
 \subsection{Application Scenarios}
 
 The ability to control internal timing channels can significantly increase a level of
-assurance in a number of applications where mutually distrusting entities shared a
+assurance in a number of applications where distrusting entities share a
 physical system. Here, we briefly discuss representative applications.
 
 \subsubsection{Bring Your Own Device (BYOD)}
 
+As mobile devices such as smartphones and tablets are becoming widely used, 
+companies and government organizations are starting to allow employees to
+use their own devices to access corporate data. This trend is often called
+Bring Your Own Device (BYOD). However, there is a major concern that such a
+mixed use can lead to a leak of confidential data through personal emails or
+downloaded applications. Today's BYOD solutions such as Samsung Knox uses
+software containers or virtualization to separate the two environments:
+personal and work. Yet, these solutions cannot prevent information leaks
+through internal timing channels.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=1.51in]{figs/app_byod.pdf}
+        \caption{A BYOD example.}
+        \label{fig:app_byod}
+    \end{center}
+\end{figure}
+
+The timing compartment enables a strong isolation guarantee in the BYOD
+scenario. For example, consider the solution based on virtualization as 
+shown in Figure~\ref{app:byod}. In this case, the virtual machines for
+work and personal use can be assigned to two different timing compartment:
+$TC_{work}$ and $TC_{pers}$. Then, the lattice can be set so that no
+information can flow from $TC_{work}$ to $TC_{pers}$.
+Note that the BYOD application only requires two timing compartments even
+though a system may have many cores and run many applications.
+
 \subsubsection{High-Assurance Cloud Computing}
 
-In platform as a service cloud computing, a cloud provider owns hardware which 
-is shared by virtual machines that are managed by a hypervisor. The cloud 
-provider leases out virtual machines to clients. However, tenants in a cloud 
-computing environment have no control over the VMs they co-reside with; they 
-may share hardware with competitors or attackers that want to extract sensitive
-data. One purpose of machine virtualization is to isolate separate OS 
-environments, but the platform as a whole is still less secure than executing 
-on separate hardware. Timing channels can violate VM isolation. For some 
-clients without strong security requirements, this is not a concern, but for 
-others, this security threat makes cloud computing inviable.
-
-Figure \ref{fig:cloud_tcs} shows an example cloud computing environment with 
-four virtual machines that have different security requirements. Each VM in the 
-system implicitly trusts the hypervisor. VM1 and VM2 are running programs with 
-high security requirements. VM1 and VM2 are mutually distrusting and distrust 
-all other VMs in the environment.  VM3 and VM4 run an applications that have 
-low security requirements, but are very performance intensive. VM3 and VM4 
-still need the explicit channel isolation provided by machine virtualization, 
-but the owners would rather not incur performance overheads for unneeded timing 
-channel protection.
+In cloud computing such as Amazon EC2, virtual machines (VMs) from multiple
+distrusting clients often share physical machines. 
+%A cloud provider 
+%co-locates many VMs on a single machine to increase its utilization,
+%and tenants often have little control over where their VMs run. 
+For example, a tenant may share hardware with competitors or attackers that 
+want to extract sensitive data. Today's virtualization technologies restrict 
+explicit communication channels among virtual machines, but cannot control 
+internal timing channels. In fact, recent studies have shown that timing channels
+can be exploited in commercial clouds to extract secrets such as 
+a password \cite{FIXME}.
+For some clients, timing channels may not be a major concern. Yet, for enterprise
+or government clients who require high assurance, this security threat makes
+public cloud computing not an option. 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=1.51in]{figs/cloud_tcs.pdf}
-        \caption{A cloud environment with timing channel vulnerabilites.  VM1 
+        \caption{A cloud computing example. VM1 
         and VM2 have high security requirements, but VM3 and VM4 do not.}
         \label{fig:cloud_tcs}
     \end{center}
 \end{figure}
 
-Figure \ref{fig:cloud_tcs} shows how timing compartments can be applied to meet 
-the needs of this system. VM1 and VM2 are confined to their own timing 
-compartments TC1 and TC2, but VM3 and VM4 are grouped in TC3.  The lattice $TC3 
-\leq TC1, TC3 \leq TC2, TC1 \nleq T2, TC2 \nleq TC1$ specifies the policy. TC3 
-preceeds both TC1 and TC2 implying timing channel leakage from VM3 or VM4 to 
-any other VM is not controlled. However, VM1 and VM2 cannot leak information to 
-VM3 or VM4. Additionally, VM1 and VM2 cannot leak information to each other 
-since TC1 and TC2 are incomparable. This meets the security requirements of VM1 
-and VM2 since both are totally isolated from the other VMs through timing 
-channels. Since VM3 and VM4 share a timing compartment, they can share 
-resources normally and incur minimal performance overheads.
+The timing compartment can enable high assurance cloud computing by ensuring that
+there cannot be unintended information leak among virtual machines.
+Figure~\ref{fig:cloud_tcs} shows an example with four virtual machines (VMs).
+%that have different security requirements. 
+VM1 and VM2 require a strong isolation guarantee and distrust other VMs.
+VM3 and VM4 run low-security applications that are not concerned with timing channels
+but require high performance. The figure shows that three timing compartments can
+be used to meet the security requirements in this example.
+VM1 and VM2 are placed in their own timing compartments $TC1$ and $TC2$, but 
+VM3 and VM4 are grouped in $TC3$. The lattice can be set so that VM1 and VM2
+cannot leak information to any VM but no constraint is put on VM3 and VM4:
+$TC3 \leq TC1, TC3 \leq TC2, TC1 \nleq T2, TC2 \nleq TC1$.
+%TC3 preceeds both TC1 and TC2 implying timing channel leakage from VM3 or VM4 to 
+%any other VM is not controlled. However, VM1 and VM2 cannot leak information to 
+%VM3 or VM4. Additionally, VM1 and VM2 cannot leak information to each other 
+%since TC1 and TC2 are incomparable. This meets the security requirements of VM1 
+%and VM2 since both are totally isolated from the other VMs through timing 
+%channels. Since VM3 and VM4 share a timing compartment, they can share 
+%resources normally and incur minimal performance overheads.
 
-\subsubsection{Other Applications}
+
+\subsubsection{Untrusted Software} 
+
+The ability to completely eliminate timing channels enables timing compartments
+to be used to contain information even when software is potentially malicious.
+For example, today's smartphone users often rely on many third party applications
+that cannot be fully trusted to manage private or sensitive data. A system may
+sandbox an untrusted application and restrict its communication channels
+when it accesses sensitive data. However, today's access control mechanisms cannot
+prevent the untrusted application from leaking information to another unrestricted
+application through internal timing channels. The timing compartment can be added 
+to provide a complete sandbox. 
+In the cloud computing context, the same timing channel protection can be used
+by a cloud provider to sandbox a third-party web services that cannot be fully trusted.
+
+\subsubsection{Safety-Critical Systems}
+
+In addition to protecting confidential data, the capability to control interference
+in shared hardware can also be used to provide timing guarantees on safety-critical systems.
+For example, hard real-time systems such as automotive controllers must meet
+strict timing requirements. Unfortunately, today's multi-core processors provide
+no timing guarantee when shared by multiple programs. The timing compartment can be
+used to ensure that the timing of safety-critical components are not affected by
+the rest of a system.
+
