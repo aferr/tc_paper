@@ -67,6 +67,7 @@ derive the tags that are appended to requests originating from that core. Table
 \ref{table:tcid} summarizes the TCID storage elements in the system.
 
 \begin{table}
+    \begin{footnotesize}
 \begin{tabular}{l|l}
     \hline
     Component & TCID Storage \\
@@ -78,6 +79,7 @@ derive the tags that are appended to requests originating from that core. Table
     Network & $n$ queues. TCID register per queue\\
     \hline
 \end{tabular}
+    \end{footnotesize}
     \caption{TCID storage for TC Architecture Components}
     \label{table:tcid}
 \end{table}
@@ -131,6 +133,14 @@ determine an optimal time quantum duration and round robin schedule for each
 resource independently of one another as shown in figure 
 \ref{fig:naive_scheme}.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.46in]{figs/baseline_schedule.pdf}
+        \caption{Cache hit timing sequence.}
+        \label{fig:naive_scheme}
+    \end{center}
+\end{figure}
+
 Notably, the time quanta are not aligned with each of the L2-L3 bus time 
 quanta.  During a shared cache hit on behalf of $TC1$, occasionally the $TC1$ 
 shared cache response port time quantum will be aligned with the $TC1$ L2-L3 
@@ -180,13 +190,21 @@ the actual time quanta duration for the request layer, $T_{req}$, should be 4,
 8, or 16 even though the request port cannot do useful work for these extra 
 cycles.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.9475in]{figs/miss_timing.pdf}
+        \caption{The shared cache miss path timing sequence.}
+        \label{fig:miss_timing}
+    \end{center}
+\end{figure}
+
 The analysis for the segment of the shared cache miss path between the shared 
 cache and the memory controller is similar. The most significant difference is 
 that unlike the cache, the memory controller itself is time multiplexed. Figure 
 \ref{fig:miss_timing} shows the timing for this segment of the shared cache miss path. The 
 time quanta of the memory controller have a duration that is chosen to be 
 $T_{MCL}$. This optimal value may depend on the design, and
-the authors of \ref{ushpca14} discuss the selection of this value. $M$ is the 
+the authors of \cite{ushpca14} discuss the selection of this value. $M$ is the 
 number of memory requests that can be handled in a single memory controller 
 time quantum.
 
