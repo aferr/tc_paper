@@ -150,16 +150,26 @@ dynamic behavior of timing compartments.
 
 \subsection{Full-Processor Protection}
 
-Many microarchitectural timing channels and corresponding solutions are 
-well-known. Shared caches create a state-based timing channel where interfering 
-entities cause cache block replacements. This can be prevented by partitioning 
-the cache among the entities. On chip networks and buses have
-timing channels since only one entity can use the bus at a time. Time division 
-multiplexing can resolve this issue \cite{yaonocs}. The authors of 
-\cite{ushpca14} have exposed timing channels in the main memory and memory 
-controller. They propose time division multiplexing the memory controller, 
-partitioning the memory controller queueing structure, and using a closed-page 
-row buffer management policy to close these timing channels. 
+The timing compartment require all internal timing channels in a microprocessor
+to be controlled. At a glance, designing a full processor with timing channel
+protection seems rather straightforward. In our baseline architecture, there are
+only three main structures that are shared concurrently: a shared cache, on-chip
+buses, and a memory controller. Moreover, recent studies have proposed mechanisms
+to control timing channels in each of them. For example, researchers have proposed
+to statically partition the shared cache \cite{FIXME}, and use time division 
+multiplexing with a fixed schedule for the on-chip interconnect 
+\cite{yaonocs, surfnoc} and the memory controller \cite{ushpca14}.
+
+%Many microarchitectural timing channels and corresponding solutions are 
+%well-known. Shared caches create a state-based timing channel where interfering 
+%entities cause cache block replacements. This can be prevented by partitioning 
+%the cache among the entities. On chip networks and buses have
+%timing channels since only one entity can use the bus at a time. Time division 
+%multiplexing can resolve this issue \cite{yaonocs}. The authors of 
+%\cite{ushpca14} have exposed timing channels in the main memory and memory 
+%controller. They propose time division multiplexing the memory controller, 
+%partitioning the memory controller queueing structure, and using a closed-page 
+%row buffer management policy to close these timing channels. 
 %%%%% It isn't totally obvious that private resources are actually shared, and 
 %%%%% we don't have a citation for this, so maybe it doesn't need to be here..
 % Finally, the private, per-core resources of the system such as the branch 
@@ -169,22 +179,26 @@ row buffer management policy to close these timing channels.
 % resolved by flushing the state elements of these resources on before moving a 
 % new software entity onto the core.
 
-One could envision a straightforward approach to eliminating timing channels 
-that simply combines all of these known approaches. However, this is not 
-enough. Without carefully coordinating time multiplexed components, the system 
-is subject to unnecessarily high overheads or total starvation.  Further, we 
-expose three new microarchitectural timing channels that are not addressed by 
-known solutions. The rest of this section develops a unified framework for 
-identifying solutions to microarchitectural timing channels,
-details the timing channel vulnerabilities of the baseline architecture, and 
-shows how the general solutions of the framework may be applied to close each 
-specific timing channel.
+However, achieving secure and efficient timing channel protection on a full processor
+turned out to require much more than simply putting known protection mechanisms
+together. During the design process, we found three new sources of timing channels
+in module interfaces that were not discussed previously, and found a bug in the
+memory controller protection \cite{ushpca14}. 
+%The cache protection scheme also needed to be slightly changed to handle cases when timing
+%compartments have shared memory pages. 
+We also found that time multiplexing of
+microarchitecture structures must be carefully coordinated in order to avoid 
+unnecessarily high overheads or total starvation.  
 
-%\subsection{Microarchitectural Timing Channels and Solutions}
-We now describe the specific timing channel vulnerabilities of the baseline 
-architecture and show how these generalized approaches can be adapted to solve 
-each individual timing channel. The timing channels and their solutions are 
-summarized in Table \ref{table:timing_chan_summary}.
+The rest of this section provides a detailed list of timing channels in our
+baseline architecture, and presents a protection mechanism that we use for each of them.
+Table \ref{table:timing_chan_summary} summarizes these timing channels and
+solutions. 
+Then, the next section discusses how these protection mechanisms
+need to be managed and coordinated together.
+We note that the processor design here uses simple static protection
+mechanisms that prevent timing channels in both directions. The mechanisms 
+can be further optimized for efficiency.
 
 \def\novelcolor{Green}
 \begin{table*}
@@ -221,116 +235,171 @@ summarized in Table \ref{table:timing_chan_summary}.
     \hhline{~---}
     & Queueing Structure & State & Partitioned Queue \\
 \end{tabular}
-    \caption{Summary of Timing Channels and Solutions.}
+    \caption{Summary of timing channels and protection approaches. Green represents new timing channels that were not identified in previous work.}
     \label{table:timing_chan_summary}
 \end{table*}
 
 \subsubsection{Shared Caches}
 \mbox{}\newline
-\textbf{Replacement Timing Channel}
-The shared caches of the baseline have a state based timing channel. Requests 
-to the memory hierarchy for addresses that are stored in the cache (cache hits) 
-are returned faster than requests for entries not stored in the cache (cache 
-misses). So, the time required to access the cache depends on its state. The 
-cache can only accommodate a finite number of entries, so when new entries must 
-be stored, old ones are evicted. One software entity can evict the entries of 
-another, causing timing channel leakage.
+\textbf{Cache Contention}
+The shared cache can lead to a state-based timing channel because accesses
+from one timing compartment may evict cache blocks of another timing compartment.
+This cache contention is the main source of cache timing channels that were
+discussed in previous work.
+%to the memory hierarchy for addresses that are stored in the cache (cache hits) 
+%are returned faster than requests for entries not stored in the cache (cache 
+%misses). So, the time required to access the cache depends on its state. The 
+%cache can only accommodate a finite number of entries, so when new entries must 
+%be stored, old ones are evicted. One software entity can evict the entries of 
+%another, causing timing channel leakage.
 
-This state based timing channel should be closed by partitioning the cache 
-among the timing compartments. At least two cache partitioning techniques 
-exist: way partitioning and set partitioning 
-\cite{rtas_cache_framework,dynamic_partitioning}. Set associative caches divide 
-the cache into ways. Each way as a single slot for each cache set. A cache 
-block may be stored in any way, but the set it belongs to is determined by a 
-segment of its address bits called the index. Since many addresses are mapped 
-to the same set, another segment of the address, the tag, is used to detect 
-cache hits (i.e. if a specific address is present in the cache).
+In our design, we use static cache partitioning to eliminate the cache
+contention among timing compartments. In essence, cache accesses are restricted
+to occupy only a disjoint part of the cache depending on its timing compartment.
+In general, there exist two approaches for cache partitioning:
+way partitioning \cite{dynamic_partitioning,citation_needed} and
+set partitioning \cite{rtas_cache_framework}. The way partitioning restrict 
+each compartment to only replace certain cache ways. The set partitioning
+either uses page coloring or different index functions so that each compartment
+only uses a subset of cache sets. Both partitioning methods are equally
+effective in removing timing channels. In our implementation, we used
+the set partitioning so that each compartment can benefit from the full 
+cache associativity.
 
-Way partitioning allocates a subset of the ways to each entity 
-\cite{citation_needed}. This results in a reduction in the effective 
-associativity utilized by each entity, and thus, causes more conflict misses 
-and weakens performance. Set partitioning manipulates virtual to physical 
-address translation to restrict the sets that a particular entity can occupy.  
-When done at the granularity of a page, this is called page coloring, and this 
-has been proposed for performance \cite{citation_needed} and real-time systems 
-\cite{rtas_cache_framework}.  Although both techniques increase the number of 
-capacity misses, set partitioning does not increase the number of conflict 
-misses, so we chose this technique for our implementation.
+%We note that the cache partitioning needs a special care if multiple timing
+%channels shared the same physical memory location. In this case, a cache
+%access from one compartment may hit in another compartment partition. Such a
+%hit must be handled as a miss from the timing perspective. 
 
-\textbf{MSHR Contention Timing Channel}
-Though this state based timing channel is well known, non-blocking caches have 
-an additional contention timing channel that has not yet been described in the 
-literature. On a cache miss, a blocking cache will stall the processor until 
-the data arrives from memory. A nonblocking cache allows the processor to 
-continue executing while resolving a miss.
 
-To do so, miss status holding registers (MSHRs), are used to track information 
-about the in-flight cache misses (memory requests). This information is  needed 
-to allow the cache to correctly send back a response when completed and to 
-handle subsequent requests to the same block while the memory request is still 
-in-flight.
+%Set associative caches divide 
+%the cache into ways. Each way as a single slot for each cache set. A cache 
+%block may be stored in any way, but the set it belongs to is determined by a 
+%segment of its address bits called the index. Since many addresses are mapped 
+%to the same set, another segment of the address, the tag, is used to detect 
+%cache hits (i.e. if a specific address is present in the cache).
+
+%Way partitioning allocates a subset of the ways to each entity 
+%\cite{citation_needed}. This results in a reduction in the effective 
+%associativity utilized by each entity, and thus, causes more conflict misses 
+%and weakens performance. Set partitioning manipulates virtual to physical 
+%address translation to restrict the sets that a particular entity can occupy.  
+%When done at the granularity of a page, this is called page coloring, and this 
+%has been proposed for performance \cite{citation_needed} and real-time systems 
+%\cite{rtas_cache_framework}.  Although both techniques increase the number of 
+%capacity misses, set partitioning does not increase the number of conflict 
+%misses, so we chose this technique for our implementation.
+
+\textbf{MSHR Contention}
+We found that shared cache interfaces can also lead to internal timing channels,
+which were not discussed in the literature.
+%in addition to the one from the contention in the main cache array.
+While somewhat obvious in close inspection, these timing channels were not identified 
+before perhaps because people studied a cache in isolation.
+
+One new timing channel comes from the interference in miss status holding 
+registers (MSHRs) in non-blocking caches.
+A non-blocking cache uses MSHRs to track information about in-flight cache misses 
+(memory requests).
 % With only a single MSHR, the system can tolerate a single outstanding cache 
 % miss (hit under miss). With more MSHRs, it can tolerate multiple outstanding 
 % misses (miss under miss). In any case, the system can tolerate only finite 
 % outstanding misses at a time. 
-The number of outstanding cache misses the system can tolerate depends on the 
-number of MSHRs. If the MSHRs are exhausted, the CPU must instead stall on a 
-miss. If one entity fills the MSHRs (partially or fully), the other entities 
-can detect this by inducing some number of cache misses and checking for a 
-stall. To close this contention based timing channel, the MSRHs are simply 
-duplicated per timing compartment.
+The number of outstanding cache misses that the cache can tolerate depends on 
+the number of MSHRs. Once all MSHRs are exhausted, the cache will stall on
+a miss results in an increased latency for cache accesses.
+Therefore, shared MSHRs lead to an internal timing channel because one timing
+compartment can delay accesses from another compartment by using up the MSHRs.
+To remove the MSHR contention, our processor design duplicates and dedicates
+the MSRHs to each timing compartment.
 
-\textbf{Response Port Contention Timing Channel}
-The cache ports cause a another contention based timing channel yet to be 
+\textbf{Response Port Contention}
+The cache ports cause another contention-based timing channel yet to be 
 discussed in the literature. Conventional caches have CPU-side ports and 
-memory-side ports both of which are split into request and response ports. On 
-the cache miss path, the cache receives a request through the CPU-side request 
-port, and detects a miss. The cache issues a request to the memory through its 
-memory-side request port and then receives a response through its memory-side 
-response port. Finally, the cache responds to the CPU through its CPU-side 
-response port.
+memory-side ports both of which are split into request and response ports. 
+%On the cache miss path, the cache receives a request through the CPU-side request 
+%port, and detects a miss. The cache issues a request to the memory through its 
+%memory-side request port and then receives a response through its memory-side 
+%response port. Finally, the cache responds to the CPU through its CPU-side 
+%response port.
+However, each port can only service a single response/request at a time and
+there can be contention for these ports. For example, in a non-blocking cache,
+data from an outstanding miss may be ready while a response for a cache hit
+is being transferred through the CPU-side port.
+It is also possible that the CPU-side bus is busy and block the response port. 
+%Requests to the cache are controlled through the on 
+%chip network, so any contention for this port may be controlled there. However, 
+%there is uncontrolled contention in the CPU-side response port. Typically cache 
+%accesses return more data than can be sent over a bus in a single cycle, 
+%necessitating multi-cycle transfer (for example a cache block may consist of 
+%several words and the bus may allow only a single word to be transferred each 
+%bus cycle). Since the cache is nonblocking, it is possible for a response from 
+%memory to return to the cache and require the cache response port while the 
+%data from a cache hit is being transferred. 
+To deal with such port contention, conventional caches include a shared queue
+where responses can be buffered. Unfortunately, 
+timing interference in either the cache ports or the cache response queue can
+lead to an internal timing channel. To remove this timing channel, we apply
+time division multiplexing to the cache ports and replace a shared queue with
+smaller per-compartment queues.
 
-Each port can communicate a single response/request at a time, so there can be 
-contention for these ports. Requests to the cache are controlled through the on 
-chip network, so any contention for this port may be controlled there. However, 
-there is uncontrolled contention in the CPU-side response port. Typically cache 
-accesses return more data than can be sent over a bus in a single cycle, 
-necessitating multi-cycle transfer (for example a cache block may consist of 
-several words and the bus may allow only a single word to be transferred each 
-bus cycle). Since the cache is nonblocking, it is possible for a response from 
-memory to return to the cache and require the cache response port while the 
-data from a cache hit is being transferred. Conventional caches address this 
-contention with a queueing structure, but this queue is shared by multiple 
-entities causing interference. To handle this timing channel, we use smaller 
-duplicate queues for each timing compartment and apply time multiplexing to 
-select which timing compartment can use the response port (i.e. which queue is 
-checked for responses).
+\subsubsection{On-Chip Interconnect}
 
-\subsubsection{On Chip Networks}
-\subsubsection{Main Memories \& Memory Controllers}
-The main memory is shared between concurrently executing software modules, and 
-analogous to the timing disparity between cache hits and misses, page faults in 
-main memory take substantially longer than accessing entries that are present 
-in main memory. This timing channel can be handled simply by partitioning the 
-address physical address space for each entity.
+As pointed out by previous studies \cite{yaonocs, surfnoc}, shared on-chip interconnect
+have contention-based timing channels because each link can be used by only 
+one compartment at a time. If the network contains buffers, they also lead
+to state-based timing channels. In our processor design, we apply time
+division multiplexing with a fixed schedule to both the bus between private
+and shared caches and the bus between the shared cache and the memory controller.
+For each time slice, accesses from only one timing compartment is allowed to
+use the bus.
 
-However, the memory controller has additional timing channels due to resource 
-contention as well as other state based timing channels. Wang et. al. classify 
-timing channel sources as queueing structure interference, scheduler 
-arbitration interference, and DRAM device interference and propose a detailed 
-solution to close these timing channels~\cite{ushpca14}.  In this section these 
-timing channel sources are summarized, and it is shown that the timing channels 
-of the memory controller may also be thought of as resource contention or state 
-based timing channels.
+\subsubsection{Main Memory Controller}
 
-\textbf{DRAM Contention Timing Channels}
-The DRAM device contains several finite resources (e.g., the command bus, data
-bus, banks, and ranks), and contention for these resources is resolved by the 
-queueing structure and scheduler. Each of these resources causes a resource 
-contention based timing channel that may be observed in both the queueing 
-structure and scheduler. For example, two requests to the same bank cannot
-be scheduled at the same time. In a conventional memory controller, one request 
-would be delayed, causing interference.
+The main memory is shared concurrently among multiple cores. As a result,
+interference among memory accesses from multiple timing compartments can lead
+to internal timing channels. 
+%and 
+%analogous to the timing disparity between cache hits and misses, page faults in 
+%main memory take substantially longer than accessing entries that are present 
+%in main memory. This timing channel can be handled simply by partitioning the 
+%address physical address space for each entity.
+%However, the memory controller has additional timing channels due to resource 
+%contention as well as other state based timing channels. 
+Wang et al. proposed a timing channel protection scheme for the shared memory
+controller, which is based on time division multiplexing \cite{ushpca14}. 
+We adopt their protection scheme in our processor design and briefly summarize 
+the sources of timing interference and countermeasures here.
+However, we found a minor vulnerability in their protection scheme and slightly
+adjusted the scheme to make it secure.
+
+\textbf{Request Queue}
+A memory controller typically has a queue for buffering memory requests until
+they can be issued. This queue is typically shared among requests and creates
+a state-based timing channel because requests from one compartment can block
+requests from another. We remove this interference by placing the shared 
+queue with smaller per-compartment queues, effective partitioning the single queue.
+
+\textbf{Row Buffer State}
+There exists another state-based timing channel in the shared memory controller
+if the open page policy is used. In today's DRAM, an entire row is read from
+an memory array and stored in a row buffer (sense amplifier) on an access. If this buffer is
+used as a cache, it creates a timing channel because consecutive accesses to 
+the same row are faster than accesses to different rows.
+The protection scheme removes this timing channel by applying the closed page
+policy, which precharges the row buffer after each access. In essence, this
+closed page policy can be seen as flattening that treats each access as a row buffer miss.
+The previous study \cite{ushpca14} showed that the close page policy does
+not have noticeable performance disadvantage over the open page policy because it
+makes an access to a different row faster by performing a precharge early.
+
+\textbf{DRAM Contention}
+The DRAM device contains several resources such as the command bus, data
+bus, banks, and ranks that can only be used by one access at a time. 
+Therefore, there exists contention-based timing channels.
+%For example, two requests to the same bank cannot
+%be scheduled at the same time. In a conventional memory controller, one request 
+%would be delayed, causing interference.
 % Suppose the queueing structure contains a request from a victim owned 
 % software module for a bank. If an adversarial software module issues a 
 % request to the same bank, it will be delayed, informing the adversary that 
@@ -340,61 +409,41 @@ would be delayed, causing interference.
 % request from another software module and for a different bank, one of the 
 % requests is scheduled and the other is delayed since only a single command 
 % can occupy the command bus at a time.
+The protection scheme uses timing division multiplexing (TDM) to remove these
+timing channels. The TDM protection for main memory requires a special period 
+in each time slice where no new
+request can be issued in order to prevent in-flight requests or refreshes to
+create timing interference.
 
-The high-level approach to address these timing channels is to time multiplex 
-the memory controller. Applying TDM to a memory controller requires allocating 
-a portion of each time quantum for draining in-flight requests. During this 
-period, called the dead time, no new requests may be issued and bandwidth is 
-wasted. 
+%A surprising contention timing channel due to refreshes complicates TDM for 
+%memory controllers. DRAM banks that are handling a request cannot be refreshed, 
+%so refreshes are actually stalled by regular requests. This stall can shift the 
+%refresh to the following turn and indicate that an access to that bank is 
+%taking place. Since the refresh timing is public information, the dead time of 
+%each time quantum where a refresh takes place is increased to guarantee the 
+%refresh completes.
 
-A surprising contention timing channel due to refreshes complicates TDM for 
-memory controllers. DRAM banks that are handling a request cannot be refreshed, 
-so refreshes are actually stalled by regular requests. This stall can shift the 
-refresh to the following turn and indicate that an access to that bank is 
-taking place. Since the refresh timing is public information, the dead time of 
-each time quantum where a refresh takes place is increased to guarantee the 
-refresh completes.
-
-\textbf{Queueing State Timing Channel}
-A memory controller queueing structure collects incoming requests for the DRAM 
-and stores them in a queue until the request can be issued.  As noted, timing 
-channels due to contention for resources in the
-DRAM may be observed in the queue. However, even if these timing channels are 
-closed, there is still a distinct state based timing channel in the queue.  If 
-the queue is completely filled, any incoming request must be stalled.  
-Therefore, the time required to make a memory request depends on the state in 
-the queueing structure. This timing channel can be closed replacing the shared 
-queue with separate, smaller queues for each timing compartment.
-
-\textbf{Row Buffer State Timing Channel}
-There is another distinct state based timing channel caused by the memory 
-scheduling policy. Depending on the specific scheduler policy, one request will 
-be issued by the scheduler potentially causing other requests to be delayed.  
-Often, this policy is designed to exploit row buffer locality. When a memory 
-access takes place, the row being accessed is stored in a row buffer (sense 
-amplifier). Accesses to rows that are already stored in the row buffer are 
-faster than those which are not. The decisions made by the scheduler depend on 
-this state causing a state based timing channel.
-
-To resolve this timing channel, a flattening technique is applied. Row buffer 
-flushes must be paced far apart to meet power constraints, and partitioning is 
-impossible. A closed page policy is chosen so that the row buffer is precharged 
-after every access and each memory request is treated as a row buffer miss.
+\textbf{Changes to the Protection}
+During the process of integrating timing protection mechanisms for a full
+processor, we found two vulnerabilities in the previously proposed scheme.
+First, similar to the shared cache, the response port of a memory controller
+can lead to a contention-based timing channel. We removed this channel by
+separating queues for each timing compartment and applying TDM to the port.
+Second, we found that the dead time need to be longer than what was proposed
+in the previous scheme because its assumption that request to two different
+ranks does not interfere may not be true. 
 
 \subsubsection{Private Per-Core Resources}
 
-The private caches, TLBs, and branch predictors of each core are not 
-concurrently shared by timing compartments since only one timing compartment 
-may be active on a core at a time. However, timing compartments share these 
-components indirectly since TCs may be time multiplexed on cores.  Each of 
-these components have state elements that can accommodate a finite number of 
-entries and therefore must occasionally evict some entries. In the baseline 
-architecture, the state of each of these components is kept between context 
-switches. An adversarial TC owner can deliberately fill the state elements of 
-each of these resources, and until it is replaced with the victim TC. The 
-victim TC may cause evictions before the adversarial TC is given ownership of 
-the core again, and the adversarial TC can then learn which state elements were 
-evicted. To eliminate this timing channel, each of these resources must be 
-flushed before each context switch. This is handled by the timing compartment 
-manager and described more fully in Section \ref{sec:integration_tcm}.
+The resources that are dedicated to each core such as private caches,
+TLBs, and branch predictors, are only used by one timing compartment at a time.
+However, multiple timing compartments can use these resources in a time-shared
+fashion. Therefore, there exist state-based timing channels if the state is
+kept across context switches. For example, the number of cache blocks that
+are evicted by one compartment may affect the number of cache hits for
+another compartment in the following time slice.
+We eliminate these timing channels by flushing the per-core resource state 
+on a context switch that moves to a different timing compartment.
+This is handled in software by the timing compartment 
+manager (see Section~\ref{sec:integration_tcm}).
 
