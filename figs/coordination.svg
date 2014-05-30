@@ -125,7 +125,7 @@
          id="tspan3873"
          x="79.044426"
          y="293.99017"
-         style="font-size:12px">Cache miss path</tspan></text>
+         style="font-size:12px">L3-membus path</tspan></text>
     <rect
        style="opacity:0.5;fill:#ff0000;stroke:none"
        id="rect3919"
@@ -160,7 +160,7 @@
          id="tspan3873-0"
          x="82.477371"
          y="253.40184"
-         style="font-size:12px">Cache hit path</tspan></text>
+         style="font-size:12px">L2-L3 path</tspan></text>
     <rect
        style="opacity:0.5;fill:#ff0000;stroke:none"
        id="rect3919-7"
@@ -201,7 +201,7 @@
          x="200.54868"
          y="234.27922">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan3874">hit</tspan></tspan></text>
+   id="tspan3874">L2L3</tspan></tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text7746"
@@ -214,7 +214,7 @@
          id="tspan7748"
          sodipodi:role="line">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan3872">miss</tspan></tspan></text>
+   id="tspan3872">L3-membus</tspan></tspan></text>
     <rect
        style="opacity:0.5;fill:#ff0000;stroke:none"
        id="rect7758"
