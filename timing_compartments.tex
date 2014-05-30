@@ -163,6 +163,10 @@ be used by multiple programs concurrently. The system can also be time multiplex
 We also assume that there exists a trusted software layer such as an OS or a hypervisor,
 which provides conventional software isolation for explicit communication channels.
 The timing compartment manager (TCM) is assumed to be a part of this trusted software.
+In the current implementation of protection mechanisms, we also assume that
+timing compartments have separate address spaces and do not share any physical
+memory. Communications between timing compartments need to go through the trusted
+software layer and be explicitly managed to control external timing channels. 
 
 %Attacks we handle.
 %However, these approaches to isolate software do not address timing channels 
