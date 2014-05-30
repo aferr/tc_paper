@@ -1,55 +1,84 @@
-\section{Integration}
-Disparate hardware timing channel protection mechanisms are not enough to 
-implement a full, timing channel secure system. It requires support from 
-software to manage the interaction of software entities with the hardware.  
-Further, these hardware mechanisms are often interdependent. The shared cache 
-miss path involves the cache, bus, and memory controller, all of which require 
-timing channel protection. Haphazardly time multiplexing these resources can 
-lead to unnecessarily large performance penalties. The integrated system 
-requires carefully coordinating the protected resources. The rest of this 
-section elaborates on the timing compartment manager, the software entity that 
-initializes and manages timing compartments, and then describes how timing 
-channel protection mechanisms should be coordinated.
+\section{Protection Management}
 
-\subsection{The Timing Compartment Manager}
+The hardware protection mechanisms in the previous section provides tools
+to implement timing compartments on a full processor. Yet, they need to be
+configured and managed in software. 
+%Disparate hardware timing channel protection mechanisms are not enough to 
+%implement a full, timing channel secure system. It requires support from 
+%software to manage the interaction of software entities with the hardware.  
+%Further, these hardware mechanisms are often interdependent. The shared cache 
+%miss path involves the cache, bus, and memory controller, all of which require 
+%timing channel protection. Haphazardly time multiplexing these resources can 
+%lead to unnecessarily large performance penalties. The integrated system 
+%requires carefully coordinating the protected resources. The rest of this 
+This section describes the timing compartment manager, 
+%trusted software 
+%that initializes and manages timing compartments, 
+and discuss how the time slices for multiple TDM mechanisms should be
+coordinated together for efficiency.
+
+\subsection{Timing Compartment Manager}
 \label{sec:integration_tcm}
-The timing compartment manager (TCM) is responsible for initializing and 
-managing timing compartments. At system initialization time it informs the 
-hardware of the timing compartments present in the system and configures the 
-hardware components with the policy. At run time, the TCM tags requests for 
-shared hardware resources with the timing compartment ID (TCID) of the TC that 
-originated the request. Shared hardware resources then enforce the policy by 
-checking the TCID before handling the request. The hardware allows software 
-entities within the same compartment to share resources normally, and timing 
-compartments can even be allocated multiple cores.
 
-As shown in Figure \ref{fig:arch}, the timing compartments architecture is 
-comprised of a set of $n$ cores which share resources. There is no limitation 
-on $m$, the number of timing compartments that can reside in the system at one 
-time. However, at most $n$ timing compartments can be active (executing on one 
-or more physical cores) at a time. If $m>n$, active timing compartments must 
-occasionally be switched with inactive ones. The TCM addresses this by context 
-switching TCs according toa context switch schedule.
+The timing compartment manager (TCM) is a trusted software module that is
+responsible for realizing the timing compartment abstraction using the
+hardware protection mechanisms.
+Here, we describe TCM separately from the rest of the system.
+However, in practice, TCM will be implemented as a part of the trusted software
+layer such as an OS or a hypervisor.
 
-The TCM is implemented as an extension of the trusted software layer, such as 
-the OS or hypervisor. It requires functions to handle the initialization
-and context switching. It also requires a small address space of its own to 
-store the register contents of inactive TCs and a queue of inactive TCs.
-The rest of this section describes the hardware TCID storage elemnts controlled 
-by the TCM, and then elaborates on how the TCM initializes the system and 
-handles context switching.
+The following discussion focuses on the interaction between the TCM and the hardware
+protection mechanisms. In that sense, we will assume that the TCM already has
+a list of timing compartments and a list of software modules such as virtual
+machines and processes that belong to each timing compartment. 
 
-\subsubsection{TCIDs}
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=1.08in]{figs/hw_sw_arch.pdf}
-        \caption{The Timing Compartments Architecture}
-        \label{fig:arch}
-    \end{center}
-\end{figure}
+%The TCM is implemented as an extension of the trusted software layer, such as 
+%the OS or hypervisor. It requires functions to handle the initialization
+%and context switching. It also requires a small address space of its own to 
+%store the register contents of inactive TCs and a queue of inactive TCs.
+%The rest of this section describes the hardware TCID storage elemnts controlled 
+%by the TCM, and then elaborates on how the TCM initializes the system and 
+%handles context switching.
+
+%At system initialization time it informs the 
+%hardware of the timing compartments present in the system and configures the 
+%hardware components with the policy. At run time, the TCM tags requests for 
+%shared hardware resources with the timing compartment ID (TCID) of the TC that 
+%originated the request. Shared hardware resources then enforce the policy by 
+%checking the TCID before handling the request. The hardware allows software 
+%entities within the same compartment to share resources normally, and timing 
+%compartments can even be allocated multiple cores.
+
+%\begin{figure}
+%    \begin{center}
+%        \includegraphics[width=1.08in]{figs/hw_sw_arch.pdf}
+%        \caption{The Timing Compartments Architecture}
+%        \label{fig:arch}
+%    \end{center}
+%\end{figure}
+
+%As shown in Figure \ref{fig:arch}, the timing compartments architecture is 
+%comprised of a set of $n$ cores which share resources. There is no limitation 
+%on $m$, the number of timing compartments that can reside in the system at one 
+%time. However, at most $n$ timing compartments can be active (executing on one 
+%or more physical cores) at a time. If $m>n$, active timing compartments must 
+%occasionally be switched with inactive ones. The TCM addresses this by context 
+%switching TCs according to a context switch schedule.
+
+\subsubsection{Hardware Control Interfaces}
+
+%The hardware protection mechanisms in the previous section need to distinguish 
+%memory accesses from different timing compartments.
+
+%\subsubsection{TCIDs}
 
 The hardware protection mechanisms track which timing compartment originated 
-each request and handle the requests accordingly. To do so, requests (such as 
+each request and handle the requests accordingly. 
+Lastly, each core has a register 
+that stores the TCID of the TC currently active on that core. This is used to 
+derive the tags that are appended to requests originating from that core. 
+
+To do so, requests (such as 
 network packets or shared cache accesses) are tagged with a timing compartment 
 ID (TCID). The set partitioned cache has $n$ registers which store the TCIDs
 that own each of the (at most) $n$ partitions. When a request requires a 
@@ -61,10 +90,9 @@ affect the MSHR banks with the same TCID as the request. Each of the time
 multiplexed resources (the networks, the memory controller, shared cache 
 response ports, and memory controller response ports) have $n$ queues. Each of 
 these queues has a register to store the TCID which owns that particular queue, 
-and time quanta are assigned to each queue. Lastly, each core has a register 
-that stores the TCID of the TC currently active on that core. This is used to 
-derive the tags that are appended to requests originating from that core. Table 
-\ref{table:tcid} summarizes the TCID storage elements in the system.
+and time quanta are assigned to each queue. 
+Table~\ref{table:tcid} summarizes the TCID storage elements in the system.
+
 
 \begin{table}
 \begin{center}
@@ -86,11 +114,13 @@ derive the tags that are appended to requests originating from that core. Table
 \end{center}
 \end{table}
 
-\subsubsection{Initialization \& Handling Context Switches}
-The TCM, initializes the system by setting the TCID storage elements listed in 
-Table 1 with the IDs of the initially active timing compartments. At most $n$ 
-of these can be active initially, so if $m>n$, some will be inactive, and the 
-TCM must define a static context switching schedule at initialization time.
+%\subsubsection{Initialization \& Handling Context Switches}
+%The TCM, initializes the system by setting the TCID storage elements listed in 
+%Table 1 with the IDs of the initially active timing compartments. At most $n$ 
+%of these can be active initially, so if $m>n$, some will be inactive, and the 
+%TCM must define a static context switching schedule at initialization time.
+
+\subsubsection{Context Switches}
 
 The time between context switches cannot depend on the dynamic behaviour of the 
 TCs. Otherwise, a timing compartment could observe the time that they are 
@@ -115,7 +145,8 @@ prevent this, context switches are bound to always take the worst case time.
 If a context switch completes early, the incoming TC is stalled until the worst 
 case context switch time has been reached.
 
-\subsection{Coordination}
+\subsection{Time Slice Coordination}
+
 Naïvely time multiplexing the components with contention based timing channels 
 can lead to poor performance since many of these components are on the same 
 path to handle a request. 
