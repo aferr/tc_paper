@@ -10,11 +10,11 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="296.39819"
-   height="151.1584"
+   height="109.83479"
    id="svg3863"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="hit_timing.svg">
+   sodipodi:docname="hit_timing.eps">
   <defs
      id="defs3865">
     <marker
@@ -55,7 +55,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
      inkscape:cx="235.87005"
-     inkscape:cy="57.95536"
+     inkscape:cy="20.163719"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -85,7 +85,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-52.901756,-253.33153)">
+     transform="translate(-52.901756,-256.86349)">
     <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -146,20 +146,20 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
-       d="m 113.12135,388.69195 c 234.92861,0 234.92861,0 234.92861,0"
+       d="m 113.12135,364.44829 c 234.92861,0 234.92861,0 234.92861,0"
        id="path4543"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="221.72849"
-       y="404.3493"
+       x="211.12189"
+       y="360.91275"
        id="text4989"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4991"
-         x="221.72849"
-         y="404.3493">Timeline</tspan></text>
+         x="211.12189"
+         y="360.91275">Timeline</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -196,7 +196,7 @@
          sodipodi:role="line"
          id="tspan5397"
          x="286.24698"
-         y="335.14377">N*T<tspan
+         y="335.14377">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan5399">CBT</tspan></tspan></text>
     <path
@@ -234,48 +234,24 @@
          y="305.65067"
          x="284.18005"
          id="tspan5421"
-         sodipodi:role="line">N*T<tspan
+         sodipodi:role="line">T<tspan
    id="tspan5423"
    style="font-size:65.00091553%;baseline-shift:sub">CBT</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5425"
-       d="m 182.45382,283.23051 c 0,100.46472 0,100.46472 0,100.46472"
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2.00000002, 1.00000001;stroke-dashoffset:0" />
+       d="m 182.45382,283.10357 c 0,74.95971 0,74.95971 0,74.95971"
+       style="fill:none;stroke:#000000;stroke-width:0.86378795;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.72757588, 0.86378794;stroke-dashoffset:0" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:2,1;stroke-dashoffset:0"
-       d="m 347.14369,345.93671 c 0,24.34646 0,24.34646 0,24.34646"
+       style="fill:none;stroke:#000000;stroke-width:0.75602365;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.51204727, 0.75602364;stroke-dashoffset:0"
+       d="m 347.14369,345.7225 c 0,13.91574 0,13.91574 0,13.91574"
        id="path5427"
        inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:0.96767765px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)"
-       d="m 183.14114,369.99402 c 163.49023,0 163.49023,0 163.49023,0"
-       id="path6355"
-       inkscape:connector-curvature="0" />
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="209.4754"
-       y="381.61078"
-       id="text6727"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan6729"
-         x="209.4754"
-         y="381.61078">T<tspan
-   style="font-size:65%;baseline-shift:sub"
-   id="tspan6301">hit</tspan>=T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6731">bus</tspan>+T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6733">L3L</tspan>+N*T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6735">CBT</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5658"
        d="m 182.27015,269.2313 c 27.85147,0 27.85147,0 27.85147,0"
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:none" />
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)"
        d="m 211.62295,329.46934 c 41.09758,0 41.09758,0 41.09758,0"

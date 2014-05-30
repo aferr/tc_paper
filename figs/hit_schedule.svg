@@ -54,7 +54,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.8"
-     inkscape:cx="146.14795"
+     inkscape:cx="231.8629"
      inkscape:cy="109.93266"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -77,7 +77,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -145,15 +145,8 @@
        id="path3913"
        inkscape:connector-curvature="0" />
     <rect
-       style="opacity:0.5;fill:#ff0000;stroke:none"
-       id="rect3919"
-       width="72.983521"
-       height="16.162441"
-       x="181.82745"
-       y="253.33153" />
-    <rect
-       y="304.64008"
-       x="254.77202"
+       y="301.06863"
+       x="255.12918"
        height="16.162441"
        width="92.428955"
        id="rect4445"
@@ -163,8 +156,8 @@
        id="rect4493"
        width="92.934036"
        height="16.162441"
-       x="254.52779"
-       y="340.03644" />
+       x="254.88492"
+       y="336.465" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-end:url(#Arrow1Mend)"
        d="m 113.20008,388.69195 c 330.36134,0 330.36134,0 330.36134,0"
@@ -207,19 +200,6 @@
          y="299.28336">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan5393">L3L</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="286.24698"
-       y="335.14377"
-       id="text5395"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan5397"
-         x="286.24698"
-         y="335.14377">N*T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan5399">CBT</tspan></tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 182.20128,268.99907 c 0,13.63706 0,13.63706 0,13.63706"
@@ -233,31 +213,18 @@
     <path
        inkscape:connector-curvature="0"
        id="path5407"
-       d="m 254.42719,290.71734 c 0,49.24814 0,49.24814 0,49.24814"
+       d="m 254.78433,287.14591 c 0,49.24814 0,49.24814 0,49.24814"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 347.21328,326.46047 c 0,13.63706 0,13.63706 0,13.63706"
+       d="m 347.57042,322.88904 c 0,13.63706 0,13.63706 0,13.63706"
        id="path5415"
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 346.7432,291.78878 c 0,13.63706 0,13.63706 0,13.63706"
+       d="m 347.10034,288.21735 c 0,13.63706 0,13.63706 0,13.63706"
        id="path5417"
        inkscape:connector-curvature="0" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text5419"
-       y="299.93637"
-       x="284.89435"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       xml:space="preserve"><tspan
-         y="299.93637"
-         x="284.89435"
-         id="tspan5421"
-         sodipodi:role="line">N*T<tspan
-   id="tspan5423"
-   style="font-size:65.00091553%;baseline-shift:sub">CBT</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path5425"
@@ -299,53 +266,11 @@
          id="tspan4656"
          x="75.403236"
          y="383.56909">TC1</tspan></text>
-    <rect
-       y="253.43614"
-       x="254.88202"
-       height="16.162441"
-       width="91.671341"
-       id="rect4740"
-       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none" />
-    <rect
-       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none"
-       id="rect4742"
-       width="92.428955"
-       height="16.162441"
-       x="347.272"
-       y="304.99722" />
-    <rect
-       y="340.39359"
-       x="347.02777"
-       height="16.162441"
-       width="92.934036"
-       id="rect4744"
-       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none" />
     <path
        inkscape:connector-curvature="0"
        id="path4788"
        d="m 182.24275,239.76566 c 0,13.63706 0,13.63706 0,13.63706"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 254.8439,237.97963 c 0,15.38895 0,15.38895 0,15.38895"
-       id="path4790"
-       inkscape:connector-curvature="0" />
-    <path
-       inkscape:connector-curvature="0"
-       id="path4794"
-       d="m 254.93319,269.31892 c 0,15.38895 0,15.38895 0,15.38895"
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text4796"
-       y="280.26898"
-       x="212.99698"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       xml:space="preserve"><tspan
-         y="280.26898"
-         x="212.99698"
-         id="tspan4798"
-         sodipodi:role="line">Wasted</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text4802"
@@ -357,7 +282,96 @@
          x="209.24698"
          id="tspan4804"
          sodipodi:role="line">T<tspan
-   id="tspan4806"
-   style="font-size:65.00091553%;baseline-shift:sub">req</tspan></tspan></text>
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan18808">L2L3</tspan></tspan></text>
+    <rect
+       style="opacity:0.5;fill:#ff0000;stroke:none"
+       id="rect18172"
+       width="92.428955"
+       height="16.162441"
+       x="181.55774"
+       y="252.85435" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot18174"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Droid Serif;font-style:normal;font-weight:normal;font-size:9px;line-height:125%;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:Droid Serif;font-stretch:normal;font-variant:normal;text-anchor:start;text-align:start;writing-mode:lr"><flowRegion
+         id="flowRegion18176"><rect
+           id="rect18178"
+           width="269.28571"
+           height="103.57143"
+           x="188.92857"
+           y="50.224586" /></flowRegion><flowPara
+         id="flowPara18180"></flowPara></flowRoot>    <rect
+       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none"
+       id="rect18236"
+       width="92.428955"
+       height="16.162441"
+       x="347.62918"
+       y="300.71149" />
+    <rect
+       y="336.10785"
+       x="347.38492"
+       height="16.162441"
+       width="92.934036"
+       id="rect18238"
+       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path18258"
+       d="m 274.70128,268.64193 c 0,13.63706 0,13.63706 0,13.63706"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 347.28433,286.78877 c 0,49.24814 0,49.24814 0,49.24814"
+       id="path18262"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path18264"
+       d="m 440.07042,322.5319 c 0,13.63706 0,13.63706 0,13.63706"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path18266"
+       d="m 439.60034,287.86021 c 0,13.63706 0,13.63706 0,13.63706"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 274.74275,239.40852 c 0,13.63706 0,13.63706 0,13.63706"
+       id="path18274"
+       inkscape:connector-curvature="0" />
+    <rect
+       y="252.49721"
+       x="274.05774"
+       height="16.162441"
+       width="92.428955"
+       id="rect18286"
+       style="opacity:0.5;fill:#0000ff;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="287.81842"
+       y="295.80472"
+       id="text18810"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan18812"
+         x="287.81842"
+         y="295.80472">T<tspan
+   id="tspan18814"
+   style="font-size:65.00091553%;baseline-shift:sub">L2L3</tspan></tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text18816"
+       y="330.80472"
+       x="288.53271"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="330.80472"
+         x="288.53271"
+         id="tspan18818"
+         sodipodi:role="line">T<tspan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="tspan18820">L2L3</tspan></tspan></text>
   </g>
 </svg>

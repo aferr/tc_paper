@@ -76,37 +76,28 @@ The hardware protection mechanisms track which timing compartment originated
 each request and handle the requests accordingly. Each core has a register that 
 stores the TCID of the TC currently active on that core. This is used to derive 
 the tags that are appended to requests originating from that core. The TCID is 
-$log\ n$ bits. 
+$log\ n$ bits where $n$ is the number of cores in a processor. 
+Events such as network packets or cache accesses that use shared resources are 
+tagged with a timing compartment ID (TCID) of the corresponding core. 
+The timing channel protection mechanisms use this TCID to distinguish accesses
+from different timing compartments.
 
-To track requests (such as network packets or shared cache accesses), they are 
-tagged with a timing compartment ID (TCID). The set partitioned cache has $n$ 
-registers which store the TCIDs that own each of the (at most) $n$ partitions.
-When a request requires a replacement, the cache uses the TCID of the request
-to decide which partitions can allow entries to be replaced according to the
-policy. (Checking is only required on replacements since TCIDs have separate
-address spaces.) Since the address space is partitioned, the index function can 
-use the TCID as a bit mask that selects the most significant bits of the 
-address. This imposes some limitations on partitioning, namely, the TCM cannot 
-allocate two non-consecutive sets to a TC, and the number of sets granted to 
-each TC must be a power of 2.
-
-Each of the separate MSHR queues are tagged with a TCID of the owner, and 
-requests can only affect the MSHR queues with the same TCID as the request. 
-Each of the time multiplexed resources (the networks, the memory controller, 
-shared cache response ports, and memory controller response ports) have $n$ 
-queues.  Each of these queues has a register to store the TCID which owns that 
-particular queue. A time quantum is scheduled for each queue, so time quanta 
-are allocated to TCs by setting the queue configuration register with the TCID 
-of that TC. A single TC can be granted multiple queues, and therefore, multiple 
-time quanta in each rotation of the schedule. The configuration registers also 
-control the ordering of the queues in the schedule and the time offset of the 
-schedule. The offset delays the start of the schedule by some number of cycles 
-to allow the TDM schedules of multiple devices to be coordinated as described 
-in Section \ref{sec:coordination}. The configuration register can also set the 
-duration of the time quanta for each queue, but this cannot be changed based on 
-the dynamic behavior of the timing compartment.
-Table~\ref{table:tcid} summarizes the TCID storage elements in the system.
-
+For resource allocation, the hardware protection mechanisms allow the TCM to 
+specify which timing compartment can use each partitioned resource.
+For example, 
+the partitioned cache includes $n$ registers that specifies which cache partitions 
+can be accessed for each timing compartment. 
+%When a request requires a replacement, the cache uses the TCID of the request
+%to decide which partitions can allow entries to be replaced according to the
+%policy. (Checking is only required on replacements since TCIDs have separate
+%address spaces.) 
+In the set partitioned cache, the registers specific a mask
+that will be used to compute the cache array index from a memory address.
+The mask maps accesses from each timing compartment to a subset of 
+cache sets.
+Similarly, each queue at the interface of the shared structures is tagged
+with a TCID that owns that queue.
+Table~\ref{table:tcid} summarizes the TCID registers in the system.
 
 \begin{table}
 \begin{center}
@@ -118,23 +109,48 @@ Table~\ref{table:tcid} summarizes the TCID storage elements in the system.
     Core & $n$ cores. TCID register per core. \\
     \hline
     \multirow{3}{*}{Cache}
-    & $n$ response port queues. TCID register per queue \\
-    & $n$ partition owner registers. \\
+    & $n$ response queues. TCID register per queue \\
+    & $n$ partition selection registers. \\
     & $n$ MSHR queues. TCID per queue\\
     \hline
     Network & $n$ queues. TCID register per queue\\
     \hline
     \multirow{2}{*}{Memory Controller}
-    & $n$ queues. TCID register per queue \\
-    & $n$ response port queues. TCID register per queue\\
+    & $n$ request queues. TCID register per queue \\
+    & $n$ response queues. TCID register per queue\\
     \hline
 \end{tabular}
     \end{footnotesize}
-    \caption{TCID storage for TC Architecture Components}
+    \caption{TCID registers for the shared structures.}
     \label{table:tcid}
 \end{center}
 \end{table}
 
+For time-multiplexed resources, the hardware mechanisms contain control
+registers so that the TCM can specify the schedule for time multiplexing.
+More specifically, for an $n$-core system, a time-multiplexed resource
+uses a schedule with $n$ time slices. Then, for each time slice, control
+registers allow specifying the length of the time slice in cycles and
+the TCID that is allowed to use the time slice. Finally, to support
+coordination among related components, each time-multiplexed component
+allows an offset to be specified by the TCM. The offset determines
+the number of cycles before the first time slice starts after a reset.
+
+%Each of the separate MSHR queues are tagged with a TCID of the owner, and 
+%requests can only affect the MSHR queues with the same TCID as the request. 
+%Each of the time multiplexed resources (the networks, the memory controller, 
+%shared cache response ports, and memory controller response ports) have $n$ 
+%queues.  Each of these queues has a register to store the TCID which owns that 
+%particular queue. A time quantum is scheduled for each queue, so time quanta 
+%are allocated to TCs by setting the queue configuration register with the TCID 
+%of that TC. A single TC can be granted multiple queues, and therefore, multiple 
+%time quanta in each rotation of the schedule. The configuration registers also 
+%control the ordering of the queues in the schedule and the time offset of the 
+%schedule. The offset delays the start of the schedule by some number of cycles 
+%to allow the TDM schedules of multiple devices to be coordinated as described 
+%in Section \ref{sec:coordination}. The configuration register can also set the 
+%duration of the time quanta for each queue, but this cannot be changed based on 
+%the dynamic behavior of the timing compartment.
 %\subsubsection{Initialization \& Handling Context Switches}
 %The TCM, initializes the system by setting the TCID storage elements listed in 
 %Table 1 with the IDs of the initially active timing compartments. At most $n$ 
@@ -152,25 +168,38 @@ Table~\ref{table:tcid} summarizes the TCID storage elements in the system.
 % of the inactive TC queue. The compartment which has been switched out is 
 % moved to the back of the inactive TC queue.
 
+On a context switch, the TCM sets the TCID of a processing core to reflect
+the incoming process (or a virtual machine). The TCM also sets the control
+registers for each protection mechanism to match the new set of active
+timing compartments. Note that changing the resource allocation such as
+partitioning or time-multiplexing schedules may potentially leak information on 
+which process (or a VM) is being scheduled, but can be made independent
+from the value of secret data in timing compartments.
+
+For timing channel protection, the TCM also flushes per-core state elements
+on a context switch.
 Although private, per-core resources are not concurrently shared by TCs, they 
 are shared across context switches. The state modified by the TC that is 
 swapped out can affect the timing of the TC that is swapped in.
 To perform the context switch, the CPU pipeline and the memory request queue 
-are drained. The general purpose registers of the outgoing TC are stored in 
-TCM-space memory and tagged with the TCID. The private cache, shared cache 
+are drained. 
+%The general purpose registers of the outgoing TC are stored in 
+%TCM-space memory and tagged with the TCID. 
+The private cache, shared cache 
 partition, TLB, and branch predictor state of the outgoing TC are all flushed.  
 Finally, the TCID stores of the outgoing TC are replaced with the TCID of the 
 incoming TC. 
 
-The time required to perform a context switch depends on the state and behavior 
-of the outgoing TC. The owner of the incoming TC can observe when the incoming 
-TC begins executing, so this implies a potential leakage of secrets.  To 
-prevent this, context switches are bound to always take the worst case time.  
-If a context switch completes early, the incoming TC is stalled until the worst 
-case context switch time has been reached.
+%The time required to perform a context switch depends on the state and behavior 
+%of the outgoing TC. The owner of the incoming TC can observe when the incoming 
+%TC begins executing, so this implies a potential leakage of secrets. To 
+%prevent this, context switches are bound to always take the worst case time.  
+%If a context switch completes early, the incoming TC is stalled until the worst 
+%case context switch time has been reached.
 
 \subsection{Time Slice Coordination}
 \label{sec:coordination}
+
 Naïvely time multiplexing the components with contention based timing channels 
 can lead to poor performance since many of these components are on the same 
 path to handle a request. 
