@@ -162,7 +162,7 @@ Microarchitecture Attacks
 ------------------------------------------------------------------------------
 HDL 
 ------------------------------------------------------------------------------
-@inproceedings{caisson,
+@inproceedings{caisson-pldi11,
     author = {Li, Xun and Tiwari, Mohit and Oberg, Jason K. and Kashyap, 
         Vineeth and Chong, Frederic T. and Sherwood, Timothy and Hardekopf, 
         Ben},
@@ -171,7 +171,7 @@ HDL
     series = {PLDI '11},
 }
 
-@inproceedings{rightabstraction,
+@inproceedings{caisson-plas10,
      author = {Li, Xun and Tiwari, Mohit and Hardekopf, Ben and Sherwood, 
          Timothy and Chong, Frederic T.},
      title = {Secure Information Flow Analysis for Hardware Design: Using the 
@@ -179,7 +179,7 @@ HDL
      series = {PLAS '10},
 }
 
-@inproceedings{sapper,
+@inproceedings{sapper-plas13,
      author = {Li, Xun and Kashyap, Vineeth and Oberg, Jason K. and Tiwari, 
          Mohit and Rajarathinam, Vasanth Ram and Kastner, Ryan and Sherwood, 
          Timothy and Hardekopf, Ben and Chong, Frederic T.},
@@ -279,11 +279,75 @@ Language level Timing Channel Prevention/Detection
     title = {Language-based Control and Mitigation of Timing Channels},
     journal = {SIGPLAN Not.},
     year = {2012}
+}
+
+------------------------------------------------------------------------------
+System Level Information Flow
+------------------------------------------------------------------------------
+@inproceedings{histar-sosp06,
+ author = {Zeldovich, Nickolai and Boyd-Wickizer, Silas and Kohler, Eddie and Mazi\`{e}res, David},
+ title = {Making Information Flow Explicit in HiStar},
+ booktitle = {Proceedings of the 7th USENIX Symposium on Operating Systems Design and Implementation - Volume 7},
+ series = {OSDI '06},
+ year = {2006},
+ location = {Seattle, WA},
+ pages = {19--19},
+ numpages = {1},
+ url = {http://dl.acm.org/citation.cfm?id=1267308.1267327},
+ acmid = {1267327},
+ publisher = {USENIX Association},
+ address = {Berkeley, CA, USA},
+} 
+
+@article{flume-sosp07,
+ author = {Krohn, Maxwell and Yip, Alexander and Brodsky, Micah and Cliffer, Natan and Kaashoek, M. Frans and Kohler, Eddie and Morris, Robert},
+ title = {Information Flow Control for Standard OS Abstractions},
+ journal = {SIGOPS Oper. Syst. Rev.},
+ issue_date = {December 2007},
+ volume = {41},
+ number = {6},
+ month = oct,
+ year = {2007},
+ issn = {0163-5980},
+ pages = {321--334},
+ numpages = {14},
+ url = {http://doi.acm.org/10.1145/1323293.1294293},
+ doi = {10.1145/1323293.1294293},
+ acmid = {1294293},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {DIFC, decentralized information flow control, endpoints, reference monitor, system call interposition, web services},
+}
+
+@inproceedings{laminar-pldi09,
+ author = {Roy, Indrajit and Porter, Donald E. and Bond, Michael D. and McKinley, Kathryn S. and Witchel, Emmett},
+ title = {Laminar: Practical Fine-grained Decentralized Information Flow Control},
+ booktitle = {Proceedings of the 2009 ACM SIGPLAN Conference on Programming Language Design and Implementation},
+ series = {PLDI '09},
+ year = {2009},
+ isbn = {978-1-60558-392-1},
+ location = {Dublin, Ireland},
+ pages = {63--74},
+ numpages = {12},
+ url = {http://doi.acm.org/10.1145/1542476.1542484},
+ doi = {10.1145/1542476.1542484},
+ acmid = {1542484},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {information flow control, java virtual machine, operating systems, security region},
 } 
 
 ------------------------------------------------------------------------------
-Secure Processors
+Microarchitecture Techniques
 ------------------------------------------------------------------------------
+@inproceedings{newcache,
+    author    = {Zhenghong Wang and Ruby B. Lee},
+    title     = {New cache designs for thwarting software cache-based side
+                channel attacks},
+    booktitle = {ISCA},
+    year      = {2007}
+}
+
 @inproceedings{ascend,
  author = {Fletcher, Christopher W. and Dijk, Marten van and Devadas, Srinivas},
  title = {A Secure Processor Architecture for Encrypted Computation on Untrusted Programs},
@@ -301,17 +365,6 @@ Secure Processors
  address = {New York, NY, USA},
  keywords = {encrypted computation, secure processors},
 } 
-
-------------------------------------------------------------------------------
-Microarchitecture Techniques
-------------------------------------------------------------------------------
-@inproceedings{newcache,
-    author    = {Zhenghong Wang and Ruby B. Lee},
-    title     = {New cache designs for thwarting software cache-based side
-                channel attacks},
-    booktitle = {ISCA},
-    year      = {2007}
-}
 
 @inproceedings{execution_leases,
  author = {Tiwari, Mohit and Li, Xun and Wassel, Hassan M. G. and Chong, Frederic T. and Sherwood, Timothy},
@@ -331,6 +384,34 @@ Microarchitecture Techniques
  keywords = {covert channels, gate level information flow tracking, high assurance systems, timing channels},
 } 
 
+@inproceedings{glift-dac11,
+ author = {Oberg, Jason and Hu, Wei and Irturk, Ali and Tiwari, Mohit and Sherwood, Timothy and Kastner, Ryan},
+ title = {Information Flow Isolation in I2C and USB},
+ booktitle = {Proceedings of the 48th Design Automation Conference},
+ series = {DAC '11},
+ year = {2011},
+ isbn = {978-1-4503-0636-2},
+ pages = {254--259},
+ numpages = {6},
+ doi = {10.1145/2024724.2024782},
+ acmid = {2024782},
+ keywords = {high-assurance systems, information flow tracking, timing channels},
+} 
+
+@inproceedings{glift-isca11,
+ author = {Tiwari, Mohit and Oberg, Jason K. and Li, Xun and Valamehr, Jonathan and Levin, Timothy and Hardekopf, Ben and Kastner, Ryan and Chong, Frederic T. and Sherwood, Timothy},
+ title = {Crafting a Usable Microkernel, Processor, and I/O System with Strict and Provable Information Flow Security},
+ booktitle = {Proceedings of the 38th Annual International Symposium on Computer Architecture},
+ series = {ISCA '11},
+ year = {2011},
+ isbn = {978-1-4503-0472-6},
+ pages = {189--200},
+ numpages = {12},
+ doi = {10.1145/2000064.2000087},
+ acmid = {2000087},
+ keywords = {gate level information flow tracking, high assurance systems, non-interference},
+} 
+
 @inproceedings{yaonocs,
     author = {Wang, Yao and Suh, Edward},
     title  = {Efficient Timing Channel Protection for On-Chip Networks},
@@ -338,7 +419,25 @@ Microarchitecture Techniques
         Networks-on-Chip. },
     series = {NOCS},
     year = {2012}
-}
+} 
+
+@inproceedings{surfnoc,
+ author = {Wassel, Hassan M. G. and Gao, Ying and Oberg, Jason K. and Huffmire, Ted and Kastner, Ryan and Chong, Frederic T. and Sherwood, Timothy},
+ title = {SurfNoC: A Low Latency and Provably Non-interfering Approach to Secure Networks-on-chip},
+ booktitle = {Proceedings of the 40th Annual International Symposium on Computer Architecture},
+ series = {ISCA '13},
+ year = {2013},
+ isbn = {978-1-4503-2079-5},
+ location = {Tel-Aviv, Israel},
+ pages = {583--594},
+ numpages = {12},
+ url = {http://doi.acm.org/10.1145/2485922.2485972},
+ doi = {10.1145/2485922.2485972},
+ acmid = {2485972},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {high assurance systems, networks-on-chip, non-interference},
+} 
 
 @inproceedings{ushpca14,
     author = {Wang, Yao and Ferraiuolo, Andrew and Suh, Edward},
@@ -349,6 +448,45 @@ Microarchitecture Techniques
     year = {2014}
 }
 
+@inproceedings{fletcher-hpca14,
+    title = {Suppressing the Oblivious RAM Timing Channel While Making 
+        Information Leakage and Program Efficiency Trade-offs},
+    author = {Christopher W. Fletcher and Ling Ren and Xiangyao Yu and Marten van Dijk 
+        and Omer Khan and Srinivas Devadas},
+    booktitle = {Proceedings of the 20th International Symposium on High 
+        Performance Computer Architecture},
+    series = {HPCA},
+    year = {2014}
+} 
+
+@inproceedings{glift-asplos09,
+ author = {Tiwari, Mohit and Wassel, Hassan M.G. and Mazloom, Bita and Mysore, Shashidhar and Chong, Frederic T. and Sherwood, Timothy},
+ title = {Complete Information Flow Tracking from the Gates Up},
+ booktitle = {Proceedings of the 14th International Conference on Architectural Support for Programming Languages and Operating Systems},
+ series = {ASPLOS XIV},
+ year = {2009},
+ isbn = {978-1-60558-406-5},
+ pages = {109--120},
+ numpages = {12},
+ doi = {10.1145/1508244.1508258},
+ acmid = {1508258},
+ keywords = {gate level, information flow tracking, provably sound},
+} 
+
+
+@inproceedings{glift-dac10,
+ author = {Oberg, Jason and Hu, Wei and Irturk, Ali and Tiwari, Mohit and Sherwood, Timothy and Kastner, Ryan},
+ title = {Theoretical Analysis of Gate Level Information Flow Tracking},
+ booktitle = {Proceedings of the 47th Design Automation Conference},
+ series = {DAC '10},
+ year = {2010},
+ isbn = {978-1-4503-0002-5},
+ pages = {244--247},
+ numpages = {4},
+ doi = {10.1145/1837274.1837337},
+ acmid = {1837337},
+ keywords = {Boolean logic, hardware security, information flow tracking},
+} 
 
 ------------------------------------------------------------------------------
 Cache Partitioning

@@ -1,1 +1,38 @@
 \section{Related Works}
+Numerous internal microarchitectural timing channels have been exposed in
+caches~\cite{percival,bernstein,caseofaes,remoteaes,analyticalcache,collision,
+deconstructing,cachegames}, branch predictors 
+\cite{branchpred,predictingbranch}, processor
+pipelines \cite{pipelines}, networks on chip~\cite{yaonocs,surfnoc}, and memory
+controllers~\cite{ushpca14,fletcher-hpca14}. However, the internal timing 
+channels caused by the response ports of caches and memory controllers and by 
+contention for MSHRs in caches are new.  Solutions for timing channels caused 
+by individual components such as caches~\cite{newcache,deconstructing}, memory
+controllers~\cite{ushpca14,fletcher-hpca14}, and nentworks on chip 
+~\cite{yaonocs,surfnoc} have
+been proposed.
+
+However, this paper presents the first microarchitecture to address all 
+internal microarchitectural timing channels. Ascend~\cite{ascend} proposes a
+microarchitecture that eliminates external timing channels, but does not
+address internal timing channels. Execution leases~\cite{execution_leases} 
+provide another external timing channel solution at the hardware level by 
+enforcing strict upper bounds on the execution times of program subsections. 
+
+Timing channels are a form of information flow, and many approaches to 
+controlling timing channels are based in information flow theory. Language 
+level approaches track information flow and to either 
+eliminate~\cite{quantleaks} or 
+reduce~\cite{mitigation1,mitigation2,mitigation3} timing channels. At the 
+systems level, information flow has been used to provide security 
+through explicit channels ~\cite{flume-sosp07,histar-sosp06,laminar-pldi09}. 
+These can be combined with timing compartments to provide total software 
+isolation.
+
+Work has also been done to verify hardware timing channel protection. GLIFT 
+\cite{glift-asplos09} tracks all information flows, (including timing channels) 
+in hardware at the gate level, though it does so at a high cost. GLIFT has 
+later been used to develop information flow property checkers in gate level 
+simulators ~\cite{glift-dac10,glift-dac11,glift-isca11}, and more recently 
+hardware description languages that verify timing channel securtity 
+~\cite{caisson-plas10,caisson-pldi11,sapper-plas13}.
