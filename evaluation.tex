@@ -1,4 +1,49 @@
 \section{Evaluation}
-\subsection{Setup}
+We evaluated the timing compartments architecture using the gem5 architectural 
+simulator~\cite{gem5} interfaced with the DRAMSim2~\cite{DRAMSim2} memory and 
+memory controller simulator. Our experiments use multiprogram workloads 
+comprised of groups of SPEC2006 benchmarks compiled for the ARM ISA. 
+
+The 2GHz out-of-order cores use the gem5 ``O3`` model. 
+Each core has private 32KB L1 instruction and data caches, and private 256KB L2 
+cache. The cores share a 4MB L3 cache. We derived cache configuration 
+parameters from the Intel Xeon E3-1220L, which is a two core architecture used 
+by Amazon EC2. In DRAMSim2, we simulate a 667MHz 2GB DDR3 memory. The 
+interconnects in the simulator have a 1GHz clock. Each experiment is 
+fastforwarded for 1 billion instructions, and run for 100 million 
+instructions.
+
+\begin{table}
+    \caption{Simulator configuration parameters.}
+    \centering
+    \begin{tabular}{|l|l|l|r|}
+        \hline
+        \multicolumn{3}{|l|}{gem5 core model} & ``O3''        \\\hline
+        \multicolumn{3}{|l|}{CPU Clock}    & 2GHz             \\\hline
+        \hline
+        \multicolumn{2}{|l|}{Memory}             & 2GB    & 667MHz  \\\hline
+        \hline
+        \multicolumn{3}{|l|}{Network Clock}      & 1GHz \\\hline
+        \hline
+        L1d / L1i  & 32kB   & 2-way  & 2 cycles\\\hline
+        L2         & 256kB  & 8-way  & 7 cycles \\\hline
+        L3         & 4MB    & 16-way & 17 cycles  \\\hline
+    \end{tabular}
+    \label{tab:config}
+\end{table}
+
 \subsection{Security Evaluation}
+To experimentally evaluate the security of the temporal partitioning 
+architecture, we use a two-core system with separate timing compartments, TC1 
+and TC2,
+allocated to each core and a policy that disallows timing channel leakage from
+either core. If the number of cycles required to reach 100 million instructions 
+for a particular benchmark running in TC1 depends which benchmark is running in 
+TC2, there must be interference which can cause timing channel leakage. For 
+each benchmark, we compare its execution time while sharing hardware with each 
+other SPEC benchmark. 
+%Fingers crossed!
+During our tests we observed no cycle count differences by changing the 
+benchmark running in the other timing compartment.
+
 \subsection{Performance Evaluation}
