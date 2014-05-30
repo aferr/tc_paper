@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="cloud_tcs.pdf">
+   sodipodi:docname="cloud_tcs.svg">
   <defs
      id="defs4">
     <marker
@@ -48,14 +48,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.656854"
-     inkscape:cx="111.38214"
-     inkscape:cy="53.383268"
+     inkscape:zoom="2.828427"
+     inkscape:cx="120.86068"
+     inkscape:cy="16.940076"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:snap-global="false"
-     inkscape:window-width="2554"
+     inkscape:window-width="1120"
      inkscape:window-height="1415"
      inkscape:window-x="0"
      inkscape:window-y="19"
@@ -85,7 +85,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -239,7 +239,7 @@
            height="95.459419"
            x="26.162952"
            y="109.65202" /></flowRegion><flowPara
-         id="flowPara5268"></flowPara></flowRoot>    <rect
+         id="flowPara5268" /></flowRoot>    <rect
        style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5270"
        width="49.355011"
@@ -312,7 +312,7 @@
        id="path5300"
        inkscape:connector-curvature="0" />
     <rect
-       y="162.08617"
+       y="161.84152"
        x="215.24208"
        height="16.506353"
        width="60.001564"
@@ -321,14 +321,14 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
-       x="235.14578"
-       y="172.99457"
+       x="234.96901"
+       y="172.90617"
        id="text6078"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan6080"
-         x="235.14578"
-         y="172.99457"
+         x="234.96901"
+         y="172.90617"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">TCM</tspan></text>
     <text
        sodipodi:linespacing="125%"
