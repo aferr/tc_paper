@@ -14,7 +14,7 @@
    id="svg3863"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="miss_timing.pdf">
+   sodipodi:docname="miss_timing.svg">
   <defs
      id="defs3865">
     <marker
@@ -77,7 +77,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -196,7 +196,7 @@
          sodipodi:role="line"
          id="tspan5397"
          x="332.20889"
-         y="284.88867">M*T<tspan
+         y="284.88867">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="tspan5399">CBT</tspan></tspan></text>
     <path
@@ -229,7 +229,7 @@
          y="224.53207"
          x="332.4411"
          id="tspan5421"
-         sodipodi:role="line">M*T<tspan
+         sodipodi:role="line">T<tspan
    id="tspan5423"
    style="font-size:65.00091553%;baseline-shift:sub">CBT</tspan></tspan></text>
     <path
@@ -242,11 +242,6 @@
        d="m 390.71811,293.5254 c 0,56.1468 0,56.1468 0,56.1468"
        id="path5427"
        inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#Arrow1Mend)"
-       d="m 184.17906,330.59808 c 205.05131,0 205.05131,0 205.05131,0"
-       id="path6355"
-       inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -258,25 +253,6 @@
          id="tspan6868"
          x="96.338318"
          y="305.495">mem respPort</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-       x="223.61755"
-       y="345.14343"
-       id="text6872"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan6874"
-         x="223.61755"
-         y="345.14343">T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6555">miss</tspan>=T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6876">bus</tspan>+T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6878">MCL</tspan>+M*T<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan6880">CBT</tspan></tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path6557"
