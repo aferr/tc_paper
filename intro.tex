@@ -4,8 +4,10 @@ Timing channel attacks are becoming a major threat as hardware is increasingly
 shared by distrusting entities. For example, in cloud computing, mutually distrusting 
 parties own virtual machines on shared hardware. In mobile devices, users often
 run downloaded applications that cannot be trusted along with sensitive applications
-such as banking applications. While untrusted applications can be sandboxed using
-traditional access control mechanisms to limit explicit communications. Timing 
+such as banking applications.
+While untrusted applications can be sandboxed using
+traditional access control mechanisms to limit explicit communications,
+timing 
 channels can still be used by a malicious program to extract secrets from other
 co-located applications.
 Further, unlike physical side-channel attacks such as power analysis that require
@@ -101,8 +103,8 @@ processors include large caches.
 The following summarizes the main contributions of the paper.
 
 \begin{itemize}
-\item The paper introduces the new abstraction that enables software to
-explicitly control timing channels. The timing compartment enable new
+\item The paper introduces a new abstraction that enables software to
+explicitly control timing channels. The timing compartment enables new
 applications that require complete isolation of software modules.
 \item The paper presents a general framework to eliminate timing channels
 in shared hardware resources, and comprehensive protection mechanisms for
@@ -116,7 +118,7 @@ Section 2 introduces timing compartments, describes our thread model, and
 presents examples of applications that can be enabled by the timing compartments.
 Section 3 presents the sources of timing channels in a multi-core processor, and
 describes protection mechanisms to eliminate them. 
-Section 4 presents how the hardware protection mechanisms need to managed
+Section 4 presents how the hardware protection mechanisms need to be managed
 in a software layer.
-Section 5 evaluates the proposed architecture. Section 6 discussed related
+Section 5 evaluates the proposed architecture. Section 6 discusses related
 work, and Section 7 concludes the paper.
