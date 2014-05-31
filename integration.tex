@@ -22,15 +22,15 @@ coordinated together for efficiency.
 The timing compartment manager (TCM) is a trusted software module that is
 responsible for realizing the timing compartment abstraction using the
 hardware protection mechanisms.
-Here, we describe TCM separately from the rest of the system.
-However, in practice, TCM will be implemented as a part of the trusted software
+Here, we describe the TCM separately from the rest of the system.
+However, in practice, the TCM will be implemented as an extension of the trusted software
 layer such as an OS or a hypervisor.
 
 The following discussion focuses on the interaction between the TCM and the 
 hardware
-protection mechanisms. In that sense, we will assume that the TCM already has
-a list of timing compartments and a list of software modules such as virtual
-machines and processes that belong to each timing compartment. 
+protection mechanisms. Therefore, we will assume that the TCM has
+a mapping of software entities (e.g. virtual machines or processes) to timing 
+compartments.
 
 %The TCM is implemented as an extension of the trusted software layer, such as 
 %the OS or hypervisor. It requires functions to handle the initialization
@@ -74,25 +74,25 @@ machines and processes that belong to each timing compartment.
 
 The hardware protection mechanisms track which timing compartment originated 
 each request and handle the requests accordingly. Each core has a register that 
-stores the TCID of the TC currently active on that core. This is used to derive 
+stores the timing compartment ID (TCID) of the TC currently active on that core. This is used to derive 
 the tags that are appended to requests originating from that core. The TCID is 
-$log\ n$ bits where $n$ is the number of cores in a processor. 
+$log\ n$ bits where $n$ is the number of cores in the processor.
 Events such as network packets or cache accesses that use shared resources are 
-tagged with a timing compartment ID (TCID) of the corresponding core. 
+tagged with the TCID of the corresponding core. 
 The timing channel protection mechanisms use this TCID to distinguish accesses
-from different timing compartments.
+from among different timing compartments.
 
 For resource allocation, the hardware protection mechanisms allow the TCM to 
 specify which timing compartment can use each partitioned resource.
 For example, 
-the partitioned cache includes $n$ registers that specifies which cache partitions 
+the partitioned cache includes $n$ registers that specify which cache partitions 
 can be accessed for each timing compartment. 
 %When a request requires a replacement, the cache uses the TCID of the request
 %to decide which partitions can allow entries to be replaced according to the
 %policy. (Checking is only required on replacements since TCIDs have separate
 %address spaces.) 
-In the set partitioned cache, the registers specific a mask
-that will be used to compute the cache array index from a memory address.
+In the set partitioned cache, the registers specify a mask
+that is used to compute the cache array index from the memory address.
 The mask maps accesses from each timing compartment to a subset of 
 cache sets.
 Similarly, each queue at the interface of the shared structures is tagged
@@ -130,7 +130,7 @@ For time-multiplexed resources, the hardware mechanisms contain control
 registers so that the TCM can specify the schedule for time multiplexing.
 More specifically, for an $n$-core system, a time-multiplexed resource
 uses a schedule with $n$ time slices. Then, for each time slice, control
-registers allow specifying the length of the time slice in cycles and
+registers specify the length of the time slice in cycles, and
 the TCID that is allowed to use the time slice. Finally, to support
 coordination among related components, each time-multiplexed component
 allows an offset to be specified by the TCM. The offset determines
@@ -169,15 +169,16 @@ the number of cycles before the first time slice starts after a reset.
 % moved to the back of the inactive TC queue.
 
 On a context switch, the TCM sets the TCID of a processing core to reflect
-the incoming process (or a virtual machine). The TCM also sets the control
+the incoming process (or virtual machine). The TCM also sets the control
 registers for each protection mechanism to match the new set of active
 timing compartments. Note that changing the resource allocation such as
-partitioning or time-multiplexing schedules may potentially leak information on 
-which process (or a VM) is being scheduled, but can be made independent
-from the value of secret data in timing compartments.
+partition sizes or time-multiplexing schedules may indicate
+which process (or VM) is scheduled. However, it can be done independently
+of secret data protected timing compartments (e.g. by allocating resources 
+based on static performance characterizations).
 
 For timing channel protection, the TCM also flushes per-core state elements
-on a context switch.
+during a context switch.
 Although private, per-core resources are not concurrently shared by TCs, they 
 are shared across context switches. The state modified by the TC that is 
 swapped out can affect the timing of the TC that is swapped in.
