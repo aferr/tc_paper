@@ -1,10 +1,11 @@
 \section{Evaluation}
+
 We evaluated the timing compartments architecture using the gem5 architectural 
 simulator~\cite{gem5} integrated with the DRAMSim2~\cite{DRAMSim2} 
 memory simulator. Our experiments use multiprogram workloads 
 comprised of groups of SPEC2006 benchmarks compiled for the ARM ISA. 
 
-Table \ref{tab:config} shows our system configuration.
+Table~\ref{tab:config} shows our system configuration.
 The cores use the gem5 ``O3`` out-of-order core model which runs at 2GHz. 
 Each core has private 32KB L1 instruction and data caches, and private 256KB L2 
 cache. The cores share a 4MB L3 cache. We derived cache configuration 
@@ -35,25 +36,29 @@ the performance evaluation.
 \end{table}
 
 \subsection{Security Evaluation}
-To experimentally evaluate the security of the timing compartments
-architecture, we use a two-core system with two timing compartments, TC0 and TC1,
-each allocated to one core and a policy that disallows timing channel leakage from
-either timing compartment. If the number of cycles required to execute certain number of instructions 
-for a particular benchmark running in TC0 depends on which benchmark is running in 
-TC1, it indicates some interference exists that can be exploited to leak information about TC0. 
+
+To experimentally evaluate the security of the timing channel protection in our architecture,
+we use a two-core system with two timing compartments, TC0 and TC1, running
+concurrently. The protection policy is configured to disallow any timing channel between
+the two compartments.
+If the number of cycles required to execute certain number of instructions 
+for a particular benchmark running on TC0 depends on which benchmark is running on 
+TC1, it indicates timing interference exists.% that can be exploited to leak information about TC0. 
+>>>>>>> Stashed changes
 A secure scheme should guarantee the benchmark running in TC0 always uses the same number of cycles
-to finish executing certain number of instructions, regardless what benchmark TC1 is running. 
+to finish regardless of which benchmark TC1 is running. 
 
 Using the rule above, we evaluated the security of our architecture by running a fixed benchmark
-in TC0 with different benchmarks in TC1. Then we compare the total execution time for the fixed
-benchmark in different runs. We evaluated our architecture as well as a baseline insecure architecture 
-which does not implement any of the protection mechanisms for shared resources. The results for
-the baseline shows the execution time of the fixed benchmark changes significantly with the type
-of benchmark in TC1, indicating some interference exists in the shared hardware. On the other hand,
+on TC0 while varying the benchmark on TC1. Then we compared the total execution time for the fixed
+benchmark in different runs. We evaluated our architecture as well as the baseline insecure architecture 
+which does not implement any protection. As expected, the results for
+the baseline show the execution time of the fixed benchmark (TC0) changes significantly depending on 
+the benchmark in TC1, indicating timing channels exist between the two cores. On the other hand,
 the results for our architecture show no execution time difference for the fixed benchmark when
-running 1 million instructions. When running 10 million instructions, some benchmarks in TC0
-do show an execution time difference of two cycles. We believe this is some minor interference
-in our architecture, and we are working to eliminate them.
+running 1 million instructions. 
+When running 10 million instructions, a small number of benchmarks in TC0
+showed an execution time difference of two cycles. We believe this is a minor bug in our
+implementation, and we are working on eliminating them.
 
 \subsection{Performance Evaluation}
 Copmared to the baseline scheme, our timing compartment architecture uses partitioning and time multplexing
