@@ -25,18 +25,21 @@
 \begin{abstract}
     This paper presents timing compartments, a hardware architecture primitive 
     that completely eliminates microarchitectural timing channels between 
-    groups software entities (e.g. processes or virtual machines) specified by 
-    the system owner. When coupled with conventional software system isolation 
-    such as access controls, timing compartments provide total software 
-    isolation. This grants distrusting entities the security of executing on 
-    separate hardware with some of the performance benefits of sharing 
-    hardware. By separating timing channel control from explicit channel 
-    control, timing compartments afford the flexibility to pay for timing 
+    groups of software entities (e.g. processes or virtual machines). 
+    %specified by the system owner. 
+    When coupled with conventional techniques to isolate software such as
+    virtual memory, timing compartments can enables removin all communication channels
+    that can be exploited in software.
+    This capability enables distrusting entities to share hardware with
+    a level of assurance that is comparable to executing on 
+    separate hardware.
+    By separating timing channel control from control for explicit communication
+    channels, timing compartments afford the flexibility to pay for timing 
     channel protection only when necessary. To realize timing compartments, we 
-    develop and experimentally evaluate a microarchitecture that eliminates 
-    timing side channels and timing covert channels for every vulnerable 
-    hardware component. In doing so, we expose the challenges in integrating 
-    protection mechanisms for interdependent components and reveal two novel 
-    microarchitecture timing channels. 
+    design and experimentally evaluate a full multi-core processor that eliminates 
+    timing channels for all shared hardware components.
+    The experimental results suggest that the overhead of supporting 
+    timing compartments can be rather low in modern microprocessors, especially when
+    the number of timing compartments is small.
 
 \end{abstract}
