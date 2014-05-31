@@ -45,14 +45,15 @@ communication.
 
 Timing channels can be classified as external or internal.
 \cite{mitigation3}.  In an {\em external} timing channel, the adversary measures 
-the timing of a victim event and correlates it with victim data.  External 
-timing channels are not caused by timing variation in the victim program rather 
-than interference, and therefore can be exploited by an adversary that is 
+the timing of a victim event and correlates it with victim data. 
+External 
+timing channels are caused by timing variation in the victim program rather 
+than interference, and therefore, can be exploited by an adversary that is 
 external to the system.
 %% For example, a password checking program that sequentially compares strings
 %% and stops on the first incorrect character leaks the location of a mismatch.
 For example, Bernstein's attack~\cite{bernstein} exploits data-dependent
-timing variations in a popular implementation of AES encryption.  In the 
+timing variations in a popular implementation of AES encrypion.  In the 
 vulnerable program, victim cache timing events depend on the secret and affect 
 the total execution time. The adversary measures the victim execution time and 
 correlates this with the secret key.
@@ -95,10 +96,10 @@ the key.
 \subsection{Definition of Timing Compartments}
 
 Timing compartments are a new architecture abstraction that allows software to
-explicitly control {\em internal timing channels} that in shared systems.
+explicitly control {\em internal timing channels} in shared systems.
 When used in conjunction with access
-control mechanisms, such as conventional page handlers, they complete software 
-isolatio, because timing channels are the only side/covert channels that can be
+control mechanisms, such as conventional page handlers, they provide complete software 
+isolation, because timing channels are the only side/covert channels that can be
 exploited in software without physical attacks.
 
 As a software level abstraction, a timing compartment consists of one or more 
