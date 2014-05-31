@@ -14,7 +14,7 @@
    id="svg3863"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="coordination.svg">
+   sodipodi:docname="coordination.pdf">
   <defs
      id="defs3865">
     <marker
@@ -105,7 +105,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -125,7 +125,7 @@
          id="tspan3873"
          x="79.044426"
          y="293.99017"
-         style="font-size:12px">L3-membus path</tspan></text>
+         style="font-size:12px">L3-mem path</tspan></text>
     <rect
        style="opacity:0.5;fill:#ff0000;stroke:none"
        id="rect3919"
@@ -214,7 +214,7 @@
          id="tspan7748"
          sodipodi:role="line">T<tspan
    style="font-size:65.00091553%;baseline-shift:sub"
-   id="tspan3872">L3-membus</tspan></tspan></text>
+   id="tspan3872">L3-mem</tspan></tspan></text>
     <rect
        style="opacity:0.5;fill:#ff0000;stroke:none"
        id="rect7758"
