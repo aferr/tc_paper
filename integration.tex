@@ -201,9 +201,9 @@ incoming TC.
 \subsection{Time Slice Coordination}
 \label{sec:coordination}
 
-The proposed architecture for implementing timing compartments rely heavily on
+The proposed architecture for implementing timing compartments relies heavily on
 time division multiplexing of shared resources. For efficiency, the schedules
-for adjacent time-multiplexed needs to be coordinated together to avoid 
+for adjacent time-multiplexed components should be coordinated to avoid 
 unnecessary delays or wasted bandwidth.
 %However, Naïvely time multiplexing the components with contention based timing channels 
 %can lead to poor performance since many of these components are on the same 
@@ -232,17 +232,17 @@ unnecessary delays or wasted bandwidth.
 
 Figure~\ref{fig:naive_scheme} illustrates a naïve time slice allocation that
 does not consider interactions between related components.
-In the figure, the L2-L3 bus is the bus connecting the private caches 
+In the figure, the L2-L3 bus connects the private caches 
 to the shared cache, and the membus connects the shared cache to the memory 
 controller.
 Unfortunately, the time slice allocation in the figure fails to properly
 align time slices for common operations.
 Notably, the L3 response port has its time slice misaligned with the L2-L3
-bus. As a result, a response from L3 to L2 may have to unnecessarily delayed.
+bus. As a result, a response from L3 to L2 may be unnecessarily delayed.
 As a more subtle problem, the allocation uses the same time slices for both
-request and response layers for the L2-L3 bus. However, an access to L3 has
-a latency even in a cache hit. As a result, the response for a L3 request may
-unnecessarily have to wait for the next time slice. 
+request and response layers for the L2-L3 bus. However, an L3 access has
+a latency even during a cache hit. As a result, the response for an L3 request may
+have to wait unnecessarily for the next time slice. 
 %Ideally, the time slice
 %for the response layer should be shifted to reflect the L3 access latency.
 
@@ -265,7 +265,7 @@ unnecessarily have to wait for the next time slice.
 \end{figure}
 
 To understand how the time slices for the L2-L3 interface need to be coordinated,
-let us examine timing of a typical cache hit in Figure~\ref{fig:hit_timing},
+let us examine the timing of a typical cache hit in Figure~\ref{fig:hit_timing},
 which represents a common case. In this design, we assume that the cache is fully
 pipelined and is capable of accepting a new request every cycle.
 In the timing diagram, a request over the 
@@ -281,17 +281,17 @@ The response port transfers a cache block in $T_{CBT}$ cycles.
     \end{center}
 \end{figure}
 
-The goal of the time slice coordination is to maximize the chance of a 
-request-response pair to proceed within a single time slice without the
+The goal of time slice coordination is to maximize the chance that a
+request-response pair can proceed within a single time slice without the
 response being blocked until the next turn.
 Figure~\ref{fig:hit_schedule} shows the time slice allocation that matches 
 the common cache hit timing. 
-In the figure, the time slice for the response layer is shifted by $T_{bus} + T_{L3L}$
-so that the response can use the L2-L3 bus after a cache access.
-Also, the L3 response port uses the same time slice with the L2-L3 bus so that
-both can be used at the same time.
-To maintain that the relationship between the request and response layers,
-the allocation uses the same time slice length for all three components.
+In the figure, the time slice for the response layer is shifted by
+$T_{bus} + T_{L3L}$ so that the response can use the L2-L3 bus after a cache
+access. Also, the L3 response port uses the same time slice as the
+L2-L3 bus so that both can be used at the same time.
+To maintain this relationship between the request and response layers,
+the schedule uses the same time slice length for all three components.
 
 %1) allow a request to proceed through common paths unblocked and 
 %2) repeat this alignment for each TC. 
@@ -314,31 +314,50 @@ the allocation uses the same time slice length for all three components.
     \end{center}
 \end{figure}
 
-The analysis for the segment of the shared cache miss path between the shared 
-cache and the memory controller is similar. The most significant difference is 
-that unlike the cache, the memory controller itself is time multiplexed. Figure 
-\ref{fig:miss_timing} shows the timing for this segment of the shared cache 
-miss path. The time quanta of the memory controller have a duration that is 
-chosen to be $T_{MCL}$. This optimal value may depend on the design, and
-the authors of \cite{ushpca14} discuss the selection of this value. $M$ is the 
-number of memory requests that can be handled in a single memory controller 
-time quantum.
-$T_{miss}$, the total period of the cache miss timing sequence is 
-$T_{bus}+T_{MCL}+M\times T_{CBT}$.
+The analysis for the L3-memory interface is similar. Figure 
+\ref{fig:miss_timing} shows the timing of an L3 cache miss. As before, sending 
+a request over the bus takes $T_{bus}$ cycles. After receiving the packet, the 
+memory controller is ready to transmit the response after $T_{MCL}$ cycles. 
+Finally, the memory controller sends its response to the L3 over the L3-memory
+bus in $T_{CBT}$ cycles. The schedule for the L3-memory interface is similar to 
+that of the L2-L3 interface, except here, the response layer time quanta are 
+shifted by $T_{bus}+T_{MCL}$ cycles. The time quanta of each 
+resource have the same duration.
 
-The schedule of the entire system should allow the shared cache miss path to be 
-traversed unblocked.
-% , but since cache hits are more frequent than misses, the performance of the 
-% cache hit path should not be weakened to meet this goal.
-To prevent blocking along the request path, the time quantum of a timing 
-compartment on the membus request port should begin just as that timing 
-compartment's time quantum on the shared cache memory side request port 
-finishes. This prevents blocking along the request path of the membus.
-Similarly, to prevent blocking along the response path, the time quantum of the 
-shared cache response port should begin just after the time quantum of the same 
-timing compartment on the memory bus response layer ends. Figure 
-\ref{fig:coordination}
-shows a high level view of a full coordinated schedule.
+%% The analysis for the segment of the shared cache miss path between the shared 
+%% cache and the memory controller is similar. The most significant difference is 
+%% that unlike the cache, the memory controller itself is time multiplexed. Figure 
+%% \ref{fig:miss_timing} shows the timing for this segment of the shared cache 
+%% miss path. The time quanta of the memory controller have a duration that is 
+%% chosen to be $T_{MCL}$. This optimal value may depend on the design, and
+%% the authors of \cite{ushpca14} discuss the selection of this value. $M$ is the 
+%% number of memory requests that can be handled in a single memory controller 
+%% time quantum.
+%% $T_{miss}$, the total period of the cache miss timing sequence is 
+%% $T_{bus}+T_{MCL}+M\times T_{CBT}$.
+
+To allow an L3 miss request to proceed unblocked, it is desirable to have the time 
+quanta of the L2-L3 bus response port align with the time quanta of the 
+L3-memory bus response ports. To maintain this relationship, we cannot use the 
+same time quanta for the L2-L3 interface as the L3-memory interface since 
+memory access latencies are much longer than cache latencies. Instead, the time 
+quanta of the L3-memory interface should be increased so that the L3-memory 
+interface quanta are a multiple of the L2-L3 interface quanta. Figure 
+~\ref{fig:coordination} shows this relationship.
+
+%% The schedule of the entire system should allow the shared cache miss path to be 
+%% traversed unblocked.
+%% % ,but since cache hits are more frequent than misses, the performance of the 
+%% % cache hit path should not be weakened to meet this goal.
+%% To prevent blocking along the request path, the time quantum of a timing 
+%% compartment on the membus request port should begin just as that timing 
+%% compartment's time quantum on the shared cache memory side request port 
+%% finishes. This prevents blocking along the request path of the membus.
+%% Similarly, to prevent blocking along the response path, the time quantum of the 
+%% shared cache response port should begin just after the time quantum of the same 
+%% timing compartment on the memory bus response layer ends. Figure 
+%% \ref{fig:coordination}
+%% shows a high level view of a full coordinated schedule.
 
 \begin{figure}
     \begin{center}
@@ -348,13 +367,13 @@ shows a high level view of a full coordinated schedule.
     \end{center}
 \end{figure}
 
-To meet the first criterion, the cache hit path timing sequence shown in 
-\ref{fig:hit_timing} should be aligned with the start of the corresponding 
-memory bus time quantum. To repeat this behavior for each cache hit path timing 
-sequence, $T_{hit}$ and $T_{miss}$
-should share a common factor. Since cache hits are more frequent than misses, 
-the performance of the cache hit path should not be weakened to accomplish 
-this. Instead, the length of the membus timing sequence should be increased 
-(e.g. by increasing the memory controller time quantum). The second criterion 
-is met if the maximum number of active timing compartments in the system (i.e.  
-the number of cores) is a factor of the period of the membus timing sequence.
+%% To meet the first criterion, the cache hit path timing sequence shown in 
+%% \ref{fig:hit_timing} should be aligned with the start of the corresponding 
+%% memory bus time quantum. To repeat this behavior for each cache hit path timing 
+%% sequence, $T_{hit}$ and $T_{miss}$
+%% should share a common factor. Since cache hits are more frequent than misses, 
+%% the performance of the cache hit path should not be weakened to accomplish 
+%% this. Instead, the length of the membus timing sequence should be increased 
+%% (e.g. by increasing the memory controller time quantum). The second criterion 
+%% is met if the maximum number of active timing compartments in the system (i.e.  
+%% the number of cores) is a factor of the period of the membus timing sequence.
