@@ -200,9 +200,13 @@ incoming TC.
 \subsection{Time Slice Coordination}
 \label{sec:coordination}
 
-Naïvely time multiplexing the components with contention based timing channels 
-can lead to poor performance since many of these components are on the same 
-path to handle a request. 
+The proposed architecture for implementing timing compartments rely heavily on
+time division multiplexing of shared resources. For efficiency, the schedules
+for adjacent time-multiplexed needs to be coordinated together to avoid 
+unnecessary delays or wasted bandwidth.
+%However, Naïvely time multiplexing the components with contention based timing channels 
+%can lead to poor performance since many of these components are on the same 
+%path to handle a request. 
 % During a shared cache miss, the request is sent along the bus that connects 
 % the private caches to the shared cache, which we refer to as the L2L3Bus.  
 % After detecting the miss, a request is sent to memory through the bus 
@@ -212,14 +216,10 @@ path to handle a request.
 % through the L2L3Bus.
 %%%%%%% The NoC section should mention the request/response layers before this 
 %%%%%%% section
-On the cache miss path both buses (which are each split into a request and 
-response layer), the response ports of the cache and memory controller, and the 
-memory controller itself are all time multiplexed. A naïve system design might 
-determine an optimal time quantum duration and round robin schedule for each 
-resource independently of one another as shown in figure 
-\ref{fig:naive_scheme}. The L2-L3 bus is the bus connecting the private caches 
-to the shared cache, and the membus connects the shared cache to the memory 
-controller.
+
+%On the cache miss path both buses (which are each split into a request and 
+%response layer), the response ports of the cache and memory controller, and the 
+%memory controller itself are all time multiplexed. 
 
 \begin{figure}
     \begin{center}
@@ -229,34 +229,48 @@ controller.
     \end{center}
 \end{figure}
 
-Notably, the time quanta of each component are not aligned with each of the 
-L2-L3 bus time quanta.  During a shared cache hit on behalf of $TC1$, 
-occasionally the $TC1$ shared cache response port time quantum will be aligned 
-with the $TC1$ L2-L3 bus time quantum allowing it to proceed along the path 
-without unneeded stalls.  However, sometimes these are not well-aligned and 
-$TC1$ will have to wait for $TC2$ to finish before it can proceed. This becomes 
-even more wasteful
-as the number of timing compartments scales. A request may have to wait through 
-each other compartment's time quantum. 
+Figure~\ref{fig:naive_scheme} illustrates a naïve time slice allocation that
+does not consider interactions between related components.
+In the figure, the L2-L3 bus is the bus connecting the private caches 
+to the shared cache, and the membus connects the shared cache to the memory 
+controller.
+Unfortunately, the time slice allocation in the figure fails to properly
+align time slices for common operations.
+Notably, the L3 response port has its time slice misaligned with the L2-L3
+bus. As a result, a response from L3 to L2 may have to unnecessarily delayed.
+As a more subtle problem, the allocation uses the same time slices for both
+request and response layers for the L2-L3 bus. However, an access to L3 has
+a latency even in a cache hit. As a result, the response for a L3 request may
+unnecessarily have to wait for the next time slice. 
+%Ideally, the time slice
+%for the response layer should be shifted to reflect the L3 access latency.
+
+%Notably, the time quanta of each component are not aligned with each of the 
+%L2-L3 bus time quanta.  During a shared cache hit on behalf of $TC1$, 
+%occasionally the $TC1$ shared cache response port time quantum will be aligned 
+%with the $TC1$ L2-L3 bus time quantum allowing it to proceed along the path 
+%without unneeded stalls.  However, sometimes these are not well-aligned and 
+%$TC1$ will have to wait for $TC2$ to finish before it can proceed. This becomes 
+%even more wasteful
+%as the number of timing compartments scales. A request may have to wait through 
+%each other compartment's time quantum. 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=2.4675in]{figs/hit_timing.eps}
-        \caption{Cache hit timing sequence.}
+        \caption{L3 cache hit timing sequence.}
         \label{fig:hit_timing}
     \end{center}
 \end{figure}
 
-For ease of analysis, we examine the shared cache hit path before covering the 
-complete shared cache miss path. Figure \ref{fig:hit_timing} shows the timing 
-of $N$ requests through the shared cache hit path, where $N$ is the number of 
-pipeline stages through the fully pipelined cache. Sending a request over the 
-L2-L3 bus takes $T_{bus}$ cycles.  The cache then takes $T_{L3L}$ cycles after 
-receiving the request before the data for the first of the $N$ requests is 
-available to be sent. The response port transfers all the responses in $N\times 
-T_{CBT}$ cycles, where $T_{CBT}$ is the time required to transfer a cache block 
-over the bus. $T_{hit}$, the total period of the the cache hit timing sequence 
-is $T_{bus}+T_{L3L}+N\times T_{CBT}$.
+To understand how the time slices for the L2-L3 interface need to be coordinated,
+let us examine timing of a typical cache hit in Figure~\ref{fig:hit_timing},
+which represents a common case. In this design, we assume that the cache is fully
+pipelined and is capable of accepting a new request every cycle.
+In the timing diagram, a request over the 
+L2-L3 bus takes $T_{bus}$ cycles. The cache then takes $T_{L3L}$ cycles after 
+receiving the request before the data is ready.
+The response port transfers a cache block in $T_{CBT}$ cycles. 
 
 \begin{figure}
     \begin{center}
@@ -266,23 +280,35 @@ is $T_{bus}+T_{L3L}+N\times T_{CBT}$.
     \end{center}
 \end{figure}
 
-To improve over the naïve scheme, the schedule must coordinate each of these 
-resources to 1) allow a request to proceed through common paths unblocked and 
-2) repeat this alignment for each TC. Figure \ref{fig:hit_schedule} shows a 
-schedule that allows $N$ requests to proceed unblocked for each TCs turn. The 
-time quanta are aligned to follow the timings of \ref{fig:hit_timing}. To 
-guarantee that the behavior of a schedule repeats for the time quanta of each 
-TC, the durations of the time quanta for each resource must share a common 
-factor number of cycles. For example, if $N \times T_{CBT}$ (and this is the 
-time quanta duration for the response port and layer) is 16 and $T_{bus}$ is 3, 
-the actual time quanta duration for the request layer, $T_{req}$, should be 4, 
-8, or 16 even though the request port cannot do useful work for these extra 
-cycles. 
+The goal of the time slice coordination is to maximize the chance of a 
+request-response pair to proceed within a single time slice without the
+response being blocked until the next turn.
+Figure~\ref{fig:hit_schedule} shows the time slice allocation that matches 
+the common cache hit timing. 
+In the figure, the time slice for the response layer is shifted by $T_{bus} + T_{L3L}$
+so that the response can use the L2-L3 bus after a cache access.
+Also, the L3 response port uses the same time slice with the L2-L3 bus so that
+both can be used at the same time.
+To maintain that the relationship between the request and response layers,
+the allocation uses the same time slice length for all three components.
+
+%1) allow a request to proceed through common paths unblocked and 
+%2) repeat this alignment for each TC. 
+%Figure \ref{fig:hit_schedule} shows a 
+%schedule that allows $N$ requests to proceed unblocked for each TCs turn. The 
+%time quanta are aligned to follow the timings of \ref{fig:hit_timing}. To 
+%guarantee that the behavior of a schedule repeats for the time quanta of each 
+%TC, the durations of the time quanta for each resource must share a common 
+%factor number of cycles. For example, if $N \times T_{CBT}$ (and this is the 
+%time quanta duration for the response port and layer) is 16 and $T_{bus}$ is 3, 
+%the actual time quanta duration for the request layer, $T_{req}$, should be 4, 
+%8, or 16 even though the request port cannot do useful work for these extra 
+%cycles. 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=2.9475in]{figs/miss_timing.eps}
-        \caption{The shared cache miss path timing sequence.}
+        \caption{The L3-memory timing sequence.}
         \label{fig:miss_timing}
     \end{center}
 \end{figure}
