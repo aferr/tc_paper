@@ -112,9 +112,11 @@ timing channel protection, and shows that the overhead can be reasonable.
 \end{itemize}
 
 The rest of the paper is organized as follows.
-Section 2 describes the taxonomy of timing channels. It then describes our 
-threat model and gives examples of attacks that are prevented by timing 
-compartments. Section 3 defines timing compartments and shows how they can be 
-applied in different practical systems. Section 4 presents a vulnerable, 
-baseline architecture and analyzes the sources of timing channels in each 
-microarchitectural component.
+Section 2 introduces timing compartments, describes our thread model, and 
+presents examples of applications that can be enabled by the timing compartments.
+Section 3 presents the sources of timing channels in a multi-core processor, and
+describes protection mechanisms to eliminate them. 
+Section 4 presents how the hardware protection mechanisms need to managed
+in a software layer.
+Section 5 evaluates the proposed architecture. Section 6 discussed related
+work, and Section 7 concludes the paper.
