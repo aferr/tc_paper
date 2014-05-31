@@ -31,20 +31,32 @@ Execution leases~\cite{execution_leases}
 provide another external timing channel solution at the hardware level by 
 enforcing strict upper bounds on the execution times of program subsections. 
 
-Timing channels are a form of information flow, and many approaches to 
-controlling timing channels are based in information flow theory. Language 
-level approaches track information flow and to either 
+Timing channels are a form of information flow, and there is a large body
+of work on information flow control. For example, language-level approaches
+track information flow that is visible at the program level to either 
 eliminate~\cite{quantleaks} or 
-reduce~\cite{mitigation1,mitigation2,mitigation3} timing channels. At the 
-systems level, information flow has been used to provide security 
-through explicit channels ~\cite{flume-sosp07,histar-sosp06,laminar-pldi09}. 
-These can be combined with timing compartments to provide total software 
-isolation.
+reduce~\cite{mitigation1,mitigation2,mitigation3} timing channels. 
+However, language-level approaches cannot fully control microarchitecture-level
+timing channels because traditional instruction set architecture hides
+timing inside a processor.
+At the 
+systems level, information flow control has been used to control
+explicit communication channels~\cite{flume-sosp07,histar-sosp06,laminar-pldi09}. 
+These software approaches can control explicit information flows or external
+timing channels that the timing compartments do not handle.
+The timing compartments complement these software approach by
+controlling microarchitectural timing channels.
 
-Work has also been done to verify hardware timing channel protection. GLIFT 
-\cite{glift-asplos09} tracks all information flows, (including timing channels) 
-in hardware at the gate level, though it does so at a high cost. GLIFT has 
-later been used to develop information flow property checkers in gate level 
-simulators ~\cite{glift-dac10,glift-dac11,glift-isca11}, and more recently 
-hardware description languages that verify timing channel securtity 
+There have been recent efforts on verifying information flow properties
+of hardware including certain timing channels. For example, GLIFT
+\cite{glift-asplos09} dynamically tracks all information flows, including timing channels,
+at the logic gate level. 
+The idea in GLIFT has been extended to develop verifying
+information flow properties using gate-level simulations
+\cite{glift-dac10,glift-dac11,glift-isca11} and a 
+hardware description language
 ~\cite{caisson-plas10,caisson-pldi11,sapper-plas13}.
+However, these approaches so far have only been applied to simple
+processors and a very strict isolation mechanism. 
+This paper studies timing channel protection on complex multi-core processors.
+
