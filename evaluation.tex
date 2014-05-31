@@ -60,56 +60,78 @@ showed an execution time difference of two cycles. We believe this is a minor bu
 implementation, and we are working on eliminating them.
 
 \subsection{Performance Evaluation}
-Copmared to the baseline scheme, our timing compartment architecture uses partitioning and time multplexing
-scheduling in the shared hardware resources, which can introduce some performance overhead due to
-underutilization. To evaluate the performance overhead, we run the SPEC2006 benchmarks in pair of two, and
-we measure the execution time of the fixed benchmark in TC0. The memory intensity of the benchmarks are shown
-in Figure~\ref{fig:memstudy}. For the baseline scheme, we calculate the execution time of the fixed benchmark
+
+Copmared to the baseline scheme, our timing compartment architecture uses static partitioning and time multplexing
+in the shared hardware resources, which can introduce performance overhead due to
+underutilization. To evaluate the performance overhead, we ran the SPEC2006 benchmarks in a pair of two, and
+measured the execution time of the fixed benchmark in TC0. The memory intensity of the benchmarks are shown
+in Figure~\ref{fig:memstudy}. For the baseline architecture, we calculate the average execution time of the fixed benchmark
 by averaging the runs with different benchmarks in TC1. This is due to the fact that the timing of the fixed
-benchmarks changes in different runs. In our scheme, we calculate the execution time of the fixed benchmark by
-running with only one benchmark in TC1, since running with different benchmarks in TC1 will produce the same
-result.
+benchmarks changes in different runs. 
+In our scheme, the execution time of TC0 stays constant no matter which benchmark runs in TC1.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=3.46in]{figs/memstudy.pdf}
-        \caption{Memory intensity of SPEC2006 benchmarks}
+        \caption{Memory intensity of SPEC2006 benchmarks.}
         \label{fig:memstudy}
     \end{center}
 \end{figure}
 
-The performance overhead results are shown in Figure~\ref{fig:performance}. The Y axis shows the total
+The performance overhead results are shown in Figure~\ref{fig:performance}. The Y axis shows the 
 execution time normalized to the baseline. As can be seen, the performance overhead is quite low
 for the benchmarks with low memory intensity. For libquantum and mcf, the performance overhead is about 
-25\%, which is still quite low compared to previous full system protection approaches which incurs serveral
-times of overhead. The results show that our timing compartment architecture has moderate performance overhead
-compared to an insecure architecture.
+25\%, which is still quite low.
+%compared to previous full system protection approaches which incurs serveral
+%times of overhead. 
+The results show that the timing compartments are viable in today's microprocessors,
+especially for applications that require high assurance for software isolation.
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=3.46in]{figs/performance.pdf}
-        \caption{Performance Overhead with 2 TCs}
+        \caption{Performance overhead for 2 TCs.}
         \label{fig:performance}
     \end{center}
 \end{figure}
 
-The performance overhead could get worse if the system scales up to more timing compartments. To give insight
-about the performance overhead in terms of scaling, we evaluated the performance overhead with four timing
-compartments, each occupying one core and private L1 and L2 caches. They share a 4MB L3 cache. The performance
-overhead is shown in Figure~\ref{fig:scalability}. We show two bars for the baseline. One bar represents this
-benchmark running with {astar, astar, astar}, and the other bar represents running with {mcf, mcf, mcf}. This
-is because the baseline scheme shows different execution time when running with different benchmarks, and we
-chose astar and mcf because they represents the least and most memory intensive benchmarks in our benchmark
-suites. We also show the performance of our scheme. All the results are normalized to the baseline when running
-with astar. Again, libquantum and mcf shows the highest overhead, 63\% and 79\% respectively, because of their 
-high memory intensity. This overhead is still manageable compared to previous approaches.
+The performance overhead is likely to increase as the number of timing compartment scales up.
+To study the impact of the number of timing compartments,
+we evaluated the performance overhead with four timing
+compartments on a 4-core processor, each occupying one core and private L1 and L2 caches. 
+They share a 4MB L3 cache. The performance
+overhead is shown in Figure~\ref{fig:scalability}. 
+We show two bars for the baseline. One bar represents the performance when a 
+benchmark is running with three copies of astar ({astar, astar, astar}), and the other bar represents the performance when running with mcf ({mcf, mcf, mcf}). 
+This
+is because the baseline scheme shows different execution time when running with different benchmarks.
+We
+chose astar and mcf because they represent the least and most memory intensive benchmarks in our benchmark
+suites. We also show the performance with four timing compartments. All results are normalized to the baseline when running
+with astar. Again, libquantum and mcf show the highest overhead, 63\% and 79\% respectively, because of their 
+high memory intensity. 
+The results suggest that the overhead of timing compartments is rather insensitive
+to the number of timing compartments for compute-bound applications. For memory-intensive
+applications, the overhead can increase noticeably. However, the results still suggest
+that running multiple timing compartments sharing the same processor provides better
+overall efficiency compared to requiring dedicated machines.
+
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=3.46in]{figs/scalability.pdf}
-        \caption{Performance Overhead with 4 TCs}
+        \caption{Performance overhead for 4 TCs.}
         \label{fig:scalability}
     \end{center}
 \end{figure}
+
+While future multi-core systems are likely to have a large number of processing cores,
+we note that many security applications will not require many timing compartments to
+be used concurrently. For example, the BYOD application only requires two TCs no matter
+how many cores exist in the system. Similarly, in the high-assurance cloud computing
+scenario, the cloud provider can limit the number of high-assurance virtual machines
+that can be located on each physical system while increasing the system utilization 
+by co-locating non-secure virtual machines with high-assurance ones.
+
 
 
