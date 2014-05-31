@@ -38,21 +38,22 @@ protection mechanisms. These approaches also provide guidelines to
 develop new protection mechanisms for components that are not included in
 our baseline architecture.
 
-\subsubsection{Types of Timing Interference}
+\subsubsection{Classification of Internal Timing Channels}
 
-There exists an internal timing channel from one timing compartment (say $TC1$)
-to another ($TC2$) when the timing of $TC2$'s event can be affected by $TC1$'s
-event. There are two types of such timing interference in hardware: state-based
+There exists an internal timing channel from one entity (say $E1$)
+to another ($E2$) whenever the timing of an action of $E1$ can be affected 
+by the behavior of $E2$.
+
+There are two types of such timing channels in hardware: state-based
 and contention-based.
-A \emph{state-based} timing channel happens when a state element whose content
-affects timing is dynamically shared among multiple timing compartments. 
-For example, a conventional shared cache has state-based timing channels because 
-its access time depends on the content.
-A \emph{contention based} timing channel happens when multiple timing compartments
-share a resource that can handle only a finite number of requests at a time.
-%Requests made to the resource while it is already handling other requests are delayed.  
+A \emph{state-based} timing channel occurs whenever there is a state element 
+with an access time that depends on its content and that state element is 
+shared among multiple entities.
+For example, a conventional shared cache has state-based timing channels, because 
+its cache hits are faster than misses.
+A \emph{contention based} timing channel occurs whenever multiple entities 
+share a resource that can handle only finitely many requests at a time.
 Conventional buses have contention-based timing channels.
-
 
 \subsubsection{State-Based Timing Channel Protection}
 
@@ -68,21 +69,20 @@ In general, the state-based
 timing channels can be removed by applying flattening, partitioning, or 
 flushing.
 Flattening eliminates the dependence of access time on the state by forcing 
-every access to take the same amount of time. For example, to remove timing 
-interference in row buffers in DRAM, all DRAM accesses may be treated as 
+every access to finish in the same (worst case) time. For example, to remove timing 
+interference in the row buffers of DRAM, all DRAM accesses may be treated as 
 a row buffer miss.
-%For some components, this is a 
-%brute-force approach. Applied to caches, every access must be treated as a 
-%misss, so this is equivalent to removing the cache. However, for some 
-%vulnerable components, such as the row buffers of main memories, this is the 
-%most sensible approach.
+For some components, this is a 
+brute-force approach. Applied to caches, every access must be treated as a 
+miss, so this is equivalent to removing the cache. 
 
-Partitioning removes interference by ensuring that each timing compartment can
-only affect a disjoint subset of state elements. To be secure, the partitions
-should not change dynamically depending on run-time demands of timing compartments.
-In the simplest case, partitions can be static. Alternatively, partitions may
-be adjusted based on public information such as static performance characteristics
-of an application that does not depend on sensitive data.
+Partitioning removes interference by ensuring that each entity can
+only affect a disjoint subset of state elements. The partitions
+should not change dynamically depending on the run-time demands of entities.
+In the simplest case, partitions can be static.
+However, partitions do not need to be heterogeneous and can be sized according 
+to static performance characterizations of each software entity (assuming this 
+information can be made public and does not depend on secrets).
 
 %prevents software entities that share state elements from 
 %interfering. Static partitioning is realized by dividing the state elements 
@@ -96,8 +96,8 @@ of an application that does not depend on sensitive data.
 %to static performance characterizations of each software entity (assuming this 
 %information can be made public).
 
-Flushing can remove state-based timing channels when a resource that is time-shared.
-For example, a branch predictor table may be cleared on a context switch.
+Flushing can remove state-based timing channels for a resource that is time-shared.
+For example, a branch prediction table may be cleared on a context switch.
 %At the end of a time quantum, the state elements are completely cleared before 
 %passing ownership of the state elements to the entity in the next time quantum.  
 %Resources that can be flushed can also be partitioned, and there are tradeoffs 
@@ -107,10 +107,10 @@ For example, a branch predictor table may be cleared on a context switch.
 % quanta also increases the number of slower accesses at the start of the 
 % quanta (e.g. it causes more cold cache misses). However, partitioning reduces 
 % the total number of state elements that can be allocated to each entity. 
-In general, there exists a trade-off between partitioning and flushing.
+In general, there is a trade-off between partitioning and flushing.
 For long time slices (e.g. when context switching is infrequent), 
-flushing is preferable because it allows the full capacity can be used by
-each timing compartment. On the other hand, partitioning may
+flushing is preferable because it allows the full capacity to be used by
+each timing compartment. In contrast, partitioning may
 offer better performance for short time slices by reducing cold misses.
 %time to reload
 %the state on a context switch.
@@ -120,16 +120,16 @@ offer better performance for short time slices by reducing cold misses.
 %Contention based timing channels arise whenever a resource that is shared among 
 %multiple software entities can only handle a finite number of requests at a 
 %time. 
-Contention based timing channels can be removed by duplication or 
+Contention based timing channels can be removed by duplication or by
 time division multiplexing (TDM). Duplication removes interference by
-allowing dedicated resources for each timing compartment.
+allocating dedicated resources for each timing compartment.
 However, this has obvious area overhead implications. If 
 duplication is infeasible, time division multiplexing can be used.
 %TDM 
 %defines a schedule where each software entitiy is guaranteed a period of time, 
 %called a time quantum, where only that entity can use the resource. The 
 The schedule of time slices must either be static or independent of the 
-dynamic behavior of timing compartments.
+dynamic behavior of software entities.
 
 %\subsubsection{External Timing Channel Protection}
 %
