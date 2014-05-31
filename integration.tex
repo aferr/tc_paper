@@ -342,8 +342,14 @@ L3-memory bus response ports. To maintain this relationship, we cannot use the
 same time quanta for the L2-L3 interface as the L3-memory interface since 
 memory access latencies are much longer than cache latencies. Instead, the time 
 quanta of the L3-memory interface should be increased so that the L3-memory 
-interface quanta are a multiple of the L2-L3 interface quanta. Figure 
-~\ref{fig:coordination} shows this relationship.
+interface quanta are a multiple of the L2-L3 interface quanta. 
+In addition, to allow the memory response to proceed unblocked, the same TC 
+should be scheduled at the end of the L3-memory time quantum. This can be 
+achieved by making the number of active timing compartments multiplied by the 
+durations of the L2-L3 interface time slices evenly divide the
+durations of the L3-memory time quanta.
+Figure 
+~\ref{fig:coordination} shows these relationships.
 
 %% The schedule of the entire system should allow the shared cache miss path to be 
 %% traversed unblocked.
