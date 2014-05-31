@@ -1,21 +1,33 @@
-\section{Related Works}
-Numerous internal microarchitectural timing channels have been exposed in
+\section{Related Work}
+
+Previous studies identified 
+a number of microarchitectural timing channels 
 caches~\cite{percival,bernstein,caseofaes,remoteaes,analyticalcache,collision,
 deconstructing,cachegames}, branch predictors 
 \cite{branchpred,predictingbranch}, processor
 pipelines \cite{pipelines}, networks on chip~\cite{yaonocs,surfnoc}, and memory
-controllers~\cite{ushpca14,fletcher-hpca14}. However, the internal timing 
-channels caused by the response ports of caches and memory controllers and by 
-contention for MSHRs in caches are new.  Solutions for timing channels caused 
-by individual components such as caches~\cite{newcache,deconstructing}, memory
-controllers~\cite{ushpca14,fletcher-hpca14}, and nentworks on chip 
-~\cite{yaonocs,surfnoc} have
-been proposed.
+controllers~\cite{ushpca14,fletcher-hpca14}. 
+Also, people have proposed solutions for timing channels in
+individual components such as caches~\cite{newcache,deconstructing}, memory
+controllers~\cite{ushpca14,fletcher-hpca14}, and on-chip network
+~\cite{yaonocs,surfnoc}.
+However, the previous work has
+so far focused on individual component. This work represents the first attempt
+at designing a full microprocessor with complete internal timing channel protection.
+Our integration efforts also exposed new sources of timing channels in module
+interfaces such as MSHRs and cache/memory response ports.
 
-However, this paper presents the first microarchitecture to address all 
-internal microarchitectural timing channels. Ascend~\cite{ascend} proposes a
-microarchitecture that eliminates external timing channels, but does not
-address internal timing channels. Execution leases~\cite{execution_leases} 
+%However, this paper presents the first microarchitecture to address all 
+%internal microarchitectural timing channels. 
+
+Ascend~\cite{ascend} proposes a
+microarchitecture that aims to eliminate external timing channels so that
+even untrusted software can execute without leaking any confidential
+data. This presents a powerful option if physical attacks need to be
+considered. However, Ascend does not allow a processor to be shared by
+multiple software components at the same time, and does not address 
+any internal timing channels.
+Execution leases~\cite{execution_leases} 
 provide another external timing channel solution at the hardware level by 
 enforcing strict upper bounds on the execution times of program subsections. 
 
