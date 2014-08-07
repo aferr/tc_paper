@@ -175,9 +175,10 @@ the incoming process (or virtual machine). The TCM also sets the control
 registers for each protection mechanism to match the new set of active
 timing compartments. Note that changing the resource allocation such as
 partition sizes or time-multiplexing schedules may indicate
-which process (or VM) is scheduled. However, it can be done independently
-of secret data protected timing compartments (e.g. by allocating resources 
-based on static performance characterizations).
+which process (or VM) is scheduled. However, allocation can be done
+independently of data-dependent dynamic behavior (e.g. by allocating resources
+based on static performance characterizations). Context switches should not 
+depend on process state (e.g. ready or busy)
 
 For timing channel protection, the TCM also flushes per-core state elements
 during a context switch.
@@ -193,6 +194,13 @@ partition, TLB, and branch predictor state of the outgoing TC are all flushed.
 Finally, the TCID stores of the outgoing TC are replaced with the TCID of the 
 incoming TC. 
 
+When switching out a TC with a label that is less than or equal to that of the 
+TC that is switched in, flushing is unnecessary. There is no need to prevent 
+timing leakage to the new TC since it is permitted by the policy.
+Lattice scheduling~\cite{lattice-scheduling} can be applied to reduce the
+overhead needed for context switches by scheduling TCs so that their security
+labels increase monotonically. 
+
 %The time required to perform a context switch depends on the state and behavior 
 %of the outgoing TC. The owner of the incoming TC can observe when the incoming 
 %TC begins executing, so this implies a potential leakage of secrets. To 
@@ -206,53 +214,53 @@ incoming TC.
 
 \subsection{Handling I/O}
 TCs must interact with the TCM to handle requests for I/O without causing a 
-timing channel through interaction with a shared OS or hypervisor. Furthermore, 
-system designers may wish to protect the OS or Hypervisor with a separate TC.
+timing channel through interaction with a shared OS or hypervisor.
+% Furthermore, 
+% system designers may wish to protect the OS or Hypervisor with a separate TC.
 Any resources required to handle I/O requests are allocated in the TC that owns 
 them rather than the TC of the TCM (if there is one).
 Processes that handle I/O are placed in the TC owning the IO 
 operation (in a hypervisor environment this process is created in the 
-privileged VM owned by the hypervisor). The process is executed on a core owned 
-by that TC, and similarly, the instructions and data are placed in the 
-address space of that TC.
-
+privileged VM owned by the hypervisor).
+%The process is executed on a core owned 
+%by that TC, and similarly, the instructions and data are placed in the 
+%address space of that TC.
 I/O buffers are allocated for each TC separately. In hypervisor systems such as
 Xen\cite{xen-sosp03} which use a shared I/O ring buffer for each VM, a separate
 ring buffer must be allocated for each TC (although VMs in the same TC may share
-the buffer). Separate, per-TC buffers introduce a minor complication - the OS
-must own a portion of the address space of each TC where these buffers can be
-allocated. Alternately, the buffers can be allocated in user-space (analogously
-within a guest VM) at the discretion of the system designer. 
+the buffer). 
+% Separate, per-TC buffers introduce a minor complication - the OS
+% must own a portion of the address space of each TC where these buffers can be
+% allocated. Alternately, the buffers can be allocated in user-space (analogously
+% within a guest VM) at the discretion of the system designer. 
 
-The instructions that handle a system call or interrupt will be loaded into the
-address space and partitions of the owner TC. Often, multiple copies of the 
-instructions will be loaded in the cache in different partitions. However, 
-since instructions needn't be written to, there is no coherence issue. 
-i
+The instructions that execute a system call or library function will be loaded
+into the address space and partitions of TC that is using them. Often, multiple
+copies of the instructions will be loaded in the cache in different partitions.
+However, since instructions needn't be written to, there is no coherence issue. 
 Although some TCM instructions will reside in different user-space or guest 
 TCs, they will still be part of kernel-space processes and can run in 
 privileged mode. This is a benefit of separating timing channel protection 
 from access controls with timing compartments.
 
-Placing interrupt handlers in 
-user-space or guest TCs assumes that event timings for the handlers depend
-solely on user-space or guest data. Though this should often be the case, these 
-handlers should be designed to not depend on protected OS or hypervisor data. 
-Writing this software securely is outside the scope of this paper which is 
-primarily focused on hardware mechanisms.
+% Placing interrupt handlers in 
+% user-space or guest TCs assumes that event timings for the handlers depend
+% solely on user-space or guest data. Though this should often be the case, these 
+% handlers should be designed to not depend on protected OS or hypervisor data. 
+% Writing this software securely is outside the scope of this paper which is 
+% primarily focused on hardware mechanisms.
 
-IO controllers and DMA modules may require additional hardware support to 
+I/O controllers and DMA modules may require additional hardware support to 
 remove timing channel protection. Although these are not explicitly described 
 in this paper, the general protection approaches described in section
 \ref{sec:general_approaches} can be adapted for these devices. For example,
 some IO devices can only be used by a single process at a time introducing a
 contention based timing channel that can be resolved with time multiplexing.
 
-
 % Since the TCM allows access controls and timing channel protection to be
-% handled separately, the process can be run in privileged mode even though it is 
-% run in a TC with user-space processes or unprivileged VMs. However, care must 
-% be taken if the IO operation depends on secrets of both the OS and the 
+% handled separately, the process can be run in privileged mode even though it
+% is run in a TC with user-space processes or unprivileged VMs. However, care
+% must be taken if the IO operation depends on secrets of both the OS and the
 % requesting TC.
 
 %% \subsection{Time Slice Coordination}
