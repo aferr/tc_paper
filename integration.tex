@@ -178,7 +178,8 @@ partition sizes or time-multiplexing schedules may indicate
 which process (or VM) is scheduled. However, allocation can be done
 independently of data-dependent dynamic behavior (e.g. by allocating resources
 based on static performance characterizations). Context switches should not 
-depend on process state (e.g. ready or busy)
+depend on process state (e.g. ready or waiting) since process state can be 
+data-dependent.
 
 For timing channel protection, the TCM also flushes per-core state elements
 during a context switch.
@@ -262,6 +263,39 @@ contention based timing channel that can be resolved with time multiplexing.
 % is run in a TC with user-space processes or unprivileged VMs. However, care
 % must be taken if the IO operation depends on secrets of both the OS and the
 % requesting TC.
+
+\subsection{Interprocess and Interdomain Communication}
+Interprocess and interdomain communication within a timing compartment is 
+trivial and procedes normally. To allow shared memory interprocess 
+communication (IPC) among timing compartments, the shared memory is allocated 
+in the address space of the timing compartment with the security label that is 
+the greatest lower bound (meet) of the two communicating compartments. Any 
+network, cache, or memory controller usage while accessing shared memory uses 
+this meet timing compartment. Shared memory cannot be allocated in either of 
+the communicating compartments directly. This would allow IPC operations to 
+interfere with any other operations performed by that compartment possibly 
+causing disallowed timing channels between the communicating timing 
+compartments. Often, it may be desirable to create a new timing compartment to 
+represent the meet of two communicating compartments rather than to use the 
+meet of the two compartments in the original policy.
+
+Message passing IPC is implemented similarly. The timing compartment with the 
+label that is the greatest lower bound of each of the communicating 
+compartments is used for both sending and receiving messages. An important 
+implication of using a TC that is accessed by both communicating parties, is 
+that the timing of IPC operations is also visible to both parties. Any programs 
+that use either message passing or shared memory IPC must be written so that 
+IPC timings do not leak sensitive information. Though verifying program 
+security for timing channels is beyond the scope of this paper, other work has 
+explored this topic ~\ref{citation_needed}.
+
+Interdomain communication in Xen is based off of grant tables, a data 
+structure that a domain uses to specify the permissions of other domains to use 
+its pages. The grant table is shared with Xen, and operated on using 
+hypercalls. To provide timing channel protection, grant tables are allocated in 
+the meet timing compartment of the communicating domains. The hypercalls must 
+be implemented so that their timing does not depend on data that the 
+hypervisor does not want to share with other domains.
 
 %% \subsection{Time Slice Coordination}
 %% \label{sec:coordination}
