@@ -29,8 +29,7 @@ However, in practice, the TCM will be implemented as an extension of the trusted
 layer such as an OS or a hypervisor.
 
 The following discussion focuses on the interaction between the TCM and the 
-hardware
-protection mechanisms. Therefore, we will assume that the TCM has
+hardware protection mechanisms. Therefore, we will assume that the TCM has
 a mapping of software entities (e.g. virtual machines or processes) to timing 
 compartments.
 
@@ -218,11 +217,10 @@ TCs must interact with the TCM to handle requests for I/O without causing a
 timing channel through interaction with a shared OS or hypervisor.
 % Furthermore, 
 % system designers may wish to protect the OS or Hypervisor with a separate TC.
-Any resources required to handle I/O requests are allocated in the TC that owns 
-them rather than the TC of the TCM (if there is one).
+Any resources required to handle I/O requests are allocated in the TC that owns.
 Processes that handle I/O are placed in the TC owning the IO 
-operation (in a hypervisor environment this process is created in the 
-privileged VM owned by the hypervisor).
+operation (in a hypervisor environment, I/O processes in the privileged
+VM are still placed in the owning TC).
 %The process is executed on a core owned 
 %by that TC, and similarly, the instructions and data are placed in the 
 %address space of that TC.
@@ -266,35 +264,47 @@ contention based timing channel that can be resolved with time multiplexing.
 
 \subsection{Interprocess and Interdomain Communication}
 Interprocess and interdomain communication within a timing compartment is 
-trivial and procedes normally. To allow shared memory interprocess 
-communication (IPC) among timing compartments, the shared memory is allocated 
-in the address space of the timing compartment with the security label that is 
-the greatest lower bound (meet) of the two communicating compartments. Any 
-network, cache, or memory controller usage while accessing shared memory uses 
-this meet timing compartment. Shared memory cannot be allocated in either of 
-the communicating compartments directly. This would allow IPC operations to 
-interfere with any other operations performed by that compartment possibly 
-causing disallowed timing channels between the communicating timing 
-compartments. Often, it may be desirable to create a new timing compartment to 
-represent the meet of two communicating compartments rather than to use the 
-meet of the two compartments in the original policy.
+trivial and proceeds normally. However, IPC between timing 
+compartments requires special handling. IPC operations cannot use
+either of the communicating compartments directly. This would allow IPC 
+operations to interfere with any other operations performed by that TC.
+Instead, the IPC operations are performed in a timing compartment that can be 
+accessed by each communicating TC. This is 
+the TC with the security label that is the greatest lower bound (meet) of the 
+two communicating compartments according to the security policy lattice.  
+Any network, cache, or memory controller usage while performing IPC operations
+are done through this meet timing compartment.
 
-Message passing IPC is implemented similarly. The timing compartment with the 
-label that is the greatest lower bound of each of the communicating 
-compartments is used for both sending and receiving messages. An important 
-implication of using a TC that is accessed by both communicating parties, is 
-that the timing of IPC operations is also visible to both parties. Any programs 
-that use either message passing or shared memory IPC must be written so that 
-IPC timings do not leak sensitive information. Though verifying program 
-security for timing channels is beyond the scope of this paper, other work has 
-explored this topic ~\ref{citation_needed}.
+Shared memory IPC is implemented by allocating the shared memory space in the 
+meet TC. Memory requests to the shared space use the network turns and cache 
+partitions of the meet TC. Message passing IPC is implemented similarly.
+The meet timing compartment of the sender and receiver is used for both sending
+and receiving messages.
 
-Interdomain communication in Xen is based off of grant tables, a data 
-structure that a domain uses to specify the permissions of other domains to use 
-its pages. The grant table is shared with Xen, and operated on using 
-hypercalls. To provide timing channel protection, grant tables are allocated in 
-the meet timing compartment of the communicating domains. The hypercalls must 
-be implemented so that their timing does not depend on data that the 
+In some cases, it may be necessary to create a new timing compartment to
+represent the meet of two communicating compartments rather than to use
+the meet of the two compartments in the original policy (which may be
+undesirably accessible to other timing compartments). However, using an 
+existing TC, if possible, will require less overhead.
+In either case, it is wasteful to execute IPC operations on a separate core. 
+Instead, IPC operations are performed on the core that originated them and an OS 
+trap applies the TCID of the meet TC when using any resource to carry out the 
+IPC operation.
+
+% An important 
+% implication of using a TC that is accessed by both communicating parties is 
+% that the timing of IPC operations is visible to both parties. Any programs 
+% that use either message passing or shared memory IPC must be written so that 
+% IPC timings do not leak sensitive information. Though verifying program 
+% security for timing channels is beyond the scope of this paper, other work has 
+% explored this topic~\cite{smith-popl98,mitigation1,mitigation2,mitigation3}.
+
+Interdomain communication in Xen is based off of grant tables, a data structure 
+that a domain uses to specify the permissions of other domains to use its 
+pages. The grant table is shared with Xen, and operated on using hypercalls. To 
+provide timing channel protection, grant tables are allocated in the meet 
+timing compartment of the communicating domains. The hypercalls must be 
+implemented so that their timing does not depend on data that the 
 hypervisor does not want to share with other domains.
 
 %% \subsection{Time Slice Coordination}
