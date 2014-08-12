@@ -217,7 +217,8 @@ TCs must interact with the TCM to handle requests for I/O without causing a
 timing channel through interaction with a shared OS or hypervisor.
 % Furthermore, 
 % system designers may wish to protect the OS or Hypervisor with a separate TC.
-Any resources required to handle I/O requests are allocated in the TC that owns.
+Any resources required to handle I/O requests are allocated in the TC that owns 
+them.
 Processes that handle I/O are placed in the TC owning the IO 
 operation (in a hypervisor environment, I/O processes in the privileged
 VM are still placed in the owning TC).
@@ -234,7 +235,7 @@ the buffer).
 % within a guest VM) at the discretion of the system designer. 
 
 The instructions that execute a system call or library function will be loaded
-into the address space and partitions of TC that is using them. Often, multiple
+into the address space and partitions of the TC that is using them. Often, multiple
 copies of the instructions will be loaded in the cache in different partitions.
 However, since instructions needn't be written to, there is no coherence issue. 
 Although some TCM instructions will reside in different user-space or guest 
