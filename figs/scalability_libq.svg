@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" font-size="10px" font-family="sans-serif" fill="none" stroke="none" stroke-width="1.5" width="81.18181818181819" height="150">
+     <g transform="translate(50,10)">
+          <g transform="translate(3.74025974025974,0)">
+               <rect y="62.46658340677726" width="6.233766233766235" height="37.53341659322273" fill="rgb(31,119,180)"/>
+               <rect x="6.233766233766235" y="31.02687124701437" width="6.233766233766235" height="68.97312875298563" fill="rgb(174,199,232)"/>
+               <rect x="12.46753246753247" y="9.090909090909108" width="6.233766233766235" height="90.90909090909089" fill="rgb(255,127,14)"/>
+          </g>
+          <g transform="translate(3.74025974025974,0)">
+               <text pointer-events="none" y="3" dy=".71em" transform="translate(9.350649350649352,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">libquantum</text>
+          </g>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" dy=".35em" transform="translate(-40,60.0) rotate(-90.0)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">Percent Overhead</text>
+     </g>
+     <g transform="translate(50,10)">
+          <line shape-rendering="crispEdges" x1="0" y1="100.0" x2="26.181818181818183" y2="100.0" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="75.39718241861289" x2="26.181818181818183" y2="75.39718241861289" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="50.79436483722577" x2="26.181818181818183" y2="50.79436483722577" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="26.19154725583867" x2="26.181818181818183" y2="26.19154725583867" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="1.5887296744515567" x2="26.181818181818183" y2="1.5887296744515567" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+     </g>
+     <g transform="translate(50,10)">
+          <line shape-rendering="crispEdges" x1="0" y1="100.0" x2="10" y2="100.0" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="75.39718241861289" x2="10" y2="75.39718241861289" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="50.79436483722577" x2="10" y2="50.79436483722577" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="26.19154725583867" x2="10" y2="26.19154725583867" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="1.5887296744515567" x2="10" y2="1.5887296744515567" stroke="rgb(0,0,0)" stroke-width="1"/>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0.0,100.0)" fill="rgb(0,0,0)" text-anchor="end">0</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0.0,75.39718241861289)" fill="rgb(0,0,0)" text-anchor="end">50</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0.0,50.79436483722577)" fill="rgb(0,0,0)" text-anchor="end">100</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0.0,26.19154725583867)" fill="rgb(0,0,0)" text-anchor="end">150</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0.0,1.5887296744515567)" fill="rgb(0,0,0)" text-anchor="end">200</text>
+     </g>
+</svg>

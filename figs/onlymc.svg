@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" font-size="10px" font-family="sans-serif" fill="none" stroke="none" stroke-width="1.5" width="545" height="230">
+     <g transform="translate(50,10)">
+          <rect x="9.6078431372549" y="199.84445521901532" width="38.43137254901961" height="0.15554478098466995" fill="rgb(31,119,180)"/>
+          <rect x="57.647058823529406" y="186.44407823204952" width="38.43137254901961" height="13.555921767950482" fill="rgb(31,119,180)"/>
+          <rect x="105.68627450980392" y="388309064794914.3" width="38.43137254901961" height="1.0e-10" fill="rgb(31,119,180)"/>
+          <rect x="153.72549019607843" y="196.74714803576757" width="38.43137254901961" height="3.252851964232421" fill="rgb(31,119,180)"/>
+          <rect x="201.76470588235293" y="198.17502890611294" width="38.43137254901961" height="1.8249710938870713" fill="rgb(31,119,180)"/>
+          <rect x="249.80392156862743" y="194.35696494177256" width="38.43137254901961" height="5.643035058227445" fill="rgb(31,119,180)"/>
+          <rect x="297.843137254902" y="18.181818181818215" width="38.43137254901961" height="181.81818181818178" fill="rgb(31,119,180)"/>
+          <rect x="345.88235294117646" y="152.31505619540036" width="38.43137254901961" height="47.684943804599655" fill="rgb(31,119,180)"/>
+          <rect x="393.921568627451" y="191.0736797712557" width="38.43137254901961" height="8.926320228744276" fill="rgb(31,119,180)"/>
+          <rect x="441.9607843137255" y="195.3027655934926" width="38.43137254901961" height="4.697234406507389" fill="rgb(31,119,180)"/>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(28.823529411764707,199.84445521901532)" fill="rgb(255,255,255)" text-anchor="middle">0.06</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(76.86274509803921,186.44407823204952)" fill="rgb(255,255,255)" text-anchor="middle">5.16</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(124.90196078431373,388309064794914.3)" fill="rgb(255,255,255)" text-anchor="middle">-147754171412600.00</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(172.94117647058823,196.74714803576757)" fill="rgb(255,255,255)" text-anchor="middle">1.24</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(220.98039215686273,198.17502890611294)" fill="rgb(255,255,255)" text-anchor="middle">0.69</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(269.01960784313724,194.35696494177256)" fill="rgb(255,255,255)" text-anchor="middle">2.15</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(317.0588235294118,18.181818181818215)" fill="rgb(255,255,255)" text-anchor="middle">69.18</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(365.0980392156863,152.31505619540036)" fill="rgb(255,255,255)" text-anchor="middle">18.14</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(413.1372549019608,191.0736797712557)" fill="rgb(255,255,255)" text-anchor="middle">3.40</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(461.17647058823536,195.3027655934926)" fill="rgb(255,255,255)" text-anchor="middle">1.79</text>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(28.823529411764707,200.0)" fill="rgb(0,0,0)" text-anchor="middle">astar</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(76.86274509803921,200.0)" fill="rgb(0,0,0)" text-anchor="middle">bzip2</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(124.90196078431373,200.0)" fill="rgb(0,0,0)" text-anchor="middle">gcc</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(172.94117647058823,200.0)" fill="rgb(0,0,0)" text-anchor="middle">gobmk</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(220.98039215686273,200.0)" fill="rgb(0,0,0)" text-anchor="middle">h264ref</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(269.01960784313724,200.0)" fill="rgb(0,0,0)" text-anchor="middle">hmmer</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(317.0588235294118,200.0)" fill="rgb(0,0,0)" text-anchor="middle">libquantum</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(365.0980392156863,200.0)" fill="rgb(0,0,0)" text-anchor="middle">mcf</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(413.1372549019608,200.0)" fill="rgb(0,0,0)" text-anchor="middle">sjeng</text>
+          <text pointer-events="none" y="3" dy=".71em" transform="translate(461.17647058823536,200.0)" fill="rgb(0,0,0)" text-anchor="middle">xalan</text>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" dy=".35em" transform="translate(-30,100.0) rotate(-90.0)" fill="rgb(0,0,0)" text-anchor="middle" style="font:12px sans-serif">Percent Overhead</text>
+     </g>
+     <g transform="translate(50,10)">
+          <line shape-rendering="crispEdges" x1="0" y1="200.0" x2="490" y2="200.0" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="147.43849718998857" x2="490" y2="147.43849718998857" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="94.87699437997712" x2="490" y2="94.87699437997712" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="42.3154915699657" x2="490" y2="42.3154915699657" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+     </g>
+     <g transform="translate(50,10)">
+          <line shape-rendering="crispEdges" x1="0" y1="200.0" x2="10" y2="200.0" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="147.43849718998857" x2="10" y2="147.43849718998857" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="94.87699437997712" x2="10" y2="94.87699437997712" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="42.3154915699657" x2="10" y2="42.3154915699657" stroke="rgb(0,0,0)" stroke-width="1"/>
+     </g>
+     <g transform="translate(50,10)">
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,200.0)" fill="rgb(0,0,0)" text-anchor="end">0</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,147.43849718998857)" fill="rgb(0,0,0)" text-anchor="end">20</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,94.87699437997712)" fill="rgb(0,0,0)" text-anchor="end">40</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,42.3154915699657)" fill="rgb(0,0,0)" text-anchor="end">60</text>
+     </g>
+</svg>
