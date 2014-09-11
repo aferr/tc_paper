@@ -340,95 +340,96 @@ contention based timing channel that can be resolved with time multiplexing.
 %% implemented so that their timing does not depend on data that the hypervisor 
 %% does not want to share with other domains.
 
-\subsection{Time Slice Coordination (Outline Only)}
-\label{sec:coordination}
-
-Explain problem without timing details. Use figure that has turn lengths with 
-no offsets. Show a packet traversing through path with latencies outlined and 
-the packet getting delayed. Explain figure.
-
-Though the l3 hit path is simple, whole l2 miss 
-path is a nontrivial problem - many tradeoffs, used linear 
-optimization. Wrote simulator to explore this. Ultimately found a general scheme
-that an optimizer couldn't beat for the l3 miss path. Finding agood balance between
-the hit and miss paths required an optimizer and we did not find a general scheme
-
-\subsubsection{L2 Miss Timing Sequence}
-Introduce l3 hit timing sequence with figure. Explain figure.
-
-Explain goal of coordinating (EV of L2 miss latency). Usually achieved by 
-aligning turns of adjacent devices. Use turn lengths (duration a TC is 
-scheduled to use a device - depends time to send message, affects 
-``randomness'' of schedule) and offsets (difference in start times that
-improves how the schedule relates to the schedule of other devices).
-
-Show how to optimize l3 hits. Use figure.
-
-Show l3 miss timing sequence
-
-Explain tradeoffs. Use figure?? It is not simple to solve.
-
-\subsubsection{Latency Simulator \& Optimal Coordination}
-Wrote our own l2 miss (l2 to l2) timing simulator. Explain what it simulates. (Assumes 
-uniform random arrival, calculate latency for every possible arrival in a 
-schedule, gets EV of latency).
-
-Exhaustive search of L3 hit path. Confirms that an intuitive design is best.
-
-Cannot exhaustively search L3 miss path latencies. Instead use linear 
-optimizatin. Search space has many relative minima (change offset slightly, 
-suddenly schedule is much better) - cannot use hill climbing. Use simulated 
-annealing. Explain our simulated annealing implementation. Optimize for l3 miss 
-alone and l2 miss latency assuming hit rate of 90\%.
-
-Tried a scheme we suspected would have a good L3 miss latency. Optimal result 
-was different. Adjusted optimizer result to something that made more intuitive 
-sense and iterated. Reran optimizer on result of iterative approach, and the 
-optimizer could not find a better scheme in 20,000 steps.
-
-Explain optimal scheme. Use figure.
-
-For l2 miss latency, no intuitive general approach could be found. Balance 
-between hit/miss paths is difficult.
-
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=3.46in]{figs/baseline_schedule.eps}
-        \caption{Cache hit timing sequence.}
-        \label{fig:naive_scheme}
-    \end{center}
-\end{figure}
-
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=2.4675in]{figs/hit_timing.eps}
-        \caption{L3 cache hit timing sequence.}
-        \label{fig:hit_timing}
-    \end{center}
-\end{figure}
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=3.2624in]{figs/hit_schedule.eps}
-        \caption{Cache hit timing path schedule.}
-        \label{fig:hit_schedule}
-    \end{center}
-\end{figure}
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=2.9475in]{figs/miss_timing.eps}
-        \caption{The L3-memory timing sequence.}
-        \label{fig:miss_timing}
-    \end{center}
-\end{figure}
-
-\begin{figure}
-    \begin{center}
-        \includegraphics[width=2.9475in]{figs/coordination.eps}
-        \caption{A coordinated cache miss path schedule.}
-        \label{fig:coordination}
-    \end{center}
-\end{figure}
+% \subsection{Time Slice Coordination (Outline Only)}
+% \label{sec:coordination}
+% 
+% Explain problem without timing details. Use figure that has turn lengths with 
+% no offsets. Show a packet traversing through path with latencies outlined and 
+% the packet getting delayed. Explain figure.
+% 
+% Though the l3 hit path is simple, whole l2 miss 
+% path is a nontrivial problem - many tradeoffs, used linear 
+% optimization. Wrote simulator to explore this. Ultimately found a general scheme
+% that an optimizer couldn't beat for the l3 miss path. Finding agood balance between
+% the hit and miss paths required an optimizer and we did not find a general scheme
+% 
+% \subsubsection{L2 Miss Timing Sequence}
+% Introduce l3 hit timing sequence with figure. Explain figure.
+% 
+% Show l3 miss timing sequence. Use figure.
+% 
+% \subsubsection{Latency Simulator \& Optimal Coordination}
+% 
+% Explain goal of coordinating (EV of L2 miss latency). Usually achieved by 
+% aligning turns of adjacent devices. Use turn lengths (duration a TC is 
+% scheduled to use a device - depends time to send message, affects 
+% ``randomness'' of schedule) and offsets (difference in start times that
+% improves how the schedule relates to the schedule of other devices).
+% 
+% Show how to optimize l3 hits. Use figure.
+% 
+% Explain tradeoffs. Use figure?? It is not simple to solve.
+% 
+% Wrote our own l2 miss (l2 to l2) timing simulator. Explain what it simulates. (Assumes 
+% uniform random arrival, calculate latency for every possible arrival in a 
+% schedule, gets EV of latency).
+% 
+% Exhaustive search of L3 hit path. Confirms that an intuitive design is best.
+% 
+% Cannot exhaustively search L3 miss path latencies. Instead use linear 
+% optimizatin. Search space has many relative minima (change offset slightly, 
+% suddenly schedule is much better) - cannot use hill climbing. Use simulated 
+% annealing. Explain our simulated annealing implementation. Optimize for l3 miss 
+% alone and l2 miss latency assuming hit rate of 90\%.
+% 
+% Tried a scheme we suspected would have a good L3 miss latency. Optimal result 
+% was different. Adjusted optimizer result to something that made more intuitive 
+% sense and iterated. Reran optimizer on result of iterative approach, and the 
+% optimizer could not find a better scheme in 20,000 steps.
+% 
+% Explain optimal scheme. Use figure.
+% 
+% For l2 miss latency, no intuitive general approach could be found. Balance 
+% between hit/miss paths is difficult.
+% 
+% 
+% \begin{figure}
+%     \begin{center}
+%         \includegraphics[width=3.46in]{figs/baseline_schedule.eps}
+%         \caption{Cache hit timing sequence.}
+%         \label{fig:naive_scheme}
+%     \end{center}
+% \end{figure}
+% 
+% 
+% \begin{figure}
+%     \begin{center}
+%         \includegraphics[width=2.4675in]{figs/hit_timing.eps}
+%         \caption{L3 cache hit timing sequence.}
+%         \label{fig:hit_timing}
+%     \end{center}
+% \end{figure}
+% 
+% \begin{figure}
+%     \begin{center}
+%         \includegraphics[width=3.2624in]{figs/hit_schedule.eps}
+%         \caption{Cache hit timing path schedule.}
+%         \label{fig:hit_schedule}
+%     \end{center}
+% \end{figure}
+% 
+% \begin{figure}
+%     \begin{center}
+%         \includegraphics[width=2.9475in]{figs/miss_timing.eps}
+%         \caption{The L3-memory timing sequence.}
+%         \label{fig:miss_timing}
+%     \end{center}
+% \end{figure}
+% 
+% \begin{figure}
+%     \begin{center}
+%         \includegraphics[width=2.9475in]{figs/coordination.eps}
+%         \caption{A coordinated cache miss path schedule.}
+%         \label{fig:coordination}
+%     \end{center}
+% \end{figure}
