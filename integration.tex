@@ -261,266 +261,174 @@ contention based timing channel that can be resolved with time multiplexing.
 % must be taken if the IO operation depends on secrets of both the OS and the
 % requesting TC.
 
-\subsection{Interprocess and Interdomain Communication}
-Interprocess communication (IPC) is a feature of most operating systems that
-allows processes to communicate with one another. Analogously, virtual machines 
-in a hypervisor system communicate through interdomain communication.
-% Since 
-% interprocess and interdomain communication explicitly share information, 
-% there may be vulnerabilities through these explicit channels, though most
-% conventional operating systems and hypervisors address this.
-The time
-that communication takes place can depend on secrets and create timing channel 
-vulnerabilities if the program is not written to prevent this. These
-code-dependent IPC timing channels are best resolved at the language level.
-However, even correctly written programs can have IPC timing channels through 
-hardware.
+%% \subsection{Interprocess and Interdomain Communication}
+%% Interprocess communication (IPC) is a feature of most operating systems that
+%% allows processes to communicate with one another. Analogously, virtual machines 
+%% in a hypervisor system communicate through interdomain communication.
+%% % Since 
+%% % interprocess and interdomain communication explicitly share information, 
+%% % there may be vulnerabilities through these explicit channels, though most
+%% % conventional operating systems and hypervisors address this.
+%% The time
+%% that communication takes place can depend on secrets and create timing channel 
+%% vulnerabilities if the program is not written to prevent this. These
+%% code-dependent IPC timing channels are best resolved at the language or 
+%% software system level.
+%% However, even correctly written programs can have IPC timing channels through 
+%% hardware.
+%% 
+%% The most common forms of IPC are shared memory and message passing. With
+%% shared memory IPC, the operating system configures a region of memory that can 
+%% be accessed by both communicating processes.
+%% With message passing, the 
+%% processes explicitly send and receive data through system calls. Similar 
+%% hardware-level timing channel vulnerabilities exist in each.
+%% 
+%% Suppose one timing compartment in a shared memory system, 
+%% TC1, writes to the shared memory region. The system as described thus far 
+%% would use TCID1, the TCID of TC1, to perform the request and would place the 
+%% data in the cache partition owned by TC1. TC2, which would like to receive this 
+%% data from TC1, must have some way of accessing it. When TC2 reads to this 
+%% region, it must get the data from the partition of TC1. This can be done if the 
+%% TCM acknowledges the read is for IPC and allows the read from TC2 to be 
+%% performed with TCID1. However, since the IPC data is in the same partition as 
+%% other data owned by TC1, interference can leak sensitive information to TC2 
+%% through a timing channel.
+%% 
+%% Clearly, IPC operations cannot use
+%% either of the communicating compartments directly. This would allow IPC 
+%% operations to interfere with any other operations performed by that TC.
+%% Instead, the IPC operations are performed in a timing compartment that can be 
+%% accessed by each communicating TC. This is 
+%% the TC with the security label that is the greatest lower bound (meet) of the 
+%% two communicating compartments according to the security policy lattice.  
+%% Any network, cache, or memory controller usage while performing IPC operations
+%% are done through this meet timing compartment.
+%% 
+%% Shared memory IPC is implemented by allocating the shared memory space in the 
+%% meet TC. Memory requests to the shared space use the network turns and cache 
+%% partitions of the meet TC. Message passing IPC is implemented similarly.
+%% The meet timing compartment of the sender and receiver is used for both sending
+%% and receiving messages.
+%% 
+%% In some cases, it may be necessary to create a new timing compartment to
+%% represent the meet of two communicating compartments rather than to use
+%% the meet of the two compartments in the original policy (which may be
+%% undesirably accessible to other timing compartments). However, using an 
+%% existing TC, if possible, will require less overhead.
+%% In either case, it is wasteful to execute IPC operations on a separate core. 
+%% Instead, IPC operations are performed on the core that originated them and an OS 
+%% trap applies the TCID of the meet TC when using any resource to carry out the 
+%% IPC operation.
+%% 
+%% % An important 
+%% % implication of using a TC that is accessed by both communicating parties is 
+%% % that the timing of IPC operations is visible to both parties. Any programs 
+%% % that use either message passing or shared memory IPC must be written so that 
+%% % IPC timings do not leak sensitive information. Though verifying program 
+%% % security for timing channels is beyond the scope of this paper, other work has 
+%% % explored this topic~\cite{smith-popl98,mitigation1,mitigation2,mitigation3}.
+%% 
+%% Interdomain communication allows two VMs to communicate, for example, to 
+%% emulate a network containing these VMs.
+%% Interdomain communication in Xen is based off of grant tables, a data structure 
+%% that a domain uses to specify the permissions of other domains to use its 
+%% pages. The grant table is shared with Xen, and operated on using hypercalls 
+%% (which are similar to system calls, but here a VM requests the hypervisor to 
+%% act). To provide timing channel protection, grant tables are allocated in the 
+%% meet timing compartment of the communicating domains. The hypercalls must be 
+%% implemented so that their timing does not depend on data that the hypervisor 
+%% does not want to share with other domains.
 
-The most common forms of IPC are shared memory and message passing. With
-shared memory IPC, the operating system configures a region of memory that can 
-be accessed by both communicating processes.
-With message passing, the 
-processes explicitly send and receive data through system calls. Similar 
-hardware-level timing channel vulnerabilities exist in each.
+\subsection{Time Slice Coordination}
+\label{sec:coordination}
 
-Suppose one timing compartment in a shared memory system, 
-TC1, writes to the shared memory region. The system as described thus far 
-would use TCID1, the TCID of TC1, to perform the request and would place the 
-data in the cache partition owned by TC1. TC2, which would like to receive this 
-data from TC1, must have some way of accessing it. When TC2 reads to this 
-region, it must get the data from the partition of TC1. This can be done if the 
-TCM acknowledges the read is for IPC and allows the read from TC2 to be 
-performed with TCID1. However, since the IPC data is in the same partition as 
-other data owned by TC1, interference can leak sensitive information to TC2 
-through a timing channel.
+Explain problem without timing details. Use figure that has turn lengths with 
+no offsets. Show a packet traversing through path with latencies outlined and 
+the packet getting delayed. Explain figure.
 
-Clearly, IPC operations cannot use
-either of the communicating compartments directly. This would allow IPC 
-operations to interfere with any other operations performed by that TC.
-Instead, the IPC operations are performed in a timing compartment that can be 
-accessed by each communicating TC. This is 
-the TC with the security label that is the greatest lower bound (meet) of the 
-two communicating compartments according to the security policy lattice.  
-Any network, cache, or memory controller usage while performing IPC operations
-are done through this meet timing compartment.
+Though the l3 hit path is simple, whole l2 miss 
+path is a nontrivial problem - many tradeoffs, used linear 
+optimization. Wrote simulator to explore this. Ultimately found a general scheme
+that an optimizer couldn't beat for the l3 miss path. Finding agood balance between
+the hit and miss paths required an optimizer and we did not find a general scheme
 
-Shared memory IPC is implemented by allocating the shared memory space in the 
-meet TC. Memory requests to the shared space use the network turns and cache 
-partitions of the meet TC. Message passing IPC is implemented similarly.
-The meet timing compartment of the sender and receiver is used for both sending
-and receiving messages.
+\subsubsection{L2 Miss Timing Sequence}
+Introduce l3 hit timing sequence with figure. Explain figure.
 
-In some cases, it may be necessary to create a new timing compartment to
-represent the meet of two communicating compartments rather than to use
-the meet of the two compartments in the original policy (which may be
-undesirably accessible to other timing compartments). However, using an 
-existing TC, if possible, will require less overhead.
-In either case, it is wasteful to execute IPC operations on a separate core. 
-Instead, IPC operations are performed on the core that originated them and an OS 
-trap applies the TCID of the meet TC when using any resource to carry out the 
-IPC operation.
+Explain goal of coordinating (EV of L2 miss latency). Usually achieved by 
+aligning turns of adjacent devices. Use turn lengths (duration a TC is 
+scheduled to use a device - depends time to send message, affects 
+``randomness'' of schedule) and offsets (difference in start times that
+improves how the schedule relates to the schedule of other devices).
 
-% An important 
-% implication of using a TC that is accessed by both communicating parties is 
-% that the timing of IPC operations is visible to both parties. Any programs 
-% that use either message passing or shared memory IPC must be written so that 
-% IPC timings do not leak sensitive information. Though verifying program 
-% security for timing channels is beyond the scope of this paper, other work has 
-% explored this topic~\cite{smith-popl98,mitigation1,mitigation2,mitigation3}.
+Show how to optimize l3 hits. Use figure.
 
-Interdomain communication allows two VMs to communicate, for example, to 
-emulate a network containing these VMs.
-Interdomain communication in Xen is based off of grant tables, a data structure 
-that a domain uses to specify the permissions of other domains to use its 
-pages. The grant table is shared with Xen, and operated on using hypercalls 
-(which are similar to system calls, but here a VM requests the hypervisor to 
-act). To provide timing channel protection, grant tables are allocated in the 
-meet timing compartment of the communicating domains. The hypercalls must be 
-implemented so that their timing does not depend on data that the hypervisor 
-does not want to share with other domains.
+Show l3 miss timing sequence
 
-%% \subsection{Time Slice Coordination}
-%% \label{sec:coordination}
-%% 
-%% The proposed architecture for implementing timing compartments relies heavily on
-%% time division multiplexing of shared resources. For efficiency, the schedules
-%% for adjacent time-multiplexed components should be coordinated to avoid 
-%% unnecessary delays or wasted bandwidth.
-%% %However, Naïvely time multiplexing the components with contention based timing channels 
-%% %can lead to poor performance since many of these components are on the same 
-%% %path to handle a request. 
-%% % During a shared cache miss, the request is sent along the bus that connects 
-%% % the private caches to the shared cache, which we refer to as the L2L3Bus.  
-%% % After detecting the miss, a request is sent to memory through the bus 
-%% % connecting the shared cache to the memory controller, which we refer to as 
-%% % the membus. The memory controller handles the memory request and sends the 
-%% % response back through the membus. Finally, the cache sends a response back 
-%% % through the L2L3Bus.
-%% %%%%%%% The NoC section should mention the request/response layers before this 
-%% %%%%%%% section
-%% 
-%% %On the cache miss path both buses (which are each split into a request and 
-%% %response layer), the response ports of the cache and memory controller, and the 
-%% %memory controller itself are all time multiplexed. 
-%% 
-%% \begin{figure}
-%%     \begin{center}
-%%         \includegraphics[width=3.46in]{figs/baseline_schedule.eps}
-%%         \caption{Cache hit timing sequence.}
-%%         \label{fig:naive_scheme}
-%%     \end{center}
-%% \end{figure}
-%% 
-%% Figure~\ref{fig:naive_scheme} illustrates a naïve time slice allocation that
-%% does not consider interactions between related components.
-%% In the figure, the L2-L3 bus connects the private caches 
-%% to the shared cache, and the membus connects the shared cache to the memory 
-%% controller.
-%% Unfortunately, the time slice allocation in the figure fails to properly
-%% align time slices for common operations.
-%% Notably, the L3 response port has its time slice misaligned with the L2-L3
-%% bus. As a result, a response from L3 to L2 may be unnecessarily delayed.
-%% As a more subtle problem, the allocation uses the same time slices for both
-%% request and response layers for the L2-L3 bus. However, an L3 access has
-%% a latency even during a cache hit. As a result, the response for an L3 request may
-%% have to wait unnecessarily for the next time slice. 
-%% %Ideally, the time slice
-%% %for the response layer should be shifted to reflect the L3 access latency.
-%% 
-%% %Notably, the time quanta of each component are not aligned with each of the 
-%% %L2-L3 bus time quanta.  During a shared cache hit on behalf of $TC1$, 
-%% %occasionally the $TC1$ shared cache response port time quantum will be aligned 
-%% %with the $TC1$ L2-L3 bus time quantum allowing it to proceed along the path 
-%% %without unneeded stalls.  However, sometimes these are not well-aligned and 
-%% %$TC1$ will have to wait for $TC2$ to finish before it can proceed. This becomes 
-%% %even more wasteful
-%% %as the number of timing compartments scales. A request may have to wait through 
-%% %each other compartment's time quantum. 
-%% 
-%% \begin{figure}
-%%     \begin{center}
-%%         \includegraphics[width=2.4675in]{figs/hit_timing.eps}
-%%         \caption{L3 cache hit timing sequence.}
-%%         \label{fig:hit_timing}
-%%     \end{center}
-%% \end{figure}
-%% 
-%% To understand how the time slices for the L2-L3 interface need to be coordinated,
-%% let us examine the timing of a typical cache hit in Figure~\ref{fig:hit_timing},
-%% which represents a common case. In this design, we assume that the cache is fully
-%% pipelined and is capable of accepting a new request every cycle.
-%% In the timing diagram, a request over the 
-%% L2-L3 bus takes $T_{bus}$ cycles. The cache then takes $T_{L3L}$ cycles after 
-%% receiving the request before the data is ready.
-%% The response port transfers a cache block in $T_{CBT}$ cycles. 
-%% 
-%% \begin{figure}
-%%     \begin{center}
-%%         \includegraphics[width=3.2624in]{figs/hit_schedule.eps}
-%%         \caption{Cache hit timing path schedule.}
-%%         \label{fig:hit_schedule}
-%%     \end{center}
-%% \end{figure}
-%% 
-%% The goal of time slice coordination is to maximize the chance that a
-%% request-response pair can proceed within a single time slice without the
-%% response being blocked until the next turn.
-%% Figure~\ref{fig:hit_schedule} shows the time slice allocation that matches 
-%% the common cache hit timing. 
-%% In the figure, the time slice for the response layer is shifted by
-%% $T_{bus} + T_{L3L}$ so that the response can use the L2-L3 bus after a cache
-%% access. Also, the L3 response port uses the same time slice as the
-%% L2-L3 bus so that both can be used at the same time.
-%% To maintain this relationship between the request and response layers,
-%% the schedule uses the same time slice length for all three components.
-%% 
-%% %1) allow a request to proceed through common paths unblocked and 
-%% %2) repeat this alignment for each TC. 
-%% %Figure \ref{fig:hit_schedule} shows a 
-%% %schedule that allows $N$ requests to proceed unblocked for each TCs turn. The 
-%% %time quanta are aligned to follow the timings of \ref{fig:hit_timing}. To 
-%% %guarantee that the behavior of a schedule repeats for the time quanta of each 
-%% %TC, the durations of the time quanta for each resource must share a common 
-%% %factor number of cycles. For example, if $N \times T_{CBT}$ (and this is the 
-%% %time quanta duration for the response port and layer) is 16 and $T_{bus}$ is 3, 
-%% %the actual time quanta duration for the request layer, $T_{req}$, should be 4, 
-%% %8, or 16 even though the request port cannot do useful work for these extra 
-%% %cycles. 
-%% 
-%% \begin{figure}
-%%     \begin{center}
-%%         \includegraphics[width=2.9475in]{figs/miss_timing.eps}
-%%         \caption{The L3-memory timing sequence.}
-%%         \label{fig:miss_timing}
-%%     \end{center}
-%% \end{figure}
-%% 
-%% The analysis for the L3-memory interface is similar. Figure 
-%% \ref{fig:miss_timing} shows the timing of an L3 cache miss. As before, sending 
-%% a request over the bus takes $T_{bus}$ cycles. After receiving the packet, the 
-%% memory controller is ready to transmit the response after $T_{MCL}$ cycles. 
-%% Finally, the memory controller sends its response to the L3 over the L3-memory
-%% bus in $T_{CBT}$ cycles. The schedule for the L3-memory interface is similar to 
-%% that of the L2-L3 interface, except here, the response layer time quanta are 
-%% shifted by $T_{bus}+T_{MCL}$ cycles. The time quanta of each 
-%% resource have the same duration.
-%% 
-%% %% The analysis for the segment of the shared cache miss path between the shared 
-%% %% cache and the memory controller is similar. The most significant difference is 
-%% %% that unlike the cache, the memory controller itself is time multiplexed. Figure 
-%% %% \ref{fig:miss_timing} shows the timing for this segment of the shared cache 
-%% %% miss path. The time quanta of the memory controller have a duration that is 
-%% %% chosen to be $T_{MCL}$. This optimal value may depend on the design, and
-%% %% the authors of \cite{ushpca14} discuss the selection of this value. $M$ is the 
-%% %% number of memory requests that can be handled in a single memory controller 
-%% %% time quantum.
-%% %% $T_{miss}$, the total period of the cache miss timing sequence is 
-%% %% $T_{bus}+T_{MCL}+M\times T_{CBT}$.
-%% 
-%% To allow an L3 miss request to proceed unblocked, it is desirable to have the time 
-%% quanta of the L2-L3 bus response port align with the time quanta of the 
-%% L3-memory bus response ports. To maintain this relationship, we cannot use the 
-%% same time quanta for the L2-L3 interface as the L3-memory interface since 
-%% memory access latencies are much longer than cache latencies. Instead, the time 
-%% quanta of the L3-memory interface should be increased so that the L3-memory 
-%% interface quanta are a multiple of the L2-L3 interface quanta. 
-%% In addition, to allow the memory response to proceed unblocked, the same TC 
-%% should be scheduled at the end of the L3-memory time quantum. This is
-%% achieved if the number of active timing compartments multiplied by the 
-%% durations of the L2-L3 interface time slices evenly divide the
-%% durations of the L3-memory time quanta.
-%% Figure 
-%% ~\ref{fig:coordination} shows these relationships.
-%% 
-%% %% The schedule of the entire system should allow the shared cache miss path to be 
-%% %% traversed unblocked.
-%% %% % ,but since cache hits are more frequent than misses, the performance of the 
-%% %% % cache hit path should not be weakened to meet this goal.
-%% %% To prevent blocking along the request path, the time quantum of a timing 
-%% %% compartment on the membus request port should begin just as that timing 
-%% %% compartment's time quantum on the shared cache memory side request port 
-%% %% finishes. This prevents blocking along the request path of the membus.
-%% %% Similarly, to prevent blocking along the response path, the time quantum of the 
-%% %% shared cache response port should begin just after the time quantum of the same 
-%% %% timing compartment on the memory bus response layer ends. Figure 
-%% %% \ref{fig:coordination}
-%% %% shows a high level view of a full coordinated schedule.
-%% 
-%% \begin{figure}
-%%     \begin{center}
-%%         \includegraphics[width=2.9475in]{figs/coordination.eps}
-%%         \caption{A coordinated cache miss path schedule.}
-%%         \label{fig:coordination}
-%%     \end{center}
-%% \end{figure}
-%% 
-%% %% To meet the first criterion, the cache hit path timing sequence shown in 
-%% %% \ref{fig:hit_timing} should be aligned with the start of the corresponding 
-%% %% memory bus time quantum. To repeat this behavior for each cache hit path timing 
-%% %% sequence, $T_{hit}$ and $T_{miss}$
-%% %% should share a common factor. Since cache hits are more frequent than misses, 
-%% %% the performance of the cache hit path should not be weakened to accomplish 
-%% %% this. Instead, the length of the membus timing sequence should be increased 
-%% %% (e.g. by increasing the memory controller time quantum). The second criterion 
-%% %% is met if the maximum number of active timing compartments in the system (i.e.  
-%% %% the number of cores) is a factor of the period of the membus timing sequence.
+Explain tradeoffs. Use figure?? It is not simple to solve.
+
+\subsubsection{Latency Simulator \& Optimal Coordination}
+Wrote our own l2 miss (l2 to l2) timing simulator. Explain what it simulates. (Assumes 
+uniform random arrival, calculate latency for every possible arrival in a 
+schedule, gets EV of latency).
+
+Exhaustive search of L3 hit path. Confirms that an intuitive design is best.
+
+Cannot exhaustively search L3 miss path latencies. Instead use linear 
+optimizatin. Search space has many relative minima (change offset slightly, 
+suddenly schedule is much better) - cannot use hill climbing. Use simulated 
+annealing. Explain our simulated annealing implementation. Optimize for l3 miss 
+alone and l2 miss latency assuming hit rate of 90\%.
+
+Tried a scheme we suspected would have a good L3 miss latency. Optimal result 
+was different. Adjusted optimizer result to something that made more intuitive 
+sense and iterated. Reran optimizer on result of iterative approach, and the 
+optimizer could not find a better scheme in 20,000 steps.
+
+Explain optimal scheme. Use figure.
+
+For l2 miss latency, no intuitive general approach could be found. Balance 
+between hit/miss paths is difficult.
+
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.46in]{figs/baseline_schedule.eps}
+        \caption{Cache hit timing sequence.}
+        \label{fig:naive_scheme}
+    \end{center}
+\end{figure}
+
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.4675in]{figs/hit_timing.eps}
+        \caption{L3 cache hit timing sequence.}
+        \label{fig:hit_timing}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.2624in]{figs/hit_schedule.eps}
+        \caption{Cache hit timing path schedule.}
+        \label{fig:hit_schedule}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.9475in]{figs/miss_timing.eps}
+        \caption{The L3-memory timing sequence.}
+        \label{fig:miss_timing}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.9475in]{figs/coordination.eps}
+        \caption{A coordinated cache miss path schedule.}
+        \label{fig:coordination}
+    \end{center}
+\end{figure}
