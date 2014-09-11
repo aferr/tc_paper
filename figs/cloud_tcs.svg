@@ -14,7 +14,7 @@
    height="115.43597"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.5 r10040"
    sodipodi:docname="cloud_tcs.svg">
   <defs
      id="defs4">
@@ -55,9 +55,9 @@
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:snap-global="false"
-     inkscape:window-width="1120"
+     inkscape:window-width="1274"
      inkscape:window-height="1415"
-     inkscape:window-x="0"
+     inkscape:window-x="1280"
      inkscape:window-y="19"
      inkscape:window-maximized="0"
      units="in"
@@ -93,26 +93,21 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-25.302779,-122.14109)">
-    <text
-       xml:space="preserve"
-       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
-       x="204.44225"
-       y="349.49805"
-       id="text4151"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan4153"
-         x="204.44225"
-         y="349.49805" /></text>
+     transform="translate(-25.302779,-122.14109)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="2">
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="161.87616"
        x="26.710602"
        height="16.706856"
        width="248.53673"
        id="rect4941"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.60959941;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.60959940999999995;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="130.83788"
@@ -124,39 +119,32 @@
          x="130.83788"
          y="172.76054"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Hypervisor</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
-       x="80.875"
-       y="221.11218"
-       id="text7080"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan7082"
-         x="80.875"
-         y="221.11218" /></text>
     <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.559, 0.559;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.55900000000000005, 0.55900000000000005;stroke-dashoffset:0"
        id="rect7829"
        width="49.855198"
        height="29.355198"
        x="90.182205"
        y="122.90708" />
     <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect7841"
        width="40.601681"
        height="10.421677"
        x="229.63103"
        y="137.00993" />
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="122.82806"
        x="160.62436"
        height="29.636095"
        width="115.19575"
        id="rect7847"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.5423919;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.54239188, 0.54239188;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.54239190000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.54239188000000005, 0.54239188000000005;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text7849"
        y="132.87468"
@@ -168,31 +156,24 @@
          x="166.37575"
          id="tspan7851"
          sodipodi:role="line">TC3</tspan></text>
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot7853"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"><flowRegion
-         id="flowRegion7855"><rect
-           id="rect7857"
-           width="42.072853"
-           height="35.88567"
-           x="111.36932"
-           y="174.84267" /></flowRegion><flowPara
-         id="flowPara7859" /></flowRoot>    <rect
+    <rect
+       transform="translate(-25.302779,-122.14109)"
        y="122.42059"
        x="25.582279"
        height="29.584917"
        width="50.209919"
        id="rect7867"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.559, 0.559;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.55900000000000005, 0.55900000000000005;stroke-dashoffset:0" />
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="188.75577"
        x="225.12065"
        height="24.644411"
        width="49.355011"
        id="rect4326"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="238.31755"
@@ -205,18 +186,21 @@
          y="205.24025"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Core4</tspan></text>
     <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4332"
        width="248.23251"
        height="14.104571"
        x="27.393021"
        y="223.19299" />
     <path
+       transform="translate(-25.302779,-122.14109)"
        inkscape:connector-curvature="0"
        id="path4340"
        d="m 249.55418,213.93576 -0.0361,9.26798"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544111;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text4342"
        y="233.57172"
@@ -228,25 +212,16 @@
          x="114.22088"
          id="tspan4344"
          sodipodi:role="line">Shared Hardware</tspan></text>
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot5262"
-       style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
-       transform="translate(0,62.35975)"><flowRegion
-         id="flowRegion5264"><rect
-           id="rect5266"
-           width="264.81149"
-           height="95.459419"
-           x="26.162952"
-           y="109.65202" /></flowRegion><flowPara
-         id="flowPara5268" /></flowRoot>    <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+    <rect
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5270"
        width="49.355011"
        height="24.644411"
        x="159.00616"
        y="188.57899" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text5272"
        y="205.06348"
@@ -259,18 +234,21 @@
          id="tspan5274"
          sodipodi:role="line">Core3</tspan></text>
     <path
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544111;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        d="m 183.43969,213.75898 -0.0361,9.26798"
        id="path5276"
        inkscape:connector-curvature="0" />
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="188.93254"
        x="27.307514"
        height="24.644411"
        width="49.355011"
        id="rect5286"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="40.504414"
@@ -283,18 +261,21 @@
          y="205.41702"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Core1</tspan></text>
     <path
+       transform="translate(-25.302779,-122.14109)"
        inkscape:connector-curvature="0"
        id="path5292"
        d="m 51.741046,214.11254 -0.0361,9.26798"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544111;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5294"
        width="49.355011"
        height="24.644411"
        x="90.416794"
        y="188.93254" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text5296"
        y="205.41702"
@@ -307,18 +288,21 @@
          id="tspan5298"
          sodipodi:role="line">Core2</tspan></text>
     <path
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544111;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        d="m 114.85033,214.11254 -0.0361,9.26798"
        id="path5300"
        inkscape:connector-curvature="0" />
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="161.84152"
        x="215.24208"
        height="16.506353"
        width="60.001564"
        id="rect6076"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55326676;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55326675999999997;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="234.96901"
@@ -331,6 +315,7 @@
          y="172.90617"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">TCM</tspan></text>
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text6082"
        y="145.31386"
@@ -343,13 +328,15 @@
          id="tspan6084"
          sodipodi:role="line">VM4</tspan></text>
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="137.25993"
        x="164.75603"
        height="10.421677"
        width="40.601681"
        id="rect6092"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="175.61296"
@@ -362,6 +349,7 @@
          y="145.43886"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">VM3</tspan></text>
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="27.750744"
@@ -374,6 +362,7 @@
          y="130.62468"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">TC1</tspan></text>
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text6102"
        y="131.12468"
@@ -386,13 +375,15 @@
          id="tspan6104"
          sodipodi:role="line">TC2</tspan></text>
     <rect
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       transform="translate(-25.302779,-122.14109)"
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect6106"
        width="40.601681"
        height="10.421677"
        x="94.381027"
        y="137.00993" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text6108"
        y="145.06386"
@@ -405,13 +396,15 @@
          id="tspan6110"
          sodipodi:role="line">VM2</tspan></text>
     <rect
+       transform="translate(-25.302779,-122.14109)"
        y="137.25993"
        x="30.006025"
        height="10.421677"
        width="40.601681"
        id="rect6112"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
+       transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        x="40.987957"
