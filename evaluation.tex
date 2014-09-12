@@ -60,49 +60,63 @@ which program runs concurrently with TC0.
 
 \subsection{Time Slice Coordination}
 \label{sec:eval_coord}
-We analyzed this scheduling problem using our own simulator.
-Turns are allocated for each timing compartment in a repeated 
-sequence (e.g. 1,2,3,4,1,2,3,4, for four timing compartments). Therefore, a 
-schedule repeats after the least common multiple of each 
-turn length in the path multiplied by the number of timing compartments. Given 
-the turn lengths and offsets of each device, the latency of a request can be 
+We analyzed the L2 miss path TDM scheduling problem using our own simulator.
+Given the turn lengths and offsets of each device, the latency of a request can be 
 determined based on the cycle in which a request arrives in the schedule.
-The simulator finds each possible latency in a schedule, and calculates the 
+Since a schedule repeats after the least common multiple of each 
+turn length in the schedule multiplied by the number of timing compartments, 
+each possible latency for a schedule can be enumerated. The simulator finds
+each possible latency in a schedule, and calculates the 
 expected value of this latency assuming the arrival time at the L2-L3 bus is 
 uniform random.
 
 Using this simulator, we exhaustively searched for the optimal L3 hit path 
-schedule with the parameters $t_{req}=1,t_{resp}=9,t_{L3}=9$. The 
+schedule with the parameters summarized in table ~\ref{tab:coord_param}. The 
 search space includes turn lengths from 1-25 cycles and all possible offsets 
 for each turn length. We confirmed that the intuitive schedule described in 
-Section \ref{sec:coordination} achieves the highest L3 hit latency expected value.
+Section \ref{sec:coordination} achieves the highest expected value of the 
+latencies for L2 misses that hit in the L3.
 Fixing the turn lengths to the optimal ones and adjusting only the offsets,
 the worst case latency is 19.6\% worse than the optimal schedule, showing
 that coordinating the hit path is important.
 
-Any reasonable L3 miss path search space is far too large to search 
-exhaustively. Instead we used integer linear programming optimization 
+\begin{table}
+    \caption{Time slice coordination simulator paramaters}
+    \centering
+    \begin{tabular}{|r|r|}
+        \hline
+        $t_{req}$  &   1 cycle \\\hline
+        $t_{resp}$ & 9 cycles \\\hline
+        $t_{L3}$   &   9 cycles \\\hline
+        $t_{read}$ & 36 cycles \\\hline
+    \end{tabular}
+    \label{tab:l2_miss_schedules}
+\end{table}
+
+The search space for schedules involving every resource in the L2 miss path
+is far too large to search exhaustively.
+Instead we used integer linear programming optimization 
 techniques. Changing a turn length or offset slightly can drastically affect 
 the performance, so the search space has many relative minima. We used 
 our own simulated annealing optimizer to avoid getting stuck at relative minima 
-and increase our chances of finding a global minimum. We optimized for both the 
-minimum L3 miss latency and the minimum L2 miss latency assuming a hit rate of 
-90\%. 
+and increase our chances of finding a global minimum.
 
-We initialized the optimizer with a scheme we thought would perform well. The 
-optimizer did find a better schedule that improved the miss latency by 5\%. 
-After modifying this schedule slightly based on our own reasoning we saw 
-further improvement, and re-ran the optimizer. The optimizer did not find a 
-better schedule after 20,000 iterations. Using the optimal turn lengths and 
-sweeping the space of offsets, the worst-case schedule performed 2.38X worse 
-than the optimal schedule.
+We used the optimizer to 
+study the latency of L2 misses that miss in the L3.
+After initializing the optimizer with the L3 miss schedule summarized in 
+Figure~\ref{fig:miss_schedules}, the optimizer did not find a 
+better schedule after 20,000 iterations. Fixing the turn lengths to be the same 
+as the best schedule found and sweeping only the space of offsets,
+the worst-case schedule performed 2.38X
+worse than the optimal schedule.
 
-Optimizing for the L2 miss rate overall is a harder problem since improving the 
-consistency of the schedule requires increasing either the L3 hit or miss 
-latency so that the least common multiple of the turn lengths is reduced. The 
+We used the same optimizer to study the latency of L2 misses in general 
+assuming a 90\% L3 cache hit rate.
+Optimizing for the L2 miss rate overall is a harder problem since it requires a balance 
+bewtween the best L3 miss case and L3 hit case parameters. The 
 schedule produced by the optimizer was not one that made any intuitive sense. 
-However, the optimal schedule was 8.67X better than the worst case schedule 
-with the same turn lengths.
+However, the optimal schedule was 8.67X better than the worst schedule that 
+used the same turn lengths as the best schedule (and changed only the offsets).
 
 The results for schedule selection study are summarized in Table 
 \ref{tab:coord_results}. Overall, scheduling 

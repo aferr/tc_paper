@@ -14,7 +14,7 @@
    height="115.43597"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.48.1 r9760"
    sodipodi:docname="cloud_tcs.svg">
   <defs
      id="defs4">
@@ -49,16 +49,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.828427"
-     inkscape:cx="120.86068"
-     inkscape:cy="16.940076"
+     inkscape:cx="119.15619"
+     inkscape:cy="45.224348"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      inkscape:snap-global="false"
-     inkscape:window-width="1274"
-     inkscape:window-height="1415"
-     inkscape:window-x="1280"
-     inkscape:window-y="19"
+     inkscape:window-width="1483"
+     inkscape:window-height="998"
+     inkscape:window-x="140"
+     inkscape:window-y="17"
      inkscape:window-maximized="0"
      units="in"
      showguides="true"
@@ -105,7 +105,7 @@
        height="16.706856"
        width="248.53673"
        id="rect4941"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.60959940999999995;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
@@ -121,7 +121,7 @@
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Hypervisor</tspan></text>
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.55900000000000005, 0.55900000000000005;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1,1;stroke-dashoffset:0"
        id="rect7829"
        width="49.855198"
        height="29.355198"
@@ -129,7 +129,7 @@
        y="122.90708" />
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect7841"
        width="40.601681"
        height="10.421677"
@@ -142,18 +142,17 @@
        height="29.636095"
        width="115.19575"
        id="rect7847"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.54239190000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.54239188000000005, 0.54239188000000005;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1,1;stroke-dashoffset:0" />
     <text
-       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text7849"
-       y="132.87468"
-       x="166.37575"
+       y="8.6122694"
+       x="137.53743"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        xml:space="preserve"><tspan
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial"
-         y="132.87468"
-         x="166.37575"
+         y="8.6122694"
+         x="137.53743"
          id="tspan7851"
          sodipodi:role="line">TC3</tspan></text>
     <rect
@@ -163,7 +162,7 @@
        height="29.584917"
        width="50.209919"
        id="rect7867"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:0.55900000000000005, 0.55900000000000005;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1,1;stroke-dashoffset:0" />
     <rect
        transform="translate(-25.302779,-122.14109)"
        y="188.75577"
@@ -171,7 +170,7 @@
        height="24.644411"
        width="49.355011"
        id="rect4326"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
@@ -187,7 +186,7 @@
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">Core4</tspan></text>
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4332"
        width="248.23251"
        height="14.104571"
@@ -198,7 +197,7 @@
        inkscape:connector-curvature="0"
        id="path4340"
        d="m 249.55418,213.93576 -0.0361,9.26798"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
@@ -214,7 +213,7 @@
          sodipodi:role="line">Shared Hardware</tspan></text>
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5270"
        width="49.355011"
        height="24.644411"
@@ -235,7 +234,7 @@
          sodipodi:role="line">Core3</tspan></text>
     <path
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        d="m 183.43969,213.75898 -0.0361,9.26798"
        id="path5276"
        inkscape:connector-curvature="0" />
@@ -246,7 +245,7 @@
        height="24.644411"
        width="49.355011"
        id="rect5286"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
@@ -265,10 +264,10 @@
        inkscape:connector-curvature="0"
        id="path5292"
        d="m 51.741046,214.11254 -0.0361,9.26798"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5294"
        width="49.355011"
        height="24.644411"
@@ -289,31 +288,10 @@
          sodipodi:role="line">Core2</tspan></text>
     <path
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.58544110999999999;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        d="m 114.85033,214.11254 -0.0361,9.26798"
        id="path5300"
        inkscape:connector-curvature="0" />
-    <rect
-       transform="translate(-25.302779,-122.14109)"
-       y="161.84152"
-       x="215.24208"
-       height="16.506353"
-       width="60.001564"
-       id="rect6076"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55326675999999997;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
-    <text
-       transform="translate(-25.302779,-122.14109)"
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
-       x="234.96901"
-       y="172.90617"
-       id="text6078"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan6080"
-         x="234.96901"
-         y="172.90617"
-         style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">TCM</tspan></text>
     <text
        transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
@@ -334,7 +312,7 @@
        height="10.421677"
        width="40.601681"
        id="rect6092"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
@@ -362,21 +340,20 @@
          y="130.62468"
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial">TC1</tspan></text>
     <text
-       transform="translate(-25.302779,-122.14109)"
        sodipodi:linespacing="125%"
        id="text6102"
-       y="131.12468"
-       x="91.375748"
+       y="8.6300354"
+       x="67.487183"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Serif;-inkscape-font-specification:Droid Serif"
        xml:space="preserve"><tspan
          style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial"
-         y="131.12468"
-         x="91.375748"
+         y="8.6300354"
+         x="67.487183"
          id="tspan6104"
          sodipodi:role="line">TC2</tspan></text>
     <rect
        transform="translate(-25.302779,-122.14109)"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect6106"
        width="40.601681"
        height="10.421677"
@@ -402,7 +379,7 @@
        height="10.421677"
        width="40.601681"
        id="rect6112"
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.55900002000000004;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+       style="fill:none;stroke:#1a1a1a;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
     <text
        transform="translate(-25.302779,-122.14109)"
        xml:space="preserve"
