@@ -117,7 +117,7 @@ exorbitant latencies and wasted bandwidth.
 
 Figure \ref{fig:problem}, illustrates the problem. It shows when each of two 
 timing compartments are scheduled to use the time multiplexed resources along 
-the L2 miss path. Red blocks indicate that TC0 is scheduled to use the device, 
+the L2 miss path. Green blocks indicate that TC0 is scheduled to use the device, 
 and blue blocks indicate that TC1 is scheduled. We refer to the block of time 
 that a timing compartment is scheduled to use a device as the \emph{turn} and 
 we refer to the duration of a turn as the \emph{turn length}. In this schedule, 
@@ -133,8 +133,10 @@ The miss begins at the L2 request layer where the request is sent to the L3.
 When the L3 access is complete, the request must proceed through the L3-memory 
 bus request layer, but at this time TC1 is scheduled to use the L3-memory 
 request layer, so it must wait for TC1's turn to finish before the request can 
-proceed to the memory controller. There are similar issues as the packet 
-traverses the rest of the path.
+proceed to the memory controller. Then, when it arrives at the memory 
+controller, there is not enough time left in the turn to complete a request, so 
+it is blocked again. There are similar issues as the packet traverses the rest
+of the path.
 
 Clearly, this schedule is inefficient. When designing a schedule for these 
 resources both the L3 hit and L3 miss paths should be considered. In this 
