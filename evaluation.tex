@@ -58,6 +58,70 @@ the two cores. On the other hand, when running each pair of benchmarks with
 timing channel protection we observed no execution time difference by changing 
 which program runs concurrently with TC0.
 
+\subsection{Time Slice Coordination}
+\label{sec:eval_coord}
+We analyzed this scheduling problem using our own simulator.
+Turns are allocated for each timing compartment in a repeated 
+sequence (e.g. 1,2,3,4,1,2,3,4, for four timing compartments). Therefore, a 
+schedule repeats after the least common multiple of each 
+turn length in the path multiplied by the number of timing compartments. Given 
+the turn lengths and offsets of each device, the latency of a request can be 
+determined based on the cycle in which a request arrives in the schedule.
+The simulator finds each possible latency in a schedule, and calculates the 
+expected value of this latency assuming the arrival time at the L2-L3 bus is 
+uniform random.
+
+Using this simulator, we exhaustively searched for the optimal L3 hit path 
+schedule with the parameters $t_{req}=1,t_{resp}=9,t_{L3}=9$. The 
+search space includes turn lengths from 1-25 cycles and all possible offsets 
+for each turn length. We confirmed that the intuitive schedule described in 
+Section \ref{sec:coordination} achieves the highest L3 hit latency expected value.
+Fixing the turn lengths to the optimal ones and adjusting only the offsets,
+the worst case latency is 19.6\% worse than the optimal schedule, showing
+that coordinating the hit path is important.
+
+Any reasonable L3 miss path search space is far too large to search 
+exhaustively. Instead we used integer linear programming optimization 
+techniques. Changing a turn length or offset slightly can drastically affect 
+the performance, so the search space has many relative minima. We used 
+our own simulated annealing optimizer to avoid getting stuck at relative minima 
+and increase our chances of finding a global minimum. We optimized for both the 
+minimum L3 miss latency and the minimum L2 miss latency assuming a hit rate of 
+90\%. 
+
+We initialized the optimizer with a scheme we thought would perform well. The 
+optimizer did find a better schedule that improved the miss latency by 5\%. 
+After modifying this schedule slightly based on our own reasoning we saw 
+further improvement, and re-ran the optimizer. The optimizer did not find a 
+better schedule after 20,000 iterations. Using the optimal turn lengths and 
+sweeping the space of offsets, the worst-case schedule performed 2.38X worse 
+than the optimal schedule.
+
+Optimizing for the L2 miss rate overall is a harder problem since improving the 
+consistency of the schedule requires increasing either the L3 hit or miss 
+latency so that the least common multiple of the turn lengths is reduced. The 
+schedule produced by the optimizer was not one that made any intuitive sense. 
+However, the optimal schedule was 8.67X better than the worst case schedule 
+with the same turn lengths.
+
+The results for schedule selection study are summarized in Table 
+\ref{tab:coord_results}. Overall, scheduling 
+interdependent time multiplexed devices is a challenging problem, but the gap 
+between the worst and optimal cases show that it is important.
+
+\begin{table}
+    \caption{Scheduling Selection Study Results.}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \multicolumn{1}{|l|}{Optimized Quantity} & Search & Min & Max \\\hline
+        \multicolumn{1}{|l|}{L3 Hit Latency} & Exhaustive & 25.5 & 30.5 \\\hline
+        \multicolumn{1}{|l|}{L3 Miss Latency} & Simulated Annealing& 139.5 & 334.5 \\\hline
+        \multicolumn{1}{|l|}{L2 Miss Latency} & Simulated Annealing& 38.6 & 344.5 \\\hline
+    \end{tabular}
+    \label{tab:coord_results}
+\end{table}
+
 \subsection{Performance Evaluation}
 
 The timing compartment architecture extends the insecure baseline with
@@ -145,3 +209,24 @@ number of high-assurance virtual machines that can be located on each physical
 system while increasing the system utilization by co-locating non-secure
 virtual machines with high-assurance ones.
 
+\subsection{Cache Coherence Performance Overhead}
+Adding the timing channel protection for snooping bus can introduce some performance overhead. We evaluate some 
+splash2~\cite{splash2} benchmarks in gem5. The system we model is the one shown in Figure~\ref{fig:coherent_system}.
+We use the same splash2 benchmarks for Attacker0 and Attacker1, each consists of two threads. We terminate the simulation
+when thread on core 0 reaches 100M instructions. 
+Our baseline is a system where every other timing channel protection scheme we proposed is implemented except for the snooping bus.
+We then compare it with the system where the snooping bus is also protected. This comparison enables us to quantify the exact overhead introduced by adding cache coherence protection. 
+
+The results are shown in Figure~\ref{fig:splash2}. As can be seen, the overhead of adding cache coherence protection is
+quite low, with the highest overhead less than 1.5\%. In some cases the protection scheme even outperform the baseline, 
+mainly because the round-robin scheduling may have avoided some snooping bus contention in the baseline scheduling. 
+The main reason for the low overhead is that the coherent traffic is quite rare in programs, hence the round-robin
+snooping bus will not cause much overhead to the overall program execution time.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=2.79in]{figs/splash2.pdf}
+        \caption{Performance Overhead of Cache Coherence Protection}
+        \label{fig:splash2}
+    \end{center}
+\end{figure}
