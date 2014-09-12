@@ -3,30 +3,6 @@
 This section discusses internal timing channels in typical
 multi-core processors and mechanisms to control them.
 
-\subsection{Baseline Architecture}
-
-    \begin{figure}
-        \begin{center}
-            \includegraphics[width=3.04in]{figs/baseline.pdf}
-            \caption{Baseline multi-core architecture.}
-            \label{fig:baseline}
-        \end{center}
-    \end{figure}
-
-Figure \ref{fig:baseline} shows a baseline multi-core architecture that we
-extend with timing compartments in this paper. The architecture
-has multiple cores, each with a core pipeline, a branch predictor, a TLB,
-and one or more private caches. 
-The cores are connected to a shared cache via an on chip network. A shared system 
-bus connects the shared cache to a memory controller that manages requests to 
-main memory.
-We assume that each core may be time shared by multiple timing
-compartments, but only one timing compartment, which we say is active, may run on each core
-at a time. This assumption can be relaxed if timing channel protection
-is added to per-core resources.
-
-\Ed{Perhaps move all the assumption that we make here?}
-
 %A trusted software layer (such as 
 %an operating system) allocates software entities (such as processes) to the 
 %cores. 

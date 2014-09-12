@@ -14,27 +14,155 @@ different programs, 3) for a full processor.
 %to prevent.  Then, we define the timing compartment, describe our threat model,
 %and discuss application scenarios that timing compartments enable.
 
-\subsection{Threat Model}
+\subsection{Taxonomy of Timing Channels}
+
+%    \begin{figure}
+%        \begin{center}
+%            \includegraphics[width=2.2in]{figs/taxonomy.pdf}
+%            \caption{The taxonomy of timing channels}
+%            \label{fig:taxonomy}
+%        \end{center}
+%    \end{figure}
+
+Timing channels exist when an adversary can correlate the timing of an event
+to a secret data value. In the context of this paper, we classify timing channels
+into two types, 
+{\em intra-program} and {\em inter-program}, 
+based on the source of timing variations:
+
+In an {\em intra-program} timing channel, the timing of a program's event,
+which can be measured by an attacker, varies
+due to data-dependent behaviors within that program.
+For example, Bernstein's attack~\cite{bernstein} exploits that the execution
+time of a popular AES implementation depends on the value of a secret key because 
+of changes in a cache access sequence.
+The {\em intra-program} timing channel exist even if a program runs on its
+own dedicated hardware.
+Language-level techniques have been developed to
+eliminate \cite{timesens} or mitigate \cite{mitigation1,mitigation2,mitigation3} 
+such timing channels.
+
+The {\em inter-program} timing channels happen when one program's timing depends
+on another program that shares the same hardware due to interference. 
+%Internal timing channels exist when one program's timing depends on another
+%program that shares the same hardware due to interference. Unlike external 
+%timing channels, {\em internal} timing channel vulnerabilities are caused by 
+%interference in shared resources.
+%They are exploited by an adversary that executes on hardware that it shares with 
+%the victim.
+For example, Percival~\cite{percival} showed a timing channel
+through a shared cache where an adversarial program can extract another program's AES key
+by measuring its own cache access time.
+The victim program's cache accesses interferes with the 
+adversary's accesses in the cache allowing the adversary to correlate its own timings with 
+the victim's key.
+%In the previous architecture study \cite{FIXME}, such inter-program interference is named
+%as external interference.
+The {\em inter-program} timing channels can be eliminated if a program runs on a
+dedicated machine.
+
+The attacks exploiting timing channels can also be categorized into side channels
+and covert channels. In side-channel attacks, an adversary extracts a secret from
+a victim program through unintentional timing variations.
+In covert-channel attacks, two program collude to bypass restrictions and use
+intentional timing variations to communicate.
+While both attacks exploit timing variations, covert-channel protection requires
+stronger control of timing variations. For example, inserting random noise may be
+enough to prevent side-channel attacks, but typically cannot remove covert channels.
+
+\subsection{Architecture and Threat Model}
+
+%\subsection{Baseline Architecture}
+
+    \begin{figure}
+        \begin{center}
+            \includegraphics[width=3.04in]{figs/baseline.pdf}
+            \caption{Baseline multi-core architecture.}
+            \label{fig:baseline}
+        \end{center}
+    \end{figure}
+
+Figure \ref{fig:baseline} shows a multi-core architecture that we assume
+in this paper.
+The architecture
+has multiple cores, each with a core pipeline, a branch predictor, a TLB,
+and one or more private caches (L1 and L2). 
+The cores are connected to a shared cache (L3) via an on-chip bus. Then, a shared system 
+bus connects the shared cache to a memory controller that manages requests to 
+main memory as well as other system components such as a DMA engine, a timer, and I/O
+modules.
+For brevity, we do not consider simultaneous multithreading and assume that
+each core only runs one program at a time.
+A core may be time-shared (e.g. by context switching), however, and run multiple
+programs over time.
+
+%We assume that each core may be time shared by multiple timing
+%compartments, but only one timing compartment, which we say is active, may run on each core
+%at a time. This assumption can be relaxed if timing channel protection
+%is added to per-core resources.
+
+%\Ed{Perhaps move all the assumption that we make here?}
 
 %Goal
-Timing compartments are designed to enable complete software isolation among
-entities that share hardware, comparable to having separate hardware for each.
+%Timing compartments are designed to enable complete software isolation among
+%entities that share hardware, comparable to having separate hardware for each.
 %Assumptions
-Therefore, we assume that a target system has multiple cores with shared
-resources such as caches, on-chip interconnects, and an off-chip memory that can
-be used by multiple programs concurrently. The system can also be time shared 
-(e.g. by context switching).
+%Therefore, 
+%we assume that a target system has multiple cores with shared
+%resources such as caches, on-chip interconnects, and an off-chip memory that can
+%be used by multiple programs concurrently. The system can also be time shared 
+%(e.g. by context switching).
 %The multicore system of interest consists of hardware resources that are
 %concurrently shared by multiple software entities. It is possible for software 
 %entities to be time multiplexed on the same core (e.g.  by context switching 
 %VMs), but the system does not allow software entities to execute concurrently 
 %on the same core (e.g. through simultaneous multithreading). 
-We also assume that there exists a trusted software layer such as an OS or a 
-hypervisor,
-which provides conventional software isolation for explicit communication 
-channels.
-The timing compartment manager (TCM) is assumed to be a part of this trusted 
-software.
+
+From the security perspective,
+we assume that there exists a trusted software layer such as an OS or a 
+hypervisor, 
+which manages conventional access control such as virtual memory as well as
+the timing isolation using timing compartments.
+We refer to the OS/hypervisor module that manages timing compartments as
+a timing compartment manager (TCM).
+We assume that there are one or more malicious programs running on a processor 
+whose goal is either to extract information from another program that runs
+concurrently, or to communicate between two malicious programs when there is no 
+explicit communication channel.
+
+We define a timing compartment as a group of 
+software entities such as threads, processes, and virtual machines who share
+the same timing isolation requirement. 
+Our goal of a timing compartment is to provide timing isolation for fine-grained
+microarchitecture events 
+
+that is comparable
+to running on a dedicated processor. In that sense, the timing compartment must
+eliminate {\em inter-program} timing channels from/to another timing compartmetn 
+
+
+
+We assume that the trusted software such as an OS can prevent timing channels 
+through coarse-grained events such as an I/O and a timer interrupt, which are
+directly managed in software. Yet, fine-grained events such as memory accesses 
+cannot be controlled in software.
+
+To provide timing isolation that is 
+comparable to running on a dedicated processor, the timing compartment
+aims to eliminate {\em inter-program} timing channels for both side and covert
+channel attacks.
+
+Timing 
+channels between timing compartments are allowed or prevented based on a policy 
+specified in software.  Policies are specified by a lattice of security levels
+%where leakage is prevented from preceeding levels to preceded levels.
+%of a lattice model, which defines ordering between security levels 
+\cite{denning}.
+This lattice model is quite expressive and widely used for information flow 
+control. 
+
+
+
 In the current implementation of protection mechanisms, we also assume that
 timing compartments have separate address spaces and do not share any physical
 memory. Communications between timing compartments are controlled through the 
@@ -79,90 +207,6 @@ We assume that software can handle timing channels through resources that
 are accessed through an OS. So the timing compartment will only cover the
 hardware resources that are concurrently shared w/o explicit control?}
 
-\subsection{Taxonomy of Timing Channels}
-
-%    \begin{figure}
-%        \begin{center}
-%            \includegraphics[width=2.2in]{figs/taxonomy.pdf}
-%            \caption{The taxonomy of timing channels}
-%            \label{fig:taxonomy}
-%        \end{center}
-%    \end{figure}
-
-Timing channels are a vulnerability that occurs whenever an adversary can 
-correlate the timing of an event with secret data.
-They are exploited as side channels attacks that extract secret data (typically 
-cryptographic keys), or covert channel attacks that bypass restrictions on 
-communication.
-
-%Figure~\ref{fig:taxonomy} summarizes the taxonomy of timing channels.  
-%\emph{Direct} or language level timing channels can be identified by examining 
-%the source code \cite{mitigation3}. A password checking algorithm that stops as 
-%soon as an incorrect character is found causes a direct timing channel that 
-%leaks information about the correct password. In contrast, \emph{indirect} or 
-%microarchitectural timing channels cannot be identified in the source code 
-%since they depend on hardware level behavior \cite{mitigation3}. Conventional 
-%caches cause an indirect timing channel whenever the probability of a cache hit 
-%depends on secret data. Programming language techniques have been developed to 
-%address language level timing channels 
-%\cite{timesens,mitigation1,mitigation2,mitigation3}. It is possible to reduce 
-%the information leaked by some microarchitectural timing channels at the 
-%language level \cite{mitigation3}. However, eliminating all leakage caused by 
-%microarchitectural timing channels is difficult without hardware support.
-%%%% More precise, wordier version:
-%  However, efficiently providing strict timing-sensitive noninterference in the 
-%  presence microarchitectural timing channels without the support of hardware 
-%  is a hard problem.
-
-Timing channels can be classified as external or internal.
-\cite{mitigation3}.  In an {\em external} timing channel, the adversary measures 
-the timing of a victim event and correlates it with victim data. 
-External 
-timing channels are caused by timing variation in the victim program rather 
-than interference, and therefore, can be exploited by an adversary that is 
-external to the system.
-%% For example, a password checking program that sequentially compares strings
-%% and stops on the first incorrect character leaks the location of a mismatch.
-For example, Bernstein's attack~\cite{bernstein} exploits data-dependent
-timing variations in a popular implementation of AES encrypion.  In the 
-vulnerable program, victim cache timing events depend on the secret and affect 
-the total execution time. The adversary measures the victim execution time and 
-correlates this with the secret key.
-Language-level techniques have been developed to
-eliminate \cite{timesens} or mitigate \cite{mitigation1,mitigation2,mitigation3} 
-external timing channels.
-
-%further divided into internal or external timing channels. \emph{External} 
-%timing channels are not caused by interference, and are exploited by an 
-%adversary that directly measures the timing of the victim's actions. External 
-%timing channels can be exploited by an adversary that does not share hardware 
-%with the victim. Bernstein's attack~\cite{bernstein} exploits an external 
-%timing channel in popular implementations of AES (such as OpenSSL). The 
-%external timing channel exists because the cache access pattern both affects 
-%the overall execution time of the AES implementation and depends on the secret 
-%key. The adversary carries out the attack without sharing any hardware by 
-%directly measuring the response times of the victim machine.
-%%%%% The long explanation
-% The adversary uses a copy of the same AES implementation as the victim to time 
-% the encryption of a number inputs with a known key on the adversary's local 
-% machine. Then, the adversary makes requests to the victim machine using the 
-% same inputs and times how long the victim machine takes to encrypt the inputs 
-% with an unknown key. In both cases, the execution time depends on the cache 
-% access pattern which depends on the key. The adversary can use the timing 
-% information gathered with the known and unknown keys to learn the secret AES 
-% key.
-
-Internal timing channels exist when one program's timing depends on another
-program that shares the same hardware due to interference. Unlike external 
-timing channels, {\em internal} timing channel vulnerabilities are caused by 
-interference in shared resources.
-They are exploited by an adversary that executes on hardware that it shares with 
-the victim.
-For example, Percival~\cite{percival} showed an internal timing channel
-through a shared cache where an adversarial program can extract an AES key
-by measuring its own cache access time. The victim program interferes with the 
-adversary in the cache allowing the adversary to correlate its own timings with 
-the key.
 
 \subsection{Definition of Timing Compartments}
 
