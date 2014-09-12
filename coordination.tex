@@ -99,6 +99,7 @@
 % \end{figure}
 
 \section{Time Slice Coordination}
+\label{sec:coordination}
 The Timing Compartments architecture relies heavily on time multiplexing to 
 protect shared resources including the L2-L3 bus, the L3-memory bus, and the 
 memory controller. These resources frequently interact since each is involved 
@@ -108,7 +109,7 @@ exorbitant latencies and wasted bandwidth.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=3.46in,height=2in]{figs/problem.pdf}
+        \includegraphics[width=3.5in]{figs/problem.pdf}
         \caption{A poorly performing time multiplexing schedule.}
         \label{fig:problem}
     \end{center}
@@ -161,7 +162,7 @@ a cache block.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=2.4675in]{figs/hit_timing.pdf}
+        \includegraphics[width=3.5in]{figs/hit_timing.pdf}
         \caption{L3 cache hit timing sequence.}
         \label{fig:hit_timing}
     \end{center}
@@ -177,7 +178,7 @@ $t_{L3}$ cycles and finally returned to the L2 after another $t_{resp}$ cycles.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=2.9475in,height=1in]{figs/miss_timing_v2.pdf}
+        \includegraphics[width=3.5in]{figs/miss_timing.pdf}
         \caption{L3 cache miss timing sequence}
         \label{fig:miss_timing}
     \end{center}
@@ -213,7 +214,7 @@ that arrive later in the schedule to incur extra delays.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=3.2624in]{figs/hit_schedule.pdf}
+        \includegraphics[width=3.2in]{figs/hit_schedule.eps}
         \caption{Cache hit timing path schedule.}
         \label{fig:hit_schedule}
     \end{center}
@@ -235,14 +236,35 @@ The turn lengths for both L3-memory bus layers and the memory controller are
 $t_{mem}$, the minimum memory turn length. Although these bus turns could have 
 been smaller, this would provide no benefit since they transfer responses to 
 and from the memory controller exclusively. The L2-L3 bus layer turn lengths 
-were the smallest factor of $t_{mem}$ greater than $t_{req}$. The scaling is 
+were the smallest factor of $t_{mem}$ greater than $t_{resp}$. The scaling is 
 beneficial since the least common multiple of turn lengths affects the
 repeatability of the schedule. The L2-L3 bus turns are increased rather than 
 the memory controller since this schedule only optimizes the L3 miss path, not 
 the entire L2 miss path. Each device schedule is offset so that it starts when 
-the data is available. Table \ref{tab:config} summarizes both the turn lengths 
-and offsets in this schedule. Here $t_{read}$ is the worst case memory read 
-time.
+the data is available. Table \ref{tab:miss_schedule} summarizes both the turn
+lengths and offsets in this schedule. Here $t_{read}$ is the worst case memory
+read time, and $t_{resp}^+$ is the smallest factor of $t_{mem}$ greater than 
+$t_{resp}$
+
+
+\begin{table}
+    \caption{Optimal L3 Miss Path Schedule}
+    \centering
+    \begin{tabular}{|r|r|l|l|}
+        \hline
+        \multicolumn{2}{|l|}{Device Name} & Turn Length & Offset\\\hline
+        \multicolumn{2}{|l|}{L2-L3 Req}   & $t_{resp}^+$  & 0\\\hline
+        \multicolumn{2}{|l|}{L3-Mem Req}  & $t_{mem}$ & $t_{req}+t_{L3}$\\\hline
+        \multicolumn{2}{|l|}{Mem Ctl}     & $t_{mem}$ & $2t_{req}+t_{L3}$\\\hline
+        \multicolumn{2}{|l|}{L3-Mem Resp} & $t_{mem}$ & 
+          $2t_{req}+t_{L3}+t_{read}$\\\hline
+        \multicolumn{2}{|l|}{L2-L3 Resp}  & $t_{resp}^+$ &
+          $2t_{req}+2t_{L3}+t_{read}+t_{resp}$\\\hline
+    \end{tabular}
+    \label{tab:config}
+\end{table}
+
+
 
 Scheduling the full L2 miss path is even more difficult. Typically getting a 
 schedule that repeats in a short period requires increasing either the L3 hit

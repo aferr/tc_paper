@@ -59,6 +59,7 @@ timing channel protection we observed no execution time difference by changing
 which program runs concurrently with TC0.
 
 \subsection{Time Slice Coordination}
+\label{sec:eval_coord}
 We analyzed this scheduling problem using our own simulator.
 Turns are allocated for each timing compartment in a repeated 
 sequence (e.g. 1,2,3,4,1,2,3,4, for four timing compartments). Therefore, a 
@@ -103,10 +104,23 @@ schedule produced by the optimizer was not one that made any intuitive sense.
 However, the optimal schedule was 8.67X better than the worst case schedule 
 with the same turn lengths.
 
-The results for the coordination study are summarized in Table 
+The results for schedule selection study are summarized in Table 
 \ref{tab:coord_results}. Overall, scheduling 
 interdependent time multiplexed devices is a challenging problem, but the gap 
 between the worst and optimal cases show that it is important.
+
+\begin{table}
+    \caption{Scheduling Selection Study Results.}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \multicolumn{1}{|l|}{Optimized Quantity} & Search & Min & Max \\\hline
+        \multicolumn{1}{|l|}{L3 Hit Latency} & Exhaustive & 25.5 & 30.5 \\\hline
+        \multicolumn{1}{|l|}{L3 Miss Latency} & Simulated Annealing& 139.5 & 334.5 \\\hline
+        \multicolumn{1}{|l|}{L2 Miss Latency} & Simulated Annealing& 38.6 & 344.5 \\\hline
+    \end{tabular}
+    \label{tab:coord_results}
+\end{table}
 
 \subsection{Performance Evaluation}
 
