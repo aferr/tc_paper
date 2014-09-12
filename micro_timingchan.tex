@@ -21,7 +21,7 @@ The cores are connected to a shared cache via an on chip network. A shared syste
 bus connects the shared cache to a memory controller that manages requests to 
 main memory.
 We assume that each core may be time shared by multiple timing
-compartments, but only one timing compartment, which we say is active, may run each core
+compartments, but only one timing compartment, which we say is active, may run on each core
 at a time. This assumption can be relaxed if timing channel protection
 is added to per-core resources.
 
@@ -81,7 +81,7 @@ Partitioning removes interference by ensuring that each entity can
 only affect a disjoint subset of state elements. The partitions
 should not change dynamically depending on the run-time demands of entities.
 In the simplest case, partitions can be static.
-However, partitions do not need to be heterogeneous and can be sized according 
+However, partitions do not need to be homogeneous and can be sized according 
 to static performance characterizations of each software entity (assuming this 
 information can be made public and does not depend on secrets).
 
@@ -304,6 +304,7 @@ A non-blocking cache uses MSHRs to track information about in-flight cache misse
 % miss (hit under miss). With more MSHRs, it can tolerate multiple outstanding 
 % misses (miss under miss). In any case, the system can tolerate only finite 
 % outstanding misses at a time. 
+
 The number of outstanding cache misses that the cache can tolerate depends on 
 the number of MSHRs. Once all MSHRs are exhausted, the cache will stall on
 a miss resulting in increased latency for cache accesses.
@@ -348,8 +349,7 @@ smaller per-compartment queues.
 As pointed out by previous studies \cite{yaonocs, surfnoc}, shared on-chip 
 interconnects
 have contention-based timing channels because each link can be used by only 
-one compartment at a time. If the network contains buffers, they also lead
-to state-based timing channels. In our processor design, we apply time
+one compartment at a time. In our processor design, we apply time
 division multiplexing with a fixed schedule to both the bus between private
 and shared caches and the bus between the shared cache and the memory controller.
 For each time slice, accesses from only one timing compartment are allowed to
@@ -377,9 +377,9 @@ adjusted the scheme to remove it.
 \textbf{Request Queue}
 A conventional memory controller has a queue for buffering memory requests until
 they can be issued. This queue is typically shared among requests and creates
-a state-based timing channel, because requests from one compartment can block
+a contention-based timing channel, because requests from one compartment can block
 requests from another. We remove this interference by placing the shared 
-queue with smaller per-compartment queues, effectively partitioning the single queue.
+queue with smaller per-compartment queues, effectively duplicating the single queue.
 
 \textbf{Row Buffer State}
 There exists another state-based timing channel in the shared memory controller
