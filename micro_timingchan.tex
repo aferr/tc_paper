@@ -1,4 +1,4 @@
-\section{Microarchitectural Timing Channels}
+\section{Microarchitecture-Level Protection}
 
 This section discusses internal timing channels in typical
 multi-core processors and mechanisms to control them.
@@ -25,6 +25,8 @@ compartments, but only one timing compartment, which we say is active, may run o
 at a time. This assumption can be relaxed if timing channel protection
 is added to per-core resources.
 
+\Ed{Perhaps move all the assumption that we make here?}
+
 %A trusted software layer (such as 
 %an operating system) allocates software entities (such as processes) to the 
 %cores. 
@@ -38,6 +40,18 @@ We follow these approaches to design our
 protection mechanisms. These approaches also provide guidelines to
 develop new protection mechanisms for components that are not included in
 our baseline architecture.
+
+\subsubsection{TCID}
+
+The hardware protection mechanisms track which timing compartment originated 
+each request and handle the requests accordingly. Each core has a register that 
+stores the timing compartment ID (TCID) of the TC currently active on that core. This is used to derive 
+the tags that are appended to requests originating from that core. The TCID is 
+$log\ n$ bits where $n$ is the number of cores in the processor.
+Events such as network packets or cache accesses that use shared resources are 
+tagged with the TCID of the corresponding core. 
+The timing channel protection mechanisms use this TCID to distinguish accesses
+from among different timing compartments.
 
 \subsubsection{Classification of Internal Timing Channels}
 
@@ -449,3 +463,6 @@ on a context switch that moves to a different timing compartment.
 This is handled in software by the timing compartment 
 manager (see Section~\ref{sec:integration_tcm}).
 
+\subsubsection{Other System Resources}
+
+Talk about DMA, I/O, etc. Managed by SW.

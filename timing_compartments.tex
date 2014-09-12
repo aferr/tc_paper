@@ -1,12 +1,83 @@
 \section{Timing Compartments}
 
-This section introduces a new architecture abstraction, called timing 
+This section introduces a new architecture abstraction, named timing 
 compartments.
-We first discuss the class of timing channels that timing compartments are 
-designed
-to prevent.  Then, we define the timing compartment, describe our threat model,
-and discuss application scenarios that timing compartments enable.
+The goal of the timing compartment is to enable strong timing isolation
+among multiple software components that share a multi-core processor,
+similar to running each on a dedicated processor.
+In that sense, the timing compartment provides hardware support that is 
+necessary to remove 1) both side and covert timing channels, 2) among
+different programs, 3) for a full processor.
 
+%We first discuss the class of timing channels that timing compartments are 
+%designed
+%to prevent.  Then, we define the timing compartment, describe our threat model,
+%and discuss application scenarios that timing compartments enable.
+
+\subsection{Threat Model}
+
+%Goal
+Timing compartments are designed to enable complete software isolation among
+entities that share hardware, comparable to having separate hardware for each.
+%Assumptions
+Therefore, we assume that a target system has multiple cores with shared
+resources such as caches, on-chip interconnects, and an off-chip memory that can
+be used by multiple programs concurrently. The system can also be time shared 
+(e.g. by context switching).
+%The multicore system of interest consists of hardware resources that are
+%concurrently shared by multiple software entities. It is possible for software 
+%entities to be time multiplexed on the same core (e.g.  by context switching 
+%VMs), but the system does not allow software entities to execute concurrently 
+%on the same core (e.g. through simultaneous multithreading). 
+We also assume that there exists a trusted software layer such as an OS or a 
+hypervisor,
+which provides conventional software isolation for explicit communication 
+channels.
+The timing compartment manager (TCM) is assumed to be a part of this trusted 
+software.
+In the current implementation of protection mechanisms, we also assume that
+timing compartments have separate address spaces and do not share any physical
+memory. Communications between timing compartments are controlled through the 
+trusted
+software layer and be explicitly managed to prevent external timing channels. 
+
+%Attacks we handle.
+%However, these approaches to isolate software do not address timing channels 
+%that leverage shared hardware. To guarantee total isolation, internal timing 
+%channels must also be eliminated. We eliminate all internal microarchitectural 
+%timing channels including state and state-based timing channels.  This includes 
+%all timing channels caused by concurrently shared resources as well as timing 
+%channels in hardware that is shared through time multiplexing (e.g.  by context 
+%switching).
+
+Timing compartments aim to eliminate {\em internal} timing channels through
+interference in shared microarchitecture resources. In particular, the goal is
+to prevent both unintentional (side channel) and intentional (covert channel)
+information leaks.
+However, external timing
+channels, which exist even without shared hardware, are not prevented by
+timing compartments. If necessary, the external timing channels can be 
+controlled in software. Similarly, timing channels through I/O devices are not 
+considered in this study,
+because they may be prevented in software.
+Finally, we do not consider attacks that require physical access such as
+side-channel attacks through power consumption or electromagnetic emission.
+
+%Attacks we don't handle.
+%Since our goal is to address vulnerabilities caused by hardware sharing,
+%timing channels that are external to the hardware are not addressed.
+%Any timing channels that are external to the hardware in this system would also 
+%be present if the software entities executed on separate hardware. If 
+%necessary, external timing channels can be controlled in software. Similarly, 
+%we do not address language level timing channels since these may also be 
+%addressed in software.  Lastly, we do not consider physical attacks and assume 
+%that the adversary does not have physical access.
+
+
+\Ed{We need to talk about what we need to cover in the timing compartment. 
+We assume that software can handle timing channels through resources that
+are accessed through an OS. So the timing compartment will only cover the
+hardware resources that are concurrently shared w/o explicit control?}
 
 \subsection{Taxonomy of Timing Channels}
 
@@ -156,66 +227,6 @@ to pay the overhead of timing channel control only when necessary.
 %be caused by an attack, and the cost and performance impact of implementing the 
 %security mechanisms needed to stop it. This enables timing compartments to 
 %provide timing channel protection only to software entities that need it.
-
-\subsection{Threat Model}
-
-%Goal
-Timing compartments are designed to enable complete software isolation among
-entities that share hardware, comparable to having separate hardware for each.
-%Assumptions
-Therefore, we assume that a target system has multiple cores with shared
-resources such as caches, on-chip interconnects, and an off-chip memory that can
-be used by multiple programs concurrently. The system can also be time shared 
-(e.g. by context switching).
-%The multicore system of interest consists of hardware resources that are
-%concurrently shared by multiple software entities. It is possible for software 
-%entities to be time multiplexed on the same core (e.g.  by context switching 
-%VMs), but the system does not allow software entities to execute concurrently 
-%on the same core (e.g. through simultaneous multithreading). 
-We also assume that there exists a trusted software layer such as an OS or a 
-hypervisor,
-which provides conventional software isolation for explicit communication 
-channels.
-The timing compartment manager (TCM) is assumed to be a part of this trusted 
-software.
-In the current implementation of protection mechanisms, we also assume that
-timing compartments have separate address spaces and do not share any physical
-memory. Communications between timing compartments are controlled through the 
-trusted
-software layer and be explicitly managed to prevent external timing channels. 
-
-%Attacks we handle.
-%However, these approaches to isolate software do not address timing channels 
-%that leverage shared hardware. To guarantee total isolation, internal timing 
-%channels must also be eliminated. We eliminate all internal microarchitectural 
-%timing channels including state and state-based timing channels.  This includes 
-%all timing channels caused by concurrently shared resources as well as timing 
-%channels in hardware that is shared through time multiplexing (e.g.  by context 
-%switching).
-
-Timing compartments aim to eliminate {\em internal} timing channels through
-interference in shared microarchitecture resources. In particular, the goal is
-to prevent both unintentional (side channel) and intentional (covert channel)
-information leaks.
-However, external timing
-channels, which exist even without shared hardware, are not prevented by
-timing compartments. If necessary, the external timing channels can be 
-controlled in software. Similarly, timing channels through I/O devices are not 
-considered in this study,
-because they may be prevented in software.
-Finally, we do not consider attacks that require physical access such as
-side-channel attacks through power consumption or electromagnetic emission.
-
-%Attacks we don't handle.
-%Since our goal is to address vulnerabilities caused by hardware sharing,
-%timing channels that are external to the hardware are not addressed.
-%Any timing channels that are external to the hardware in this system would also 
-%be present if the software entities executed on separate hardware. If 
-%necessary, external timing channels can be controlled in software. Similarly, 
-%we do not address language level timing channels since these may also be 
-%addressed in software.  Lastly, we do not consider physical attacks and assume 
-%that the adversary does not have physical access.
-
 
 \subsection{Application Scenarios}
 
