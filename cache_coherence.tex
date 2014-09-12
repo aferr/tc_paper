@@ -1,4 +1,4 @@
-\section{Cache Coherence Timing Channel}
+\subsection{Cache Coherence}
 In a multi-core system, threads are running concurrently on different cores. These threads may share some
 data which they read from or write to. The shared data thus can have multiple copies exist in each core's
 private cache. In general, a cache coherence protocol is used to ensure each thread gets the most updated
@@ -10,17 +10,22 @@ caches observe the snooping request, and one of them may respond to the request 
 the data exists. The operations to handle snooping requests and responses highly depend on the specific cache 
 coherence protocols being used. Commonly used protocols include MSI, MESI and MOESI~\cite{mark_book}.
 
-If different timing compartments share data, there is clearly a timing channel introduced by the cache coherence
-protocols. For example, TC0 wants to write to A, and A exists in TC1's cache. In order to perform the write, the
-cache coherence protocol will invalidate A in TC1's cache. Later when TC1 wants to read A, it will incur a cache
-miss which indicates TC0 has written to A. In our threat model, we assume timing compartments do not share data. 
-So the above mentioned timing channel is not a concern. However, our assumption only guarantees the cache state
-is not affected by cache coherence protocols. The snooping bus is shared by different timing compartments, thus 
-the coherent traffic can still interfere with each other. The interference on the snooping bus introduces timing
-channel, as shown in the example below.
+% If different timing compartments share data, there is clearly a timing channel introduced by the cache coherence
+% protocols. For example, TC0 wants to write to A, and A exists in TC1's cache. In order to perform the write, the
+% cache coherence protocol will invalidate A in TC1's cache. Later when TC1 wants to read A, it will incur a cache
+% miss which indicates TC0 has written to A. 
+In our threat model, timing compartments are allowed to share some OS protected read-only data. This assumption
+introduces a timing channel through the cache coherence protocols. Take MOESI protocol as an example, assume TC0 wants
+to read a shared data A and incurs a cache miss, while A is in TC1's cache with an Owned(O) state. The MOESI protocol
+will forward A to TC0's cache through the snooping bus, which shortens TC0's miss latency compared to accessing the
+next level of cache. TC0 then knows A exists in TC1's cache and may correlate this fact with secret information. 
+Even if there is no shared data between timing compartments, there still exists a timing channel through the cache
+coherence protocol, because the snooping bus is shared by different timing compartments. 
+The coherent traffic from different timing compartments can interfere on the snooping bus, thus introduce timing
+channels, as demonstrated in the example below.
 
-\subsection{Covert Channel Attack Example}
-In this section, we demonstrate a covert channel attack example on a four-core system. The system configuration 
+In this example, we conduct a covert channel attack through cache coherence protocol on a four-core system. 
+The system configuration 
 is shown in Figure~\ref{fig:coherent_system}. Each core has a private L1 and L2 cache, and the four cores share
 the L3 cache. The four L2 caches are connected with a snooping bus which uses a MOESI protocol. 
 In this example, there are two attackers who
@@ -61,8 +66,22 @@ can recover the secret successfully. The timing variation is caused by the inter
 produces a lot of coherent traffic, Attacker0's coherent traffic gets delayed and thus finishes slower compared to
 when Attacker1 does not produce coherent traffic. 
 
-\subsection{Protection Scheme}
-The protection scheme is similar to the normal bus protection. We attached the TCID to the snooping requests and responses.
-The snooping bus scheduling is changed to round-robin scheduling. With this protection, the coherent traffic from different
-timing compartments do not interfere with each other through the snooping bus. This protection prevents the covert channel
-attack mentioned above.
+The mechanism to protect against cache coherence timing channels consists of two parts. The first part solves the 
+interference on the snooping bus. The snooping bus uses TDM to schedule the snooping requests from different timing
+compartments. Each snooping request is attached with a TCID and it can only be sent during its own TC's bus turns.
+This protection is the same with what we used for on-chip interconnect. 
+
+The second part deals
+with the shared data. Since the shared data is read-only, the cache miss does not necessarily have to be served by
+the cache that has the Owned copy. Instead, the cache miss can always be served by the next level of cache or memory.
+In our mechanism, when the cache receives a snooping request, it will first check if the TCID of the request matches its
+own TCID. If the TCIDs mismatch, then the cache ignores the snooping request even if it has the data, effectively acting
+as if the data does not exist. Then the cache miss will be served by the next level of cache. A tricky thing here is
+coordinating the operations of multiple level of caches. In some protocols (e.g MOESI), the cache that has the Owned copy
+is responsible for responding to the snooping request, so the next level of cache does not respond. In this case, the
+cache needs to notify the next level of cache to respond to the snooping request. The notification message should
+have a TCID that's the same with the requses so that it does not interfere with its own snooping requests on the snooping 
+bus. With our design, the cache that sends a snooping request does not know the data exists on the other cache, while
+the timing of the other cache's own operations is not affected.
+ 
+
