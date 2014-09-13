@@ -1,7 +1,21 @@
 \section{Microarchitecture-Level Protection}
 
-This section discusses inter-program timing channels in typical
-multi-core processors and mechanisms to control them.
+This section discusses hardware protection mechanisms that are necessary
+to implement timing compartments on typical multi-core processors.
+
+At a glance, designing a full processor with timing channel
+protection may seem rather straightforward because there exist previous 
+studies on major components such as 
+shared caches \cite{percival}, 
+on-chip interconnect \cite{yaonocs, surfnoc}, and the memory controller \cite{ushpca14}.
+However, through the design process, we found three new sources of timing 
+channels in module interfaces that were not identified previously, found a
+bug in the memory controller protection \cite{ushpca14}, and found that cache 
+coherence protocols can cause interference even among programs that do not 
+share data with each other.
+We also found that time multiplexing schemes
+must be carefully coordinated in order to avoid 
+unnecessarily high overheads. 
 
 %<<<<<<< HEAD
 %=======
@@ -36,17 +50,20 @@ multi-core processors and mechanisms to control them.
 \subsection{General Protection Approaches}
 \label{sec:general_approaches}
 
-Here, we present a classification of inter-program microarchitectural timing 
+Here, we present a classification of microarchitectural timing 
 channels and a framework of general solutions to address each type.
-We follow these approaches to design our
-protection mechanisms. These approaches also provide guidelines to
-develop new protection mechanisms for components that are not included in
-our baseline architecture.
+Because we aim to prevent both side-channel and cover-channel attacks,
+the approach is designed to remove interference rather than mitigating it.
+%We follow these approaches to design our
+%protection mechanisms. These approaches also provide guidelines to
+%develop new protection mechanisms for components that are not included in
+%our baseline architecture.
 
 \subsubsection{TCID}
 
-The hardware protection mechanisms track which timing compartment originated 
-each request and handle the requests accordingly. Each core has a register that 
+The hardware protection mechanisms need to track which timing compartment (TC)
+each request belongs to and handle the requests accordingly. 
+For this purpose, each core has a register that 
 stores the timing compartment ID (TCID) of the TC currently active on that 
 core. This is used to derive the tags that are appended to requests originating 
 from that core. The TCID is $log\ n$ bits where $n$ is the number of cores in 
@@ -56,21 +73,21 @@ tagged with the TCID of the corresponding core.  The timing channel protection
 mechanisms use this TCID to distinguish accesses
 from among different timing compartments.
 
-\subsubsection{Classification of Inter-Program Timing Channels}
+\subsubsection{Sources of Inter-Program Timing Channels}
 
 There exists an inter-progam timing channel from one entity (say $E1$)
-to another ($E2$) whenever the timing of an action performed by $E1$ can be affected by 
+to another ($E2$) when the timing of an event in $E1$ can be affected by 
 the behavior of $E2$.
 
 There are two types of inter-program timing channels in hardware: state-based
 and contention-based.
-A \emph{state-based} timing channel occurs whenever there is a state element 
-with an access time that depends on its content and that state element is 
-shared among multiple entities.
+A \emph{state-based} timing channel occurs when there is a state element 
+that is shared among multiple entities and whose
+content affects timing of an event.
 For example, a conventional shared cache has state-based timing channels, 
-because its cache hits are faster than misses.
-A \emph{contention based} timing channel occurs whenever multiple entities 
-share a resource that can handle only finitely many requests at a time.
+because cache hits are faster than misses.
+A \emph{contention-based} timing channel occurs when multiple entities 
+share a resource that can only handle a finite number of requests at a time.
 Conventional buses have contention-based timing channels.
 
 \subsubsection{State-Based Timing Channel Protection}
@@ -88,16 +105,17 @@ Flattening eliminates the dependence of access time on the state by forcing
 every access to finish in the same (worst case) time. For example, to remove 
 timing interference in the row buffers of DRAM, all DRAM accesses may be 
 treated as a row buffer miss.
-For some components, this is a brute-force approach. Applied to caches, every 
+%For some components, this is a brute-force approach. 
+Applied to caches, every 
 access must be treated as a miss, so this is equivalent to removing the cache. 
 
 Partitioning removes interference by ensuring that each entity can
 only affect a disjoint subset of state elements. The partitions
 should not change dynamically depending on the run-time demands of entities.
 In the simplest case, partitions can be static.
-However, partitions do not need to be homogeneous and can be sized according to 
-static performance characterizations of each software entity (assuming this 
-information can be made public and does not depend on secrets).
+However, partitions do not have to be equally sized, and may be determined 
+based on the public characteristics
+of each software entity.
 
 %prevents software entities that share state elements from interfering. Static 
 %partitioning is realized by dividing the state elements into separate 
@@ -144,7 +162,7 @@ infeasible, time division multiplexing can be used.
 %TDM defines a schedule where each software entitiy is guaranteed a period of 
 %time, called a time quantum, where only that entity can use the resource. The 
 The schedule of time slices must either be static or independent of the dynamic 
-behavior of software entities.
+demands of software entities.
 
 %\subsubsection{External Timing Channel Protection}
 %
@@ -160,62 +178,26 @@ behavior of software entities.
 %in software by forcing the observable execution time to equal the worst case 
 %execution time, stalling if necessary.
 
-\subsection{Full-Processor Protection}
+\subsubsection{Full-Processor Protection}
 
-Timing compartments use hardware mechanisms that control the inter-program 
-timing channels that cannot be addressed by software.
-Designing a full processor with timing channel
-protection may seem rather straightforward. In our baseline architecture, there 
-are only three main structures that are shared concurrently: a shared cache, 
-on-chip buses, and a memory controller. Moreover, recent studies have proposed 
-mechanisms to control timing channels in each of them. For example, researchers have 
-proposed statically partitioning the shared cache \cite{percival}, and using time 
-division multiplexing with a fixed schedule for the on-chip interconnect 
-\cite{yaonocs, surfnoc} and the memory controller \cite{ushpca14}.
+%Timing compartments needs hardware mechanisms to remove the inter-program 
+%timing channels that cannot be handled in software.
 
-%Many microarchitectural timing channels and corresponding solutions are 
-%well-known. Shared caches create a state-based timing channel where 
-%interfering entities cause cache block replacements. This can be prevented by 
-%partitioning the cache among the entities. On chip networks and buses have
-%timing channels since only one entity can use the bus at a time. Time division 
-%multiplexing can resolve this issue \cite{yaonocs}. The authors of 
-%\cite{ushpca14} have exposed timing channels in the main memory and memory 
-%controller. They propose time division multiplexing the memory controller, 
-%partitioning the memory controller queueing structure, and using a closed-page 
-%row buffer management policy to close these timing channels. 
-%%%%% It isn't totally obvious that private resources are actually shared, and 
-%%%%% we don't have a citation for this, so maybe it doesn't need to be here..
-% Finally, the private, per-core resources of the system such as the branch 
-% predictors, TLBs and private caches also create timing channels since 
-% software entities share cores through time multiplexing (for example, 
-% processes may be context switched in and out of the same core). These can be 
-% resolved by flushing the state elements of these resources on before moving a 
-% new software entity onto the core.
-
-However, achieving secure and efficient timing channel protection in a full 
-processor requires much more than simply putting known protection mechanisms
-together. During the design process, we found three new sources of timing 
-channels in module interfaces that were not discussed previously, found a
-bug in the memory controller protection \cite{ushpca14}, and found that cache 
-coherence protocols can cause interference even among programs that do not 
-share data with each other.
-We also found that time multiplexed
-microarchitecture structures must be carefully coordinated in order to avoid 
-unnecessarily high overheads. 
-
-The rest of this section provides a detailed list of timing channels in our
-baseline architecture, and presents a protection mechanism that we use for each 
-of them.
+The rest of this section provides a detailed list of timing channels in our  
+multi-core architecture, and presents a protection mechanism for each 
+based on the general approach above.
 Table \ref{table:timing_chan_summary} summarizes these timing channels and
 solutions and highlights newly discovered timing channels in green.
-Then, the next section discusses how these protection mechanisms
-need to be managed and coordinated together.
-We note that the processor design here uses simple static protection
-mechanisms that prevent timing channels in both directions. The mechanisms can 
-be further optimized for efficiency.
+%Then, the next section discusses how these protection mechanisms
+%need to be managed and coordinated together.
+%We note that the processor design here uses simple static protection
+%mechanisms that prevent timing channels in both directions. The mechanisms can 
+%be further optimized for efficiency.
 
 \def\novelcolor{Green}
 \begin{table*}
+\begin{center}
+\begin{small}
 \begin{tabular}{l|l|l|l}
     \hline
     Component & Timing Channel & Classification & Solution\\
@@ -243,18 +225,26 @@ be further optimized for efficiency.
     & {\color{\novelcolor} Response Ports} & {\color{\novelcolor} Contention }
     & {\color{\novelcolor} Separate Queues \& Time Multiplexing}\\
     \hline
-    \multirow{2}{*}{Network} & Interconnect Contention & Contention & Time 
+    \multirow{2}{*}{On-Chip Interconnect} & Interconnect Contention & Contention & Time 
     Multiplexing \\
     \hhline{~---}
     & Queueing Structure & State & Partitioned Queue \\
+    \hline
+    \multirow{2}{*}{{\color{\novelcolor} Cache Coherence}} & {\color{\novelcolor} Interconnect Contention} & {\color{\novelcolor} Contention} & {\color{\novelcolor} Time 
+    Multiplexing} \\
+    \hhline{~---}
+    & {\color{\novelcolor} Cache Memory Port} & {\color{\novelcolor} Contention} & {\color{\novelcolor} Response by L3}\\
+    \hline
 \end{tabular}
+\end{small}
+\end{center}
     \caption{Summary of timing channels and protection approaches. Green 
     represents new timing channels that were not identified in previous work.}
     \label{table:timing_chan_summary}
 \end{table*}
 
 \subsection{Shared Caches}
-\mbox{}\newline
+%\mbox{}\newline
 \textbf{Cache State \& Replacement}
 The shared cache causes state-based timing channel vulnerabilities, because 
 accesses from one timing compartment may evict the cache blocks of another
@@ -280,9 +270,13 @@ either uses page coloring or modifies the index function so that each
 compartment
 only uses a subset of the cache sets. Both partitioning methods are equally
 effective at removing timing channels. In our implementation, we used way 
-partitioning since this requires no modification to address translation in 
-software and cache ways can easily be distributed to timing compartments 
-proportionally to static cache demand characteristics.
+partitioning.
+%since this requires no modification to address translation 
+%and cache ways can easily be distributed to timing compartments 
+%proportionally to static cache demand characteristics.
+In the partitioned cache, accesses to a shared read-only page from different
+timing compartments are treated as different and stored in separate partitioned.
+
 
 %We note that the cache partitioning needs a special care if multiple timing
 %channels shared the same physical memory location. In this case, a cache
@@ -309,12 +303,11 @@ proportionally to static cache demand characteristics.
 %misses, so we chose this technique for our implementation.
 
 \textbf{MSHR Contention}
-
 We identified new inter-program timing channel vulnerabilities in the shared cache 
 interface. The first is caused by contention for the miss status holding 
 registers (MSHRs) in non-blocking caches.
 A non-blocking cache uses MSHRs to track information about in-flight cache 
-misses (memory requests).
+misses. % (memory requests).
 % With only a single MSHR, the system can tolerate a single outstanding cache 
 % miss (hit under miss). With more MSHRs, it can tolerate multiple outstanding 
 % misses (miss under miss). In any case, the system can tolerate only finite 
@@ -323,10 +316,11 @@ misses (memory requests).
 The number of outstanding cache misses that the cache can tolerate depends on 
 the number of MSHRs. Once all MSHRs are exhausted, the cache will stall on
 a miss resulting in increased latency for cache accesses.
-Therefore, shared MSHRs cause an inter-program timing channel, because one timing
-compartment can delay accesses from another compartment by exhausting the 
-MSHRs.
-To remove the MSHR contention timing channel, our processor design duplicates
+Therefore, shared MSHRs may cause an inter-program timing channel.
+%, because one timing
+%compartment can delay accesses from another compartment by exhausting the 
+%MSHRs.
+To remove the MSHR contention, our processor design duplicates
 the MSHRs and dedicates MSHRs to each timing compartment.
 
 \textbf{Response Port Contention}
@@ -450,23 +444,25 @@ sufficiently long. Previous work erroneously assumed that requests to two
 different ranks would not interfere.
 
 \subsection{Cache Coherence}
-In a multi-core system, threads are running concurrently on different cores. 
-These threads may share some
-data which they read from or write to. The shared data thus can have multiple 
-copies exist in each core's
-private cache. In general, a cache coherence protocol is used to ensure each 
-thread gets the most updated
-data to work with.
 
-In a snooping-based protocol, the caches on the same level are connected with a 
-snooping bus. When a request
-comes into a cache and incurs a cache miss, a snooping request is sent on the 
-snooping bus. All the other
-caches observe the snooping request, and one of them may respond to the request 
-by forwarding the data if the data exists. The operations to handle snooping 
-requests and responses highly depend on the specific cache coherence protocols 
-being used. Commonly used protocols include MSI, MESI and 
-MOESI~\cite{mark_book}.
+Multi-core processors include a cache coherence mechanism to ensure that
+copies in multiple caches are maintained to be coherent.
+The cache coherence mechanism is an essential feature to ensure correct
+execution of multi-threaded programs.
+During the design process, we found that the coherence operations may lead
+to an inter-program timing channel.
+%even when there is no shared data
+%between timing compartments.
+
+%In a snooping-based protocol, the caches on the same level are connected with a 
+%snooping bus. When a request
+%comes into a cache and incurs a cache miss, a snooping request is sent on the 
+%snooping bus. All the other
+%caches observe the snooping request, and one of them may respond to the request 
+%by forwarding the data if the data exists. The operations to handle snooping 
+%requests and responses highly depend on the specific cache coherence protocols 
+%being used. Commonly used protocols include MSI, MESI and 
+%MOESI~\cite{mark_book}.
 
 % If different timing compartments share data, there is clearly a timing 
 % channel introduced by the cache coherence
@@ -475,37 +471,46 @@ MOESI~\cite{mark_book}.
 % cache coherence protocol will invalidate A in TC1's cache. Later when TC1 
 % wants to read A, it will incur a cache
 % miss which indicates TC0 has written to A. 
-In our threat model, timing compartments are allowed to share some OS protected 
-read-only data. This assumption
-introduces a timing channel through the cache coherence protocols. Take MOESI 
-protocol as an example, assume TC0 wants
-to read a shared data A and incurs a cache miss, while A is in TC1's cache with 
-an Owned(O) state. The MOESI protocol
-will forward A to TC0's cache through the snooping bus, which shortens TC0's 
-miss latency compared to accessing the
-next level of cache. TC0 then knows A exists in TC1's cache and may correlate 
-this fact with secret information.  Even if there is no shared data between 
-timing compartments, there still exists a timing channel through the cache
-coherence protocol, because the snooping bus is shared by different timing 
-compartments.  The coherent traffic from different timing compartments can 
-interfere on the snooping bus, thus introduce timing
-channels, as demonstrated in the example below.
+%In our threat model, timing compartments are allowed to share some OS protected 
+%read-only data. This assumption
+%introduces a timing channel through the cache coherence protocols. 
+For example, let us consider a case where two timing compartments, TC0 and TC1, 
+share read-only data A under the MOESI protocol.
+%Take MOESI 
+%protocol as an example, 
+Now, assume TC0 
+reads shared data A and incurs a cache miss while A is in TC1's cache with 
+an Owned (O) state. In the MOESI protocol
+TC1's cache will forward A to TC0's cache.
+%through the snooping bus, which shortens TC0's 
+%miss latency compared to accessing the
+%next level of cache. 
+This coherence operation incurs additional traffic on the coherence bus and also
+incurs a potential port conflict for the data array in TC1's cache.
+Even when there is no shared data between 
+timing compartments, traffic on the snooping coherence bus can lead to
+a timing channel because the bus is shared by multiple timing compartments.
+The coherence traffic on one timing compartment can 
+interfere on the traffic from another compartment.
 
-In this example, we conduct a covert channel attack through cache coherence 
+{\bf Attack Example}
+To illustrate this timing channel,
+we conducted a covert channel attack exploiting the cache coherence 
 protocol on a four-core system.  The system configuration is shown in 
 Figure~\ref{fig:coherent_system}. Each core has a private L1 and L2 cache, and 
 the four cores share
-the L3 cache. The four L2 caches are connected with a snooping bus which uses a 
+the L3 cache. The four L2 caches are connected with a snooping coherence bus which uses a 
 MOESI protocol.  In this example, there are two attackers who
-want to communicate a secret data when the direct communication between them is 
-strictly disallowed. Each attacker belongs to a different timing compartment. 
-Attacker0 occupies core 0 and core 1 while attacker1 occupies core 2 and
+want to communicate a secret data when direct communications between them are 
+disallowed. 
+%Each attacker belongs to a different timing compartment. 
+Attacker0 occupies core 0 and core 1 while Attacker1 occupies core 2 and
 core 3. 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=2.3in]{figs/coherent_system.eps}
-        \caption{System Configuration}
+        \caption{Configuration for a covert channel attack.}
         \label{fig:coherent_system}
     \end{center}
 \end{figure}
@@ -514,68 +519,85 @@ Attacker0 has two threads, each running on a different core. Both threads run a
 $\mathtt{for }$ loop of 4000 iterations, and
 write to a shared data in each iteration. Before each write is performed, one 
 L2 cache has to forward the data
-to the other L2 cache through the snooping bus and invalidates its own copy, 
+to the other L2 cache through the snooping coherence bus and invalidates its own copy, 
 according to the cache coherence protocol.  As a result, there is a lot of 
-coherent traffic between these two threads. Attacker0 runs this $\mathtt{for }$ loop 
+coherence traffic between these two threads. Attacker0 runs this $\mathtt{for }$ loop 
 repeatedly and
-records the time to finish the $\mathtt{for }$ loop using c++ timing functions.
+records the time to finish the $\mathtt{for }$ loop.% using a C++ timing functions.
 
 Attacker1 owns the secret data ('01101100') and tries to communicate this 
 secret to Attacker0. It checks each bit
-in the secret data. If the bit is 0, it executes a $\mathtt{for }$ loop which writes to a 
-data in each iteration. This does not produce coherent traffic. If the bit is 
+in the secret data. If the bit is 0, it executes a $\mathtt{for }$ loop only with a 
+single thread.
+This does not produce coherence traffic. If the bit is 
 1, Attacker1 spawns a new thread, which also runs a $\mathtt{for }$ loop that writes to 
-the same data, hence producing a lot of coherent traffic. 
+the same data, hence producing a lot of coherence traffic. 
 
 \begin{figure}
     \begin{center}
         \includegraphics[width=2.79in]{figs/coherence_interference.eps}
-        \caption{Attacker0's Timing Observation}
+        \caption{Attacker0's timing observation.}
         \label{fig:coherence_interference}
     \end{center}
 \end{figure}
 
 Note that in this example, we have all the aforementioned protection schemes 
-implemented except for the snooping bus.
-Figure~\ref{fig:coherence_interference} shows the $\mathtt{for }$ loop execution time 
-sequence that Attacker0 observes. Each
-sample point represents the time it takes to finish a 4000 iteration $\mathtt{for }$ 
+implemented except for the snooping coherence bus.
+Figure~\ref{fig:coherence_interference} shows the execution time of the $\mathtt{for }$ 
+loop that Attacker0 observes. Each
+sample point represents the time it takes to finish a 4000 iteration of the $\mathtt{for }$ 
 loop. Based on the observation, Attacker0
 can recover the secret successfully. The timing variation is caused by the 
 interference on the snooping bus. If Attacker1
-produces a lot of coherent traffic, Attacker0's coherent traffic gets delayed 
+produces a lot of coherence traffic, Attacker0's coherence traffic gets delayed 
 and thus finishes slower compared to
-when Attacker1 does not produce coherent traffic. 
+when Attacker1 does not produce coherence traffic. 
 
-The mechanism to protect against cache coherence timing channels consists of 
-two parts. The first part solves the interference on the snooping bus. The 
-snooping bus uses TDM to schedule the snooping requests from different timing
-compartments. Each snooping request is attached with a TCID and it can only be 
-sent during its own TC's bus turns.
-This protection is the same with what we used for on-chip interconnect. 
+{\bf Bus Contention}
+The protection for cache coherence mechanisms need to deal with two sources of
+timing interference: bus contention and data array port contention.
+To remove the interference on the snooping coherence bus, the bus
+uses TDM. Each coherence request is tagged with a TCID of the core that
+initiates the request so that it can only be send during that TC's bus turn.
+Similarly, a coherence response is restricted to a particular bus turn.
+Unlike requests, however, the responses are marked with the TCID of the
+corresponding request, not the core's TCID.
+This protection is similar to what we used for on-chip interconnect. 
 
-The second part deals
-with the shared data. Since the shared data is read-only, the cache miss does 
-not necessarily have to be served by
-the cache that has the Owned copy. Instead, the cache miss can always be served 
-by the next level of cache or memory.
-In our mechanism, when the cache receives a snooping request, it will first 
-check if the TCID of the request matches its
-own TCID. If the TCIDs mismatch, then the cache ignores the snooping request 
-even if it has the data, effectively acting
-as if the data does not exist. Then the cache miss will be served by the next 
-level of cache. A tricky thing here is
-coordinating the operations of multiple level of caches. In some protocols (e.g 
-MOESI), the cache that has the Owned copy
-is responsible for responding to the snooping request, so the next level of 
-cache does not respond. In this case, the
-cache needs to notify the next level of cache to respond to the snooping 
-request. The notification message should
-have a TCID that's the same with the requses so that it does not interfere with 
-its own snooping requests on the snooping bus. With our design, the cache that 
-sends a snooping request does not know the data exists on the other cache, 
-while
-the timing of the other cache's own operations is not affected.
+{\bf Data Array Port Contention}
+The second source of interference comes from a port contention for a cache
+data array. As explained above, in the MOESI protocol, the cache that owns 
+data may need to send data. However, reading data from a cache array for
+a coherence request may interfere with a request from a processing pipeline.
+We solve this contention problem by having the data served by the shared
+cache or memory rather than reading a copy in a private cache if a
+coherence request is from a timing compartment that is different from
+the one that the private cache belongs to.
+Because there can only be shared read-only data between timing compartments,
+the shared cache or memory should always have an up-to-date copy.
+
+%The second part deals
+%with the shared data. Since the shared data is read-only, the cache miss does 
+%not necessarily have to be served by
+%the cache that has the Owned copy. Instead, the cache miss can always be served 
+%by the next level of cache or memory.
+%In our mechanism, when the cache receives a snooping request, it will first 
+%check if the TCID of the request matches its
+%own TCID. If the TCIDs mismatch, then the cache ignores the snooping request 
+%even if it has the data, effectively acting
+%as if the data does not exist. Then the cache miss will be served by the next 
+%level of cache. A tricky thing here is
+%coordinating the operations of multiple level of caches. In some protocols (e.g 
+%MOESI), the cache that has the Owned copy
+%is responsible for responding to the snooping request, so the next level of 
+%cache does not respond. In this case, the
+%cache needs to notify the next level of cache to respond to the snooping 
+%request. The notification message should
+%have a TCID that's the same with the requses so that it does not interfere with 
+%its own snooping requests on the snooping bus. With our design, the cache that 
+%sends a snooping request does not know the data exists on the other cache, 
+%while
+%the timing of the other cache's own operations is not affected.
  
 \subsection{Private Per-Core Resources}
 
@@ -589,9 +611,13 @@ are evicted by one compartment may affect the number of cache hits for
 another compartment in the following time slice.
 We eliminate these timing channels by flushing the per-core resource state on a 
 context switch that moves to a different timing compartment.
-This is handled in software by the timing compartment manager (see 
-Section~\ref{sec:integration_tcm}).
+Therefore, the hardware needs to support the flushing operation.
 
-\subsection{Other System Resources}
+%This is handled in software by the timing compartment manager and
+%does not 
+%(see 
+%Section~\ref{sec:integration_tcm}).
 
-Talk about DMA, I/O, etc. Managed by SW.
+%\subsection{Other System Resources}
+
+%Talk about DMA, I/O, etc. Managed by SW.
