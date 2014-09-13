@@ -16,53 +16,43 @@ different programs, 3) for a full processor.
 
 \subsection{Taxonomy of Timing Channels}
 
-%    \begin{figure}
-%        \begin{center}
-%            \includegraphics[width=2.2in]{figs/taxonomy.pdf}
-%            \caption{The taxonomy of timing channels}
-%            \label{fig:taxonomy}
-%        \end{center}
-%    \end{figure}
-
-Timing channels exist when an adversary can correlate the timing of an event
-to a secret data value. In the context of this paper, we classify timing channels
-into two types, 
-{\em intra-program} and {\em inter-program}, 
+Timing channels exist whenever an adversary can correlate the timing of an event
+to a secret data value. Adversaries exploit these vulnerabilities to extract 
+secrets or undermine limitations on communication through timing rather than 
+conventional means. In the context of this paper, we classify timing channels
+into two types, {\em intra-program} and {\em inter-program}, 
 based on the source of timing variations:
 
-In an {\em intra-program} timing channel, the timing of a program's event,
-which can be measured by an attacker, varies
-due to data-dependent behaviors within that program.
-For example, Bernstein's attack~\cite{bernstein} exploits that the execution
-time of a popular AES implementation depends on the value of a secret key because 
-of changes in a cache access sequence.
-The {\em intra-program} timing channel exist even if a program runs on its
-own dedicated hardware.
+In an {\em intra-program} timing channel vulnerability, an adverasy can measure 
+the time of a victim event directly and correlate this with a secret. For 
+example, an adversary can attempt to authenticate to a remote site that uses a 
+cryptographic protocol such as SSL and measure how long the server takes to 
+respond. Bernstein's attack~\cite{bernstein} exploits an intra-program 
+vulnerability in the AES implementation used in OpenSSL to extract the secret 
+key. This vulnerability is caused by the program evicting its 
+own cache misses or by repeated cold cache misses.
+This and other {\em intra-program} timing channel vulnerabilities
+exist even if a program runs on its own dedicated hardware.
 Language-level techniques have been developed to
 eliminate \cite{timesens} or mitigate \cite{mitigation1,mitigation2,mitigation3} 
 such timing channels.
 
-The {\em inter-program} timing channels happen when one program's timing depends
-on another program that shares the same hardware due to interference. 
-%Internal timing channels exist when one program's timing depends on another
-%program that shares the same hardware due to interference. Unlike external 
-%timing channels, {\em internal} timing channel vulnerabilities are caused by 
-%interference in shared resources.
-%They are exploited by an adversary that executes on hardware that it shares with 
-%the victim.
-For example, Percival~\cite{percival} showed a timing channel
-through a shared cache where an adversarial program can extract another program's AES key
-by measuring its own cache access time.
-The victim program's cache accesses interferes with the 
-adversary's accesses in the cache allowing the adversary to correlate its own timings with 
-the victim's key.
-%In the previous architecture study \cite{FIXME}, such inter-program interference is named
-%as external interference.
-The {\em inter-program} timing channels can be eliminated if a program runs on a
-dedicated machine.
+In contrast, {\em inter-program} timing channels are caused by interference 
+between two programs that share hardware.
+For example, Percival~\cite{percival} showed an {\em inter-program} timing 
+channel attack where an adversarial program extracts another program's AES key
+by measuring its own cache access time. The victim's (inadvertantly)
+secret-dependent accesses interfere with the adverary's entries in the shared
+cache allowing the adversary to correlate its own timings with the victim's key. 
+Unlike intra-program timing chanels inter-program timing channels {\em can} be
+eliminated if a program runs on a dedicated machine. Inter-program 
+vulnerabilities are particularly troubling, because they can be exploited by an 
+adversary that cannot measure victim events directly. For example, they can 
+enable a malicious VM in a cloud infrastructure can steal secrets from a
+co-resident VM that has no client-facing services.
 
-The attacks exploiting timing channels can also be categorized into side channels
-and covert channels. In side-channel attacks, an adversary extracts a secret from
+Timing channel vulnerabilities can be exploited by side-channel or 
+covert-channel attacks. In side-channel attacks, an adversary extracts a secret from
 a victim program through unintentional timing variations.
 In covert-channel attacks, two program collude to bypass restrictions and use
 intentional timing variations to communicate.
