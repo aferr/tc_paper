@@ -21,19 +21,14 @@
 \thispagestyle{empty}
 
 \begin{abstract}
-    This paper presents timing compartments, a hardware architecture primitive 
+    This paper presents timing compartments, a hardware architecture 
+    abstraction
     that eliminates microarchitectural timing channels between groups of 
     processes or VMs. Timing channels violate the boundaries between these 
     software system entities despite conventional security techniques such as 
     access control and virtual memory. Unlike other forms of covert/side channels such 
     as power consumption, timing channels can be exploited in software without 
     physical access to the device. 
-%    When coupled with conventional security 
-%    techniques, timing compartments enable distrusting entities to share 
-%    hardware with a level of assurance that is comparable to executing
-%    on separate hardware. By separating timing channel control from control for 
-%    explicit communication channels, timing compartments afford the flexibility 
-%    to pay for timing channel protection only when necessary. 
     To realize timing 
     compartments, we design and experimentally evaluate a full multi-core 
     processor that eliminates timing channels for critical shared hardware 
