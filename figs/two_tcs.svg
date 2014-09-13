@@ -1,50 +1,340 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" font-size="10px" font-family="sans-serif" fill="none" stroke="none" stroke-width="1.5" width="343" height="160">
-     <g transform="translate(50,0)">
-          <rect x="5.647058823529411" y="119.9171269273072" width="22.588235294117652" height="0.0828730726928038" fill="rgb(31,119,180)"/>
-          <rect x="33.88235294117647" y="112.83108748290503" width="22.588235294117652" height="7.16891251709496" fill="rgb(31,119,180)"/>
-          <rect x="62.117647058823536" y="118.26145835215925" width="22.588235294117652" height="1.7385416478407538" fill="rgb(31,119,180)"/>
-          <rect x="90.3529411764706" y="119.77079259730485" width="22.588235294117652" height="0.2292074026951508" fill="rgb(31,119,180)"/>
-          <rect x="118.58823529411765" y="109.37378518010968" width="22.588235294117652" height="10.62621481989032" fill="rgb(31,119,180)"/>
-          <rect x="146.82352941176472" y="10.909090909090907" width="22.588235294117652" height="109.0909090909091" fill="rgb(31,119,180)"/>
-          <rect x="175.0588235294118" y="71.30935482361329" width="22.588235294117652" height="48.6906451763867" fill="rgb(31,119,180)"/>
-          <rect x="203.29411764705884" y="116.75552240714032" width="22.588235294117652" height="3.2444775928596865" fill="rgb(31,119,180)"/>
-          <rect x="231.5294117647059" y="114.91532847438138" width="22.588235294117652" height="5.08467152561862" fill="rgb(31,119,180)"/>
-          <rect x="259.764705882353" y="99.33817190600132" width="22.588235294117652" height="20.661828093998682" fill="rgb(31,119,180)"/>
-     </g>
-     <g transform="translate(50,0)">
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(16.94117647058824,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">astar</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(45.1764705882353,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">bzip2</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(73.41176470588236,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">gobmk</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(101.64705882352942,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">h264ref</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(129.88235294117646,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">hmmer</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(158.11764705882354,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">libquantum</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(186.3529411764706,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">mcf</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(214.58823529411768,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">sjeng</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(242.82352941176475,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">xalan</text>
-          <text pointer-events="none" y="3" dy=".71em" transform="translate(271.0588235294118,135) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle">mean</text>
-     </g>
-     <g transform="translate(50,0)">
-          <text pointer-events="none" dy=".35em" transform="translate(-30,60.0) rotate(-90.0)" fill="rgb(0,0,0)" text-anchor="middle" style="font:12px sans-serif">Percent Overhead</text>
-     </g>
-     <g transform="translate(50,0)">
-          <line shape-rendering="crispEdges" x1="0" y1="120.0" x2="288" y2="120.0" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="95.68285454537802" x2="288" y2="95.68285454537802" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="71.36570909075604" x2="288" y2="71.36570909075604" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="47.04856363613406" x2="288" y2="47.04856363613406" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="22.731418181512083" x2="288" y2="22.731418181512083" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-     </g>
-     <g transform="translate(50,0)">
-          <line shape-rendering="crispEdges" x1="0" y1="120.0" x2="10" y2="120.0" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="95.68285454537802" x2="10" y2="95.68285454537802" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="71.36570909075604" x2="10" y2="71.36570909075604" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="47.04856363613406" x2="10" y2="47.04856363613406" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="22.731418181512083" x2="10" y2="22.731418181512083" stroke="rgb(0,0,0)" stroke-width="1"/>
-     </g>
-     <g transform="translate(50,0)">
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,120.0)" fill="rgb(0,0,0)" text-anchor="end">0</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,95.68285454537802)" fill="rgb(0,0,0)" text-anchor="end">5</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,71.36570909075604)" fill="rgb(0,0,0)" text-anchor="end">10</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,47.04856363613406)" fill="rgb(0,0,0)" text-anchor="end">15</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,22.731418181512083)" fill="rgb(0,0,0)" text-anchor="end">20</text>
-     </g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   font-size="10px"
+   width="326.09766"
+   height="146.53419"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="two_tcs.svg"
+   style="font-size:10px;fill:none;stroke:none;font-family:sans-serif">
+  <metadata
+     id="metadata92">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs90" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1223"
+     inkscape:window-height="777"
+     id="namedview88"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="1.3965015"
+     inkscape:cx="159.09766"
+     inkscape:cy="77.443291"
+     inkscape:window-x="181"
+     inkscape:window-y="180"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg2" />
+  <g
+     transform="translate(37.597656,-10.909091)"
+     id="g4">
+    <rect
+       x="5.647059"
+       y="119.91713"
+       width="22.588236"
+       height="0.082873076"
+       id="rect6"
+       style="fill:#1f77b4" />
+    <rect
+       x="33.882355"
+       y="112.83109"
+       width="22.588236"
+       height="7.1689124"
+       id="rect8"
+       style="fill:#1f77b4" />
+    <rect
+       x="62.117645"
+       y="118.26146"
+       width="22.588236"
+       height="1.7385416"
+       id="rect10"
+       style="fill:#1f77b4" />
+    <rect
+       x="90.352943"
+       y="119.77079"
+       width="22.588236"
+       height="0.2292074"
+       id="rect12"
+       style="fill:#1f77b4" />
+    <rect
+       x="118.58823"
+       y="109.37379"
+       width="22.588236"
+       height="10.626215"
+       id="rect14"
+       style="fill:#1f77b4" />
+    <rect
+       x="146.82353"
+       y="10.909091"
+       width="22.588236"
+       height="109.09091"
+       id="rect16"
+       style="fill:#1f77b4" />
+    <rect
+       x="175.05882"
+       y="71.309357"
+       width="22.588236"
+       height="48.690643"
+       id="rect18"
+       style="fill:#1f77b4" />
+    <rect
+       x="203.29411"
+       y="116.75552"
+       width="22.588236"
+       height="3.2444775"
+       id="rect20"
+       style="fill:#1f77b4" />
+    <rect
+       x="231.52942"
+       y="114.91533"
+       width="22.588236"
+       height="5.0846715"
+       id="rect22"
+       style="fill:#1f77b4" />
+    <rect
+       x="259.76471"
+       y="99.338173"
+       width="22.588236"
+       height="20.661829"
+       id="rect24"
+       style="fill:#1f77b4" />
+  </g>
+  <g
+     transform="translate(37.597656,-4.909091)"
+     id="g26">
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,16.941176,135)"
+       id="text28"
+       style="text-anchor:middle;fill:#000000">astar</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,45.176471,135)"
+       id="text30"
+       style="text-anchor:middle;fill:#000000">bzip2</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,73.411765,135)"
+       id="text32"
+       style="text-anchor:middle;fill:#000000">gobmk</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,101.64706,135)"
+       id="text34"
+       style="text-anchor:middle;fill:#000000">h264ref</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,129.88235,135)"
+       id="text36"
+       style="text-anchor:middle;fill:#000000">hmmer</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,158.11765,135)"
+       id="text38"
+       style="text-anchor:middle;fill:#000000">libquantum</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,186.35294,135)"
+       id="text40"
+       style="text-anchor:middle;fill:#000000">mcf</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,214.58824,135)"
+       id="text42"
+       style="text-anchor:middle;fill:#000000">sjeng</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,242.82353,135)"
+       id="text44"
+       style="text-anchor:middle;fill:#000000">xalan</text>
+    <text
+       pointer-events="none"
+       y="3"
+       dy="0"
+       transform="matrix(0.8660254,0.5,-0.5,0.8660254,271.05882,135)"
+       id="text46"
+       style="text-anchor:middle;fill:#000000">mean</text>
+  </g>
+  <g
+     transform="translate(37.597656,-10.909091)"
+     id="g48">
+    <text
+       pointer-events="none"
+       dy="0"
+       transform="matrix(0,-1,1,0,-30,60)"
+       style="text-anchor:middle;fill:#000000"
+       id="text50">Percent Overhead</text>
+  </g>
+  <g
+     transform="translate(37.597656,-10.909091)"
+     id="g52">
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="120"
+       x2="288"
+       y2="120"
+       id="line54"
+       style="stroke:#000000;stroke-width:1" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="95.682854"
+       x2="288"
+       y2="95.682854"
+       id="line56"
+       style="stroke:#ffffff;stroke-width:1;stroke-opacity:0.3" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="71.365707"
+       x2="288"
+       y2="71.365707"
+       id="line58"
+       style="stroke:#ffffff;stroke-width:1;stroke-opacity:0.3" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="47.048565"
+       x2="288"
+       y2="47.048565"
+       id="line60"
+       style="stroke:#ffffff;stroke-width:1;stroke-opacity:0.3" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="22.731419"
+       x2="288"
+       y2="22.731419"
+       id="line62"
+       style="stroke:#ffffff;stroke-width:1;stroke-opacity:0.3" />
+  </g>
+  <g
+     transform="translate(37.597656,-10.909091)"
+     id="g64">
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="120"
+       x2="10"
+       y2="120"
+       id="line66"
+       style="stroke:#000000;stroke-width:1" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="95.682854"
+       x2="10"
+       y2="95.682854"
+       id="line68"
+       style="stroke:#000000;stroke-width:1" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="71.365707"
+       x2="10"
+       y2="71.365707"
+       id="line70"
+       style="stroke:#000000;stroke-width:1" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="47.048565"
+       x2="10"
+       y2="47.048565"
+       id="line72"
+       style="stroke:#000000;stroke-width:1" />
+    <line
+       shape-rendering="crispEdges"
+       x1="0"
+       y1="22.731419"
+       x2="10"
+       y2="22.731419"
+       id="line74"
+       style="stroke:#000000;stroke-width:1" />
+  </g>
+  <g
+     transform="translate(37.597656,-10.909091)"
+     id="g76">
+    <text
+       pointer-events="none"
+       x="-3"
+       dy="0"
+       transform="translate(0,120)"
+       id="text78"
+       style="text-anchor:end;fill:#000000">0</text>
+    <text
+       pointer-events="none"
+       x="-3"
+       dy="0"
+       transform="translate(0,95.682855)"
+       id="text80"
+       style="text-anchor:end;fill:#000000">5</text>
+    <text
+       pointer-events="none"
+       x="-3"
+       dy="0"
+       transform="translate(0,71.365709)"
+       id="text82"
+       style="text-anchor:end;fill:#000000">10</text>
+    <text
+       pointer-events="none"
+       x="-3"
+       dy="0"
+       transform="translate(0,47.048564)"
+       id="text84"
+       style="text-anchor:end;fill:#000000">15</text>
+    <text
+       pointer-events="none"
+       x="-3"
+       dy="0"
+       transform="translate(0,22.731418)"
+       id="text86"
+       style="text-anchor:end;fill:#000000">20</text>
+  </g>
 </svg>
