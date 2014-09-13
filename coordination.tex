@@ -189,19 +189,20 @@ $t_{L3}$ cycles and finally returned to the L2 after another $t_{resp}$ cycles.
 \end{figure}
 
 \subsection{Devising a Schedule}
-A good time multiplexing schedule should minimize the L2 miss latency for most 
-cases. We can achieve this by controlling the turn lengths and offsets for each 
+A good time multiplexing schedule should minimize the average L2 miss latency.
+We can achieve this by controlling the turn lengths and offsets for each 
 time multiplexed device. Here, an \emph{offset} refers to a shift in the start 
 of the first turn for a single device compared to the start of the full 
 schedule.
-
 For a particular resource, suitable turn lengths depend on the latency of that 
 resource, and suitable offsets depend on the latency of the preceding resource. 
-In other words the turn length should be long enough for the resource's action 
-to complete, and the offset should make sure the turn starts when the data is 
-available from the preceeding device.
 
-It is also desirable for the schedule to repeat in a short number of cycles.
+
+There are three main criteria for developing an efficient schedule.
+First, the turn length should be long enough for the resource's action 
+to complete. Second, the offset should make sure the turn starts when the data is 
+available from the preceeding device.
+Third, it is desirable for the schedule to repeat in a short number of cycles.
 Turns are allocated for each timing compartment in a repeated sequence
 (e.g. 1,2,3,4,1,2,3,4 for four timing compartments). Therefore, a schedule
 for the entire L2 miss path repeats after the least common multiple of each turn
@@ -210,6 +211,7 @@ with turn lengths that have a high least common multiple will often be erratic,
 causing the turns of each device to shift relative to one another and cause bad 
 timings.
 
+\subsubsection{L2 Misses Followed by L3 Hits}
 This reasoning can be applied in a straightforward way to derive the schedule 
 that optimizes the L2 miss latency assuming it is followed by an L3 hit.
 The optimal schedule is shown in Figure~\ref{fig:hit_schedule}.
@@ -234,6 +236,7 @@ in the top of Table~\ref{tab:l2_miss_schedules}.
     \end{center}
 \end{figure}
 
+\subsubsection{L2 Misses Followed by L3 Hits}
 Deriving a schedule that is suitable for L2 misses assuming they are followed 
 by L3 misses is similar. The turn lengths for both L3-memory bus layers and
 the memory controller should be $t_{mem}$, the minimum memory turn length.
@@ -247,7 +250,9 @@ based on the timing of an L2 miss followed by an L3 miss shown
 in~\ref{fig:hit_timing}. Table \ref{tab:l2_miss_schedules} summarizes both the
 turn lengths and offsets in this schedule. Here $t_{read}$ is the worst case
 memory read time and
-$t_{req}^+ = Max(\{n \times t_{mem} | n\in\mathbb{N}, n\times t_{mem} > t_{resp} \})$
+\[
+  t_{req}^+ = Min(\{n | \exists m\in \mathbb{N}.t_{mem}=m\cdot n, n > t_{resp}\})
+\]
 As discussed in Section~\ref{sec:eval_coord} we did not find a schedule with 
 a lower average L2 miss latency given that it is followed by an L3 miss.
 
@@ -257,12 +262,12 @@ a lower average L2 miss latency given that it is followed by an L3 miss.
     \centering
     \begin{tabular}{|r|r|l|l|}
         \hline
-        \multicolumn{4}{|l|}{L2 misses followed by L3 hts}\\\hline
+        \multicolumn{4}{|l|}{L2 misses followed by L3 hits}\\\hline
         \multicolumn{2}{|l|}{Device Name} & Turn Length & Offset\\\hline
         \multicolumn{2}{|l|}{L2-L3 Req}  & $t_{resp}$ & 0\\\hline
         \multicolumn{2}{|l|}{L2-L3 Resp} & $t_{resp}$ &
           $t_{req}+t_{L3}$\\\hline\hline
-        \multicolumn{4}{|l|}{L2 misses followed by L3 hts}\\\hline
+        \multicolumn{4}{|l|}{L2 misses followed by L3 misses}\\\hline
         \multicolumn{2}{|l|}{L2-L3 Req}   & $t_{resp}^+$ & 0\\\hline
         \multicolumn{2}{|l|}{L3-Mem Req}  & $t_{mem}$ & $t_{req}+t_{L3}$\\\hline
         \multicolumn{2}{|l|}{Mem Ctl}     & $t_{mem}$ & $2t_{req}+t_{L3}$\\\hline
@@ -274,6 +279,7 @@ a lower average L2 miss latency given that it is followed by an L3 miss.
     \label{tab:l2_miss_schedules}
 \end{table}
 
+\subsubsection{L2 Misses in general}
 Scheduling for L2 misses in general, without assuming it is followed by a hit 
 or a miss, is much more difficult. Notice that the L2-L3 request and response 
 layer turn lengths and the L2-L3 response layer offsets in the efficient 
