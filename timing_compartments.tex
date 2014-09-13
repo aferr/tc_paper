@@ -30,7 +30,7 @@ cryptographic protocol such as SSL and measure how long the server takes to
 respond. Bernstein's attack~\cite{bernstein} exploits an intra-program 
 vulnerability in the AES implementation used in OpenSSL to extract the secret 
 key. This vulnerability is caused by the program evicting its 
-own cache misses or by repeated cold cache misses.
+own cachelines or by repeated cold cache misses.
 This and other {\em intra-program} timing channel vulnerabilities
 exist even if a program runs on its own dedicated hardware.
 Language-level techniques have been developed to
@@ -48,8 +48,8 @@ Unlike intra-program timing chanels inter-program timing channels {\em can} be
 eliminated if a program runs on a dedicated machine. Inter-program 
 vulnerabilities are particularly troubling, because they can be exploited by an 
 adversary that cannot measure victim events directly. For example, they can 
-enable a malicious VM in a cloud infrastructure can steal secrets from a
-co-resident VM that has no client-facing services.
+enable a malicious VM in a cloud infrastructure to steal secrets from a
+co-resident VM that has no client-facing services.~\cite{heyyou}
 
 Timing channel vulnerabilities can be exploited by side-channel or 
 covert-channel attacks. In side-channel attacks, an adversary extracts a secret from
@@ -327,8 +327,8 @@ this security threat makes public cloud computing unusable.
 \begin{figure}
     \begin{center}
         \includegraphics{figs/cloud_tcs.eps}
-        \caption{A cloud computing example. VM1 and VM2 have high security 
-        requirements, but VM3 and VM4 do not.}
+        \caption{A cloud computing example.} %VM1 and VM2 have high security 
+        %requirements, but VM3 and VM4 do not.}
         \label{fig:cloud_tcs}
     \end{center}
 \end{figure}

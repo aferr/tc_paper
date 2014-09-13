@@ -4,7 +4,7 @@ Timing channel attacks are becoming a major threat as hardware is increasingly
 consolidated and shared by distrusting entities, which traditionally have been
 isolated on their own physical machines. For example, in cloud computing, mutually distrusting 
 parties own virtual machines on shared hardware. In mobile devices, users often
-run downloaded applications that cannot be trusted often handle private personal
+run downloaded applications that cannot be trusted to handle private personal
 information.
 While untrusted applications can be sandboxed using
 traditional access control mechanisms to limit explicit communications,
@@ -59,7 +59,7 @@ timing channel protection when it is truly necessary.
 To realize the timing compartments, a multi-core processor needs to be
 re-designed to control inter-core timing interference in shared hardware
 resources that cannot be efficiently controlled in software.
-In this paper, we identify all resources that can be shared concurrently among
+In this paper, we identify major resources that can be shared concurrently among
 multiple cores on a typical multi-core processor, namely shared caches,
 on-chip interconnect, cache coherence mechanisms, and off-chip memory controllers,
 and augment each shared resource with a mechanism
