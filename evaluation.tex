@@ -61,28 +61,15 @@ latency for a schedule can be enumerated. The simulator finds
 each possible latency in a schedule, and calculates the expected value of this 
 latency assuming the arrival time at the L2-L3 bus is uniform random.
 
-Using this simulator, we exhaustively searched for the optimal L3 hit path 
-schedule with the parameters summarized in table ~\ref{tab:coord_param}. The 
-search space includes turn lengths from 1-25 cycles and all possible offsets 
-for each turn length. We confirmed that the intuitive schedule described in 
+Using this simulator, we exhaustively searched for the optimal L3 hit path in 
+the space of turn lengths far beyond the maximum parameters in this path
+and all possible offsts for these turn lengths.
+We confirmed that the intuitive schedule described in 
 Section \ref{sec:coordination} achieves the highest expected value of the 
 latencies for L2 misses that hit in the L3.
 Fixing the turn lengths to the optimal ones and adjusting only the offsets,
 the worst case latency is 19.6\% worse than the optimal schedule, showing
 that coordinating the hit path is important.
-
-\begin{table}
-    \caption{Time slice coordination simulator paramaters}
-    \centering
-    \begin{tabular}{|r|r|}
-        \hline
-        $t_{req}$  &   1 cycle \\\hline
-        $t_{resp}$ & 9 cycles \\\hline
-        $t_{L3}$   &   9 cycles \\\hline
-        $t_{read}$ & 36 cycles \\\hline
-    \end{tabular}
-    \label{tab:l2_miss_schedules}
-\end{table}
 
 The search space for schedules involving every resource in the L2 miss path
 is far too large to search exhaustively.
