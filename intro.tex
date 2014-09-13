@@ -33,7 +33,7 @@ adversaries.
 %leaking secret information through timing channels induced by hardware sharing.
 
 In this paper, we propose an architecture abstraction, called timing compartments (TCs),
-which allow software to explicitly request strong timing isolation among software
+which allows software to explicitly request strong timing isolation among software
 entities that share a multi-core processor.
 Timing compartments remove fine-grained microarchitecture-level timing interference
 that cannot be controlled in software and thus enable strong timing isolation that is
@@ -72,11 +72,11 @@ For example, we found that interfaces between hardware modules and
 a cache coherence mechanism can lead to timing channels. We demonstrate
 that a covert channel attack can use coherence traffic interference to 
 undermine communication control - even among colluding parties that do not 
-share data or cache entries with eachother.
+share data or cache entries with each other.
 The integration effort also showed that protection mechanisms need to
 be carefully coordinated in order to avoid unnecessary inefficiencies.
 In fact, we show that poorly coordinating time-multiplexed resources along the 
-L2 miss path can cause an 8.7X increse in the average L2 miss latency with 
+L2 miss path can cause an 8.7X increase in the average L2 miss latency with 
 parameters that are surprisingly close to an efficient schedule.
 To the best of our knowledge, this paper represents the first study
 that implements comprehensive timing channel protection for a full 
@@ -122,11 +122,10 @@ The simulation results suggest that the performance overhead of supporting
 timing compartments is relatively low, especially when the number of timing
 compartments that run simultaneously is small.
 %for the SPEC benchmarks. 
-Even though
-timing compartments require shared resources to be statically 
-allocated, the overall impact on the performance is limited by the fact
-that protection only affects infrequent cache misses and that modern
-processors include large caches. 
+Even though timing compartments require shared resources to be statically
+allocated, the overall impact on performance is limited since accesses to the
+shared levels of the memory hierarchy are infrequent, especially on modern
+processors with large private caches.
 
 The following summarizes the main contributions.
 
@@ -136,7 +135,7 @@ explicitly remove microarchitecture-level timing interference on a multi-core.
 %The timing compartment enables new
 %applications that require strong timing isolation of software modules.
 \item The paper identifies new timing channels on a multi-core processor,
-including the one through cache coherence, and presents
+including one through cache coherence, and presents
 comprehensive protection mechanisms for a full multi-core processor.
 \item The paper shows how protection mechanisms need to be coordinated to
 reduce the overhead.% of timing compartments.
