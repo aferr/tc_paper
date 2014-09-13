@@ -82,8 +82,8 @@ bus connects the shared cache to a memory controller that manages requests to
 main memory as well as other system components such as a DMA engine, a timer, and I/O
 modules.
 For brevity, we do not consider simultaneous multithreading and assume that
-each core can only run one program at a time.
-A core may be time-shared (e.g. by context switching), however, and run multiple
+cores cannot run multiple distrusting programs simultaneously.
+However, a core may be time-shared (e.g. by context switching), and run multiple
 programs over time.
 
 %We assume that each core may be time shared by multiple timing
@@ -110,23 +110,23 @@ programs over time.
 
 \subsection{Security Model}
 
-From the security perspective,
-we assume that there exists a trusted software layer such as an OS or a 
+For security,
+we assume that there exists a trusted software layer, such as an OS or a 
 hypervisor, 
-which manages conventional access control such as virtual memory as well as
-the timing isolation using timing compartments.
+that handles conventional access control such as virtual memory and initializes 
+and manages the timing compartments that address timing channels.
 We refer to the OS/hypervisor module that manages timing compartments as
 a timing compartment manager (TCM).
-We assume that there are one or more malicious programs running on a processor,
-which try to either extract information from another program that runs
+We address threats caused by one or more malicious programs running on a processor
+which try to either extract information from another programs that run
 concurrently, or communicate between them when no explicit communication is allowed. 
 
 A timing compartment consists of  
-software entities such as threads, processes, and virtual machines.
+software entities such as threads, processes, or virtual machines.
 Our goal is to eliminate {\em inter-program} timing
-channels among timing compartments through fine-grained sharing of microarchitecture 
-resources\footnote{In a general case, this abstraction can be extended to support
-more expressive policies such as the lattice model \cite{denning} to only prevent
+channels among timing compartments which are caused through fine-grained sharing of microarchitecture 
+resources\footnote{In general, this abstraction can be extended to support
+more expressive policies based on the lattice model \cite{denning} to only prevent
 a subset of timing channels.}.
 To provide a level of isolation that is similar to running on a dedicated processor,
 the timing compartment needs to prevent both side-channel and covert-channel attacks.
@@ -138,20 +138,21 @@ Timing compartments allow software to explicitly control timing channels
 among groups of software entities, but does not enforce any restrictions within
 each compartment. We believe that handling timing channels separately from
 traditional isolation abstractions such as processes and virtual machines is 
-essential to allow efficient system designs. Because timing channel protection
-is more expensive than traditional access control, a designer should be able
+essential to allow efficient system designs. Timing channel protection
+is more expensive than traditional access control, so a designer should be able
 to pay the overhead of timing channel control only when necessary.
 
 In practice, multi-core systems have a number of shared sources even beyond a
 processor chip, and comprehensive timing isolation cannot be achieved only in hardware.
-Instead, we rely on the trusted software such as an OS to prevent timing channels 
-through shared resources for coarse-grained events such as an I/O and a timer interrupt. 
+Instead, we rely on trusted software such as an OS to prevent timing channels 
+through events such as I/O or timer interrupts which are highly 
+software-dependent.
 These resources are directly managed by the OS/hypervisor and cannot be accessed 
 without explicit system calls or hypercalls.
 The role of a timing compartment is to eliminate
-timing interference in fine-grained microarchitecture events such as memory accesses,
-whose timing cannot be controlled in software.
-In our multi-core architecture model, the timing compartment needs to eliminate
+timing interference caused by fine-grained microarchitecture events such as memory accesses,
+that cannot be controlled in software.
+In our multi-core architecture model, timing compartments need to eliminate
 timing interference in the shared memory hierarchy, including a shared cache,
 on-chip interconnect, cache coherence mechanisms, and a memory controller.
 
@@ -164,10 +165,10 @@ on-chip interconnect, cache coherence mechanisms, and a memory controller.
 %This lattice model is quite expressive and widely used for information flow 
 %control. 
 
-In the current implementation of protection mechanisms, we also assume that
-timing compartments have separate address spaces and do not share a physical
-page except for read-only pages that are commonly used for program code.
-There is no point in timing isolation if explicit communications are allowed.
+In the current implementation of the protection mechanisms, we also assume that
+timing compartments have separate address spaces and do not share physical
+pages except for read-only pages that are commonly used for program code.
+There is no point in timing isolation if explicit communication is allowed.
 %Communications between timing compartments are controlled through the 
 %trusted
 %software layer and be explicitly managed to prevent external timing channels. 
