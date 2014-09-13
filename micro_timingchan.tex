@@ -59,20 +59,6 @@ the approach is designed to remove interference rather than mitigating it.
 %develop new protection mechanisms for components that are not included in
 %our baseline architecture.
 
-\subsubsection{TCID}
-
-The hardware protection mechanisms need to track which timing compartment (TC)
-each request belongs to and handle the requests accordingly. 
-For this purpose, each core has a register that 
-stores the timing compartment ID (TCID) of the TC currently active on that 
-core. This is used to derive the tags that are appended to requests originating 
-from that core. The TCID is $log\ n$ bits where $n$ is the number of cores in 
-the processor.
-Events such as network packets or cache accesses that use shared resources are 
-tagged with the TCID of the corresponding core.  The timing channel protection 
-mechanisms use this TCID to distinguish accesses
-from among different timing compartments.
-
 \subsubsection{Sources of Inter-Program Timing Channels}
 
 There exists an inter-progam timing channel from one entity (say $E1$)
