@@ -4,7 +4,7 @@ This section discusses hardware protection mechanisms that are necessary
 to implement timing compartments on typical multi-core processors.
 
 At a glance, designing a full processor with timing channel
-protection may seem rather straightforward because there exist previous 
+protection may seem rather straightforward; there are previous 
 studies on major components such as 
 shared caches \cite{percival}, 
 on-chip interconnect \cite{yaonocs, surfnoc}, and the memory controller \cite{ushpca14}.
@@ -52,7 +52,7 @@ unnecessarily high overheads.
 
 Here, we present a classification of microarchitectural timing 
 channels and a framework of general solutions to address each type.
-Because we aim to prevent both side-channel and cover-channel attacks,
+To prevent both side-channel and cover-channel attacks,
 the approach is designed to remove interference rather than mitigating it.
 %We follow these approaches to design our
 %protection mechanisms. These approaches also provide guidelines to
@@ -178,12 +178,13 @@ demands of software entities.
 %in software by forcing the observable execution time to equal the worst case 
 %execution time, stalling if necessary.
 
-\subsubsection{Full-Processor Protection}
+\subsection{Full-Processor Protection}
 
 %Timing compartments needs hardware mechanisms to remove the inter-program 
 %timing channels that cannot be handled in software.
 
-The rest of this section provides a detailed list of timing channels in our  
+After describing TCIDs which are used to control protection mechanisms,
+the rest of this section provides a detailed list of timing channels in our  
 multi-core architecture, and presents a protection mechanism for each 
 based on the general approach above.
 Table \ref{table:timing_chan_summary} summarizes these timing channels and
@@ -243,7 +244,21 @@ solutions and highlights newly discovered timing channels in green.
     \label{table:timing_chan_summary}
 \end{table*}
 
-\subsection{Shared Caches}
+\subsubsection{TCID}
+
+The hardware protection mechanisms need to track which timing compartment (TC)
+each request belongs to and handle the requests accordingly. 
+For this purpose, each core has a register that 
+stores the timing compartment ID (TCID) of the TC currently active on that 
+core. This is used to derive the tags that are appended to requests originating 
+from that core. The TCID is $log\ n$ bits where $n$ is the number of cores in 
+the processor.
+Events such as network packets or cache accesses that use shared resources are 
+tagged with the TCID of the corresponding core.  The timing channel protection 
+mechanisms use this TCID to distinguish accesses
+from among different timing compartments.
+
+\subsubsection{Shared Caches}
 %\mbox{}\newline
 \textbf{Cache State \& Replacement}
 The shared cache causes state-based timing channel vulnerabilities, because 
@@ -354,7 +369,7 @@ lead to an inter-program timing channel. To remove this timing channel, we apply
 time division multiplexing to the cache ports and replace a shared queue with
 smaller per-compartment queues.
 
-\subsection{On-Chip Interconnect}
+\subsubsection{On-Chip Interconnect}
 
 As pointed out by previous studies \cite{yaonocs, surfnoc}, shared on-chip 
 interconnects have contention-based timing channels because each link can
@@ -365,7 +380,7 @@ controller.
 For each time slice, accesses from only one timing compartment are allowed to
 use the bus.
 
-\subsection{Main Memory Controller}
+\subsubsection{Main Memory Controller}
 
 The main memory is shared concurrently among multiple cores. As a result,
 interference among memory accesses from multiple timing compartments can lead
@@ -443,12 +458,12 @@ Second, we found that the dead time proposed by ~\cite{ushpca14} was not
 sufficiently long. Previous work erroneously assumed that requests to two
 different ranks would not interfere.
 
-\subsection{Cache Coherence}
+\subsubsection{Cache Coherence}
 
-Multi-core processors include a cache coherence mechanism to ensure that
-copies in multiple caches are maintained to be coherent.
-The cache coherence mechanism is an essential feature to ensure correct
-execution of multi-threaded programs.
+Multi-core processors use cache coherence protocols to ensure that
+copies of data in multiple caches have the most recent value.
+The cache coherence is essential to ensure correct
+multi-threaded programs execute correctly.
 During the design process, we found that the coherence operations may lead
 to an inter-program timing channel.
 %even when there is no shared data
@@ -479,14 +494,14 @@ share read-only data A under the MOESI protocol.
 %Take MOESI 
 %protocol as an example, 
 Now, assume TC0 
-reads shared data A and incurs a cache miss while A is in TC1's cache with 
+reads shared data A and misses in the cache while A is in TC1's cache with 
 an Owned (O) state. In the MOESI protocol
 TC1's cache will forward A to TC0's cache.
 %through the snooping bus, which shortens TC0's 
 %miss latency compared to accessing the
 %next level of cache. 
-This coherence operation incurs additional traffic on the coherence bus and also
-incurs a potential port conflict for the data array in TC1's cache.
+This coherence operation causes additional traffic on the coherence bus and also
+causes a potential port conflict in TC1's cache.
 Even when there is no shared data between 
 timing compartments, traffic on the snooping coherence bus can lead to
 a timing channel because the bus is shared by multiple timing compartments.
@@ -503,7 +518,6 @@ the L3 cache. The four L2 caches are connected with a snooping coherence bus whi
 MOESI protocol.  In this example, there are two attackers who
 want to communicate a secret data when direct communications between them are 
 disallowed. 
-%Each attacker belongs to a different timing compartment. 
 Attacker0 occupies core 0 and core 1 while Attacker1 occupies core 2 and
 core 3. 
 
@@ -517,22 +531,21 @@ core 3.
 \end{figure}
 
 Attacker0 has two threads, each running on a different core. Both threads run a 
-$\mathtt{for }$ loop of 4000 iterations, and
-write to a shared data in each iteration. Before each write is performed, one 
-L2 cache has to forward the data
-to the other L2 cache through the snooping coherence bus and invalidates its own copy, 
-according to the cache coherence protocol.  As a result, there is a lot of 
-coherence traffic between these two threads. Attacker0 runs this $\mathtt{for }$ loop 
-repeatedly and
-records the time to finish the $\mathtt{for }$ loop.% using a C++ timing functions.
+$\mathtt{for }$ loop , and write to a shared data in each iteration.
+Before each write is performed, one of the L2 caches has to forward the data
+to the other through the snooping coherence bus and invalidate its own copy.
+As a result, there is a lot of coherence traffic between these two threads.
+Attacker0 repeats this process and record the time for each loop.
 
-Attacker1 owns the secret data ('01101100') and tries to communicate this 
-secret to Attacker0. It checks each bit
-in the secret data. If the bit is 0, it executes a $\mathtt{for }$ loop only with a 
-single thread.
-This does not produce coherence traffic. If the bit is 
-1, Attacker1 spawns a new thread, which also runs a $\mathtt{for }$ loop that writes to 
-the same data, hence producing a lot of coherence traffic. 
+Attacker1 tries to communicate the secret ('01101100') to Attacker0.
+To send a 0, it executes a $\mathtt{for }$ loop only with a single thread 
+producing no traffic, and to send a 1, it runs the loop a newly spawned thread, 
+which write to the same data. This causes a lot of coherence traffic when 
+sending a 1 and none when sending a 0.
+Figure~\ref{fig:coherence_interference} shows the execution time of the $\mathtt{for }$ 
+loop that Attacker0 observes.
+Based on the observed variation caused by snooping bus interference, Attacker0
+can recover the secret successfully.
 
 \begin{figure}
     \begin{center}
@@ -543,17 +556,6 @@ the same data, hence producing a lot of coherence traffic.
     \end{center}
 \end{figure}
 
-Note that in this example, we have all the aforementioned protection schemes 
-implemented except for the snooping coherence bus.
-Figure~\ref{fig:coherence_interference} shows the execution time of the $\mathtt{for }$ 
-loop that Attacker0 observes. Each
-sample point represents the time it takes to finish a 4000 iteration of the $\mathtt{for }$ 
-loop. Based on the observation, Attacker0
-can recover the secret successfully. The timing variation is caused by the 
-interference on the snooping bus. If Attacker1
-produces a lot of coherence traffic, Attacker0's coherence traffic gets delayed 
-and thus finishes slower compared to
-when Attacker1 does not produce coherence traffic. 
 
 {\bf Bus Contention}
 The protection for cache coherence mechanisms need to deal with two sources of
@@ -601,7 +603,7 @@ the shared cache or memory should always have an up-to-date copy.
 %while
 %the timing of the other cache's own operations is not affected.
  
-\subsection{Private Per-Core Resources}
+\subsubsection{Private Per-Core Resources}
 
 The resources that are dedicated to each core such as private caches,
 TLBs, and branch predictors, are only used by one timing compartment at a time.
@@ -615,7 +617,7 @@ We eliminate these timing channels by flushing the per-core resource state on a
 context switch that moves to a different timing compartment.
 Therefore, the hardware needs to support the flushing operation.
 
-%This is handled in software by the timing compartment manager and
+%this is handled in software by the timing compartment manager and
 %does not 
 %(see 
 %Section~\ref{sec:integration_tcm}).

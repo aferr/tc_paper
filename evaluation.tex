@@ -59,7 +59,7 @@ TC0 should be independent of the workload on TC1.
 %of TC0 would be unaffected by TC1. 
 Using this reasoning, we checked the
 security of our design by running, a fixed benchmark
-on TC0 wihle varying the benchmark on TC1 and compared the execution times. 
+on TC0 while varying the benchmark on TC1 and compared the execution times. 
 As expected, 
 %these tests showed interference in the baseline without protection.
 %On the other hand,
@@ -257,9 +257,9 @@ virtual machines with high-assurance ones.
 \subsection{Cache Coherence Performance Overhead}
 
 Adding the timing channel protection for snooping coherence bus can introduce 
-performance overhead. We evaluate the overhead using Splash2~\cite{splash2} benchmarks on 
+performance overhead. We evaluate the overhead using SPLASH-2~\cite{splash2} benchmarks on 
 gem5. The system we model is the one shown in Figure~\ref{fig:coherent_system}.
-We use the same Splash2 benchmarks for Attacker0 and Attacker1, each consists 
+We use the same SPLASH-2 benchmarks for Attacker0 and Attacker1, each consists 
 of two threads. We terminate the simulation
 when thread on core 0 reaches 100M instructions.  Our baseline is a system 
 where every other timing channel protection scheme we proposed is implemented 
