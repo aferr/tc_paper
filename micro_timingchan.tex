@@ -203,11 +203,11 @@ solutions and highlights newly discovered timing channels in green.
     Component & Timing Channel & Classification & Solution\\
     \hline
     \multirow{3}{*}{Shared Caches}
-    & Replacement & State  & Set Partitioning \\
+    & Replacement & State  & Way Partitioning \\
     \hhline{~---}
     & {\color{\novelcolor}MSHRs}
     & {\color{\novelcolor}Contention }
-    & {\color{\novelcolor}Duplicate MSHR Banks} \\
+    & {\color{\novelcolor}Duplicate MSHR Queues} \\
     \hhline{~---}
     & {\color{\novelcolor}Response Ports}
     & {\color{\novelcolor}Contention }
@@ -228,7 +228,7 @@ solutions and highlights newly discovered timing channels in green.
     \multirow{2}{*}{On-Chip Interconnect} & Interconnect Contention & Contention & Time 
     Multiplexing \\
     \hhline{~---}
-    & Queueing Structure & State & Partitioned Queue \\
+    & Queueing Structure & Contention & Duplication \\
     \hline
     \multirow{2}{*}{{\color{\novelcolor} Cache Coherence}} & {\color{\novelcolor} Interconnect Contention} & {\color{\novelcolor} Contention} & {\color{\novelcolor} Time 
     Multiplexing} \\
@@ -265,7 +265,7 @@ entries of another.
 In general, there exist two approaches for cache partitioning:
 way partitioning \cite{dynamic_partitioning} and
 set partitioning \cite{rtas_cache_framework}. Way partitioning restricts
-each compartment to only replace certain cache ways. Set partitioning
+each compartment to only use certain cache ways. Set partitioning
 either uses page coloring or modifies the index function so that each 
 compartment
 only uses a subset of the cache sets. Both partitioning methods are equally
@@ -275,7 +275,7 @@ partitioning.
 %and cache ways can easily be distributed to timing compartments 
 %proportionally to static cache demand characteristics.
 In the partitioned cache, accesses to a shared read-only page from different
-timing compartments are treated as different and stored in separate partitioned.
+timing compartments are treated as different and stored in separate partitions.
 
 
 %We note that the cache partitioning needs a special care if multiple timing
@@ -570,7 +570,7 @@ data array. As explained above, in the MOESI protocol, the cache that owns
 data may need to send data. However, reading data from a cache array for
 a coherence request may interfere with a request from a processing pipeline.
 We solve this contention problem by having the data served by the shared
-cache or memory rather than reading a copy in a private cache if a
+cache or memory rather than by a private cache if a
 coherence request is from a timing compartment that is different from
 the one that the private cache belongs to.
 Because there can only be shared read-only data between timing compartments,
