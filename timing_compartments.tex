@@ -6,8 +6,8 @@ The goal of the timing compartment is to enable strong timing isolation
 among multiple software components that share a multi-core processor,
 similar to running each on a dedicated processor.
 In that sense, the timing compartment provides hardware support that is 
-necessary to remove 1) both side and covert timing channels, 2) among
-different programs, 3) for a full processor.
+necessary to remove both side and covert timing channels among
+different programs for a full processor.
 
 %We first discuss the class of timing channels that timing compartments are 
 %designed
@@ -21,16 +21,16 @@ to a secret data value. Adversaries exploit these vulnerabilities to extract
 secrets or undermine limitations on communication through timing rather than 
 conventional means. In the context of this paper, we classify timing channels
 into two types, {\em intra-program} and {\em inter-program}, 
-based on the source of timing variations:
+based on the source of timing variations.
 
-In an {\em intra-program} timing channel vulnerability, an adverasy can measure 
+In an {\em intra-program} timing channel vulnerability, an adversary can measure 
 the time of a victim event directly and correlate this with a secret. For 
 example, an adversary can attempt to authenticate to a remote site that uses a 
 cryptographic protocol such as SSL and measure how long the server takes to 
 respond. Bernstein's attack~\cite{bernstein} exploits an intra-program 
 vulnerability in the AES implementation used in OpenSSL to extract the secret 
 key. This vulnerability is caused by the program evicting its 
-own cachelines or by repeated cold cache misses.
+own cache lines or by repeated cold cache misses.
 This and other {\em intra-program} timing channel vulnerabilities
 exist even if a program runs on its own dedicated hardware.
 Language-level techniques have been developed to
@@ -41,10 +41,10 @@ In contrast, {\em inter-program} timing channels are caused by interference
 between two programs that share hardware.
 For example, Percival~\cite{percival} showed an {\em inter-program} timing 
 channel attack where an adversarial program extracts another program's AES key
-by measuring its own cache access time. The victim's (inadvertantly)
-secret-dependent accesses interfere with the adverary's entries in the shared
+by measuring its own cache access time. The victim's (inadvertently)
+secret-dependent accesses interfere with the adversary's entries in the shared
 cache allowing the adversary to correlate its own timings with the victim's key. 
-Unlike intra-program timing chanels inter-program timing channels {\em can} be
+Unlike intra-program timing channels, inter-program timing channels {\em can} be
 eliminated if a program runs on a dedicated machine. Inter-program 
 vulnerabilities are particularly troubling, because they can be exploited by an 
 adversary that cannot measure victim events directly. For example, they can 
@@ -69,6 +69,7 @@ enough to prevent side-channel attacks, but typically cannot remove covert chann
             \includegraphics{figs/baseline.eps}
             \caption{Baseline multi-core architecture.}
             \label{fig:baseline}
+            \vspace{-0.2in}
         \end{center}
     \end{figure}
 
@@ -118,7 +119,7 @@ and manages the timing compartments that address timing channels.
 We refer to the OS/hypervisor module that manages timing compartments as
 a timing compartment manager (TCM).
 We address threats caused by one or more malicious programs running on a processor
-which try to either extract information from another programs that run
+which try to either extract information from other programs that run
 concurrently, or communicate between them when no explicit communication is allowed. 
 
 A timing compartment consists of  
@@ -142,7 +143,7 @@ essential to allow efficient system designs. Timing channel protection
 is more expensive than traditional access control, so a designer should be able
 to pay the overhead of timing channel control only when necessary.
 
-In practice, multi-core systems have a number of shared sources even beyond a
+In practice, multi-core systems have a number of shared resources even beyond a
 processor chip, and comprehensive timing isolation cannot be achieved only in hardware.
 Instead, we rely on trusted software such as an OS to prevent timing channels 
 through events such as I/O or timer interrupts which are highly 
@@ -294,6 +295,7 @@ through timing channels.
         \includegraphics{figs/byod.eps}
         \caption{A BYOD example.}
         \label{fig:byod}
+        \vspace{-0.2in}
     \end{center}
 \end{figure}
 
@@ -309,7 +311,7 @@ though a system may have many cores and run many applications.
 
 \subsubsection{High-Assurance Cloud Computing}
 
-Infrastructure as a service cloud providers, such as Amazon EC2, lease virtual 
+Infrastructure as a service (IaaS) cloud providers, such as Amazon EC2, lease virtual 
 machines (VMs) that share physical hardware. 
 %A cloud provider co-locates many VMs on a single machine to increase its 
 %utilization,
@@ -330,6 +332,7 @@ this security threat makes public cloud computing unusable.
         \caption{A cloud computing example.} %VM1 and VM2 have high security 
         %requirements, but VM3 and VM4 do not.}
         \label{fig:cloud_tcs}
+        \vspace{-0.2in}
     \end{center}
 \end{figure}
 
@@ -376,5 +379,5 @@ safety-critical systems. For example, hard real-time systems such as automotive
 controllers must meet strict timing requirements. Unfortunately, multi-core
 processors cause interference that makes timing guarantees impossible. Timing
 compartments can be used to ensure that the timing of safety-critical components 
-are not affected by the rest of a system.
+is not affected by the rest of a system.
 

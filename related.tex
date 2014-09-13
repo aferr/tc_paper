@@ -1,19 +1,20 @@
 \section{Related Work}
 
-Previous studies identified 
-a number of microarchitectural timing channels 
+Previous studies have identified 
+a number of microarchitectural timing channels in
 caches~\cite{percival,bernstein,caseofaes,remoteaes,analyticalcache,collision,
 deconstructing,cachegames}, branch predictors 
 \cite{branchpred,predictingbranch}, processor
 pipelines \cite{pipelines}, networks on chip~\cite{yaonocs,surfnoc}, and memory
 controllers~\cite{ushpca14,fletcher-hpca14}. 
-Also, people have proposed solutions for timing channels in
+People have also proposed solutions for timing channels in
 individual components such as caches~\cite{newcache,deconstructing}, memory
 controllers~\cite{ushpca14,fletcher-hpca14}, and on-chip network
 ~\cite{yaonocs,surfnoc}.
-However, the previous work has
-so far focused on individual component. This work represents the first attempt
-at designing a full microprocessor with complete internal timing channel protection.
+% However, the previous work has
+% so far focused on individual component. 
+This work represents the first attempt
+at designing a full microprocessor with complete inter-program timing channel protection.
 Our integration efforts also exposed new sources of timing channels in module
 interfaces such as MSHRs and cache/memory response ports.
 
@@ -21,14 +22,14 @@ interfaces such as MSHRs and cache/memory response ports.
 %internal microarchitectural timing channels. 
 
 Ascend~\cite{ascend} proposes a
-microarchitecture that aims to eliminate external timing channels so that
+microarchitecture that aims to eliminate intra-program timing channels so that
 even untrusted software can execute without leaking any confidential
 data. This presents a powerful option if physical attacks need to be
 considered. However, Ascend does not allow a processor to be shared by
 multiple software components at the same time, and does not address 
-any internal timing channels.
+any inter-program timing channels.
 Execution leases~\cite{execution_leases} 
-provide another external timing channel solution at the hardware level by 
+provide another intra-program timing channel solution at the hardware level by 
 enforcing strict upper bounds on the execution times of program subsections. 
 
 Timing channels are a form of information flow, and there is a large body
@@ -42,7 +43,7 @@ timing inside a processor.
 At the 
 systems level, information flow control has been used to control
 explicit communication channels~\cite{flume-sosp07,histar-sosp06,laminar-pldi09}. 
-These software approaches can control explicit information flows or external
+These software approaches can control explicit information flows or intra-program
 timing channels that the timing compartments do not handle.
 The timing compartments complement these software approach by
 controlling microarchitectural timing channels.
@@ -51,9 +52,9 @@ There have been recent efforts on verifying information flow properties
 of hardware including certain timing channels. For example, GLIFT
 \cite{glift-asplos09} dynamically tracks all information flows, including timing channels,
 at the logic gate level. 
-The idea in GLIFT has been extended to develop verifying
+This idea has been extended to verifying
 information flow properties using gate-level simulations
-\cite{glift-dac10,glift-dac11,glift-isca11} and a 
+\cite{glift-dac10,glift-dac11,glift-isca11} and to a 
 hardware description language
 ~\cite{caisson-plas10,caisson-pldi11,sapper-plas13}.
 However, these approaches so far have only been applied to simple

@@ -101,7 +101,7 @@ Instead we used the simulated annealing to search the design space.
 First, we used the optimizer to study the L2 miss latency when the access misses
 in the L3 as well.
 After initializing the optimizer with the L3 miss schedule summarized in 
-Figure~\ref{fig:miss_schedules}, the optimizer did not find a better schedule 
+Table~\ref{tab:l2_miss_schedules}, the optimizer did not find a better schedule 
 after 20,000 iterations. Fixing the turn lengths to be the same as the best 
 schedule and sweeping only the space of offsets,
 the worst-case schedule resulted in the memory latency that is 2.38X
@@ -185,7 +185,7 @@ L2 misses.
 
 \begin{figure}
    \begin{center}
-       \includegraphics[width=3.4in]{figs/two_tcs.pdf}
+       \includegraphics[width=3.4in]{figs/two_tcs.eps}
        \caption{Percent overhead of two timing compartments.}
        \label{fig:two_tc_overhead}
    \end{center}
@@ -237,7 +237,7 @@ using dedicated hardware for each TC.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=3.6in]{figs/scalability.pdf}
+        \includegraphics[width=3.4in]{figs/scalability.eps}
         \caption{Performance overhead for 4 TCs.}
         \label{fig:scalability}
     \end{center}
