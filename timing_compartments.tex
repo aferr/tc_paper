@@ -60,7 +60,7 @@ While both attacks exploit timing variations, covert-channel protection requires
 stronger control of timing variations. For example, inserting random noise may be
 enough to prevent side-channel attacks, but typically cannot remove covert channels.
 
-\subsection{Architecture and Threat Model}
+\subsection{Architecture Model}
 
 %\subsection{Baseline Architecture}
 
@@ -82,7 +82,7 @@ bus connects the shared cache to a memory controller that manages requests to
 main memory as well as other system components such as a DMA engine, a timer, and I/O
 modules.
 For brevity, we do not consider simultaneous multithreading and assume that
-each core only runs one program at a time.
+each core can only run one program at a time.
 A core may be time-shared (e.g. by context switching), however, and run multiple
 programs over time.
 
@@ -108,6 +108,8 @@ programs over time.
 %VMs), but the system does not allow software entities to execute concurrently 
 %on the same core (e.g. through simultaneous multithreading). 
 
+\subsection{Security Model}
+
 From the security perspective,
 we assume that there exists a trusted software layer such as an OS or a 
 hypervisor, 
@@ -115,49 +117,60 @@ which manages conventional access control such as virtual memory as well as
 the timing isolation using timing compartments.
 We refer to the OS/hypervisor module that manages timing compartments as
 a timing compartment manager (TCM).
-We assume that there are one or more malicious programs running on a processor 
-whose goal is either to extract information from another program that runs
-concurrently, or to communicate between two malicious programs when there is no 
-explicit communication channel.
+We assume that there are one or more malicious programs running on a processor,
+which try to either extract information from another program that runs
+concurrently, or communicate between them when no explicit communication is allowed. 
 
-We define a timing compartment as a group of 
-software entities such as threads, processes, and virtual machines who share
-the same timing isolation requirement. 
-Our goal of a timing compartment is to provide timing isolation for fine-grained
-microarchitecture events 
+A timing compartment consists of  
+software entities such as threads, processes, and virtual machines.
+Our goal is to eliminate {\em inter-program} timing
+channels among timing compartments through fine-grained sharing of microarchitecture 
+resources\footnote{In a general case, this abstraction can be extended to support
+more expressive policies such as the lattice model \cite{denning} to only prevent
+a subset of timing channels.}.
+To provide a level of isolation that is similar to running on a dedicated processor,
+the timing compartment needs to prevent both side-channel and covert-channel attacks.
+However, {\em intra-program} timing channels,
+which exist even without shared hardware, are not prevented by
+timing compartments. 
 
-that is comparable
-to running on a dedicated processor. In that sense, the timing compartment must
-eliminate {\em inter-program} timing channels from/to another timing compartmetn 
+Timing compartments allow software to explicitly control timing channels
+among groups of software entities, but does not enforce any restrictions within
+each compartment. We believe that handling timing channels separately from
+traditional isolation abstractions such as processes and virtual machines is 
+essential to allow efficient system designs. Because timing channel protection
+is more expensive than traditional access control, a designer should be able
+to pay the overhead of timing channel control only when necessary.
 
+In practice, multi-core systems have a number of shared sources even beyond a
+processor chip, and comprehensive timing isolation cannot be achieved only in hardware.
+Instead, we rely on the trusted software such as an OS to prevent timing channels 
+through shared resources for coarse-grained events such as an I/O and a timer interrupt. 
+These resources are directly managed by the OS/hypervisor and cannot be accessed 
+without explicit system calls or hypercalls.
+The role of a timing compartment is to eliminate
+timing interference in fine-grained microarchitecture events such as memory accesses,
+whose timing cannot be controlled in software.
+In our multi-core architecture model, the timing compartment needs to eliminate
+timing interference in the shared memory hierarchy, including a shared cache,
+on-chip interconnect, cache coherence mechanisms, and a memory controller.
 
-
-We assume that the trusted software such as an OS can prevent timing channels 
-through coarse-grained events such as an I/O and a timer interrupt, which are
-directly managed in software. Yet, fine-grained events such as memory accesses 
-cannot be controlled in software.
-
-To provide timing isolation that is 
-comparable to running on a dedicated processor, the timing compartment
-aims to eliminate {\em inter-program} timing channels for both side and covert
-channel attacks.
-
-Timing 
-channels between timing compartments are allowed or prevented based on a policy 
-specified in software.  Policies are specified by a lattice of security levels
+%Timing 
+%channels between timing compartments are allowed or prevented based on a policy 
+%specified in software.  Policies are specified by a lattice of security levels
 %where leakage is prevented from preceeding levels to preceded levels.
 %of a lattice model, which defines ordering between security levels 
-\cite{denning}.
-This lattice model is quite expressive and widely used for information flow 
-control. 
-
-
+%\cite{denning}.
+%This lattice model is quite expressive and widely used for information flow 
+%control. 
 
 In the current implementation of protection mechanisms, we also assume that
-timing compartments have separate address spaces and do not share any physical
-memory. Communications between timing compartments are controlled through the 
-trusted
-software layer and be explicitly managed to prevent external timing channels. 
+timing compartments have separate address spaces and do not share a physical
+page except for read-only pages that are commonly used for program code.
+There is no point in timing isolation if explicit communications are allowed.
+%Communications between timing compartments are controlled through the 
+%trusted
+%software layer and be explicitly managed to prevent external timing channels. 
 
 %Attacks we handle.
 %However, these approaches to isolate software do not address timing channels 
@@ -168,18 +181,18 @@ software layer and be explicitly managed to prevent external timing channels.
 %channels in hardware that is shared through time multiplexing (e.g.  by context 
 %switching).
 
-Timing compartments aim to eliminate {\em internal} timing channels through
-interference in shared microarchitecture resources. In particular, the goal is
-to prevent both unintentional (side channel) and intentional (covert channel)
-information leaks.
-However, external timing
-channels, which exist even without shared hardware, are not prevented by
-timing compartments. If necessary, the external timing channels can be 
-controlled in software. Similarly, timing channels through I/O devices are not 
-considered in this study,
-because they may be prevented in software.
-Finally, we do not consider attacks that require physical access such as
-side-channel attacks through power consumption or electromagnetic emission.
+%Timing compartments aim to eliminate {\em internal} timing channels through
+%interference in shared microarchitecture resources. In particular, the goal is
+%to prevent both unintentional (side channel) and intentional (covert channel)
+%information leaks.
+%However, external timing
+%channels, which exist even without shared hardware, are not prevented by
+%timing compartments. If necessary, the external timing channels can be 
+%controlled in software. Similarly, timing channels through I/O devices are not 
+%considered in this study,
+%because they may be prevented in software.
+%Finally, we do not consider attacks that require physical access such as
+%side-channel attacks through power consumption or electromagnetic emission.
 
 %Attacks we don't handle.
 %Since our goal is to address vulnerabilities caused by hardware sharing,
@@ -192,30 +205,31 @@ side-channel attacks through power consumption or electromagnetic emission.
 %that the adversary does not have physical access.
 
 
-\Ed{We need to talk about what we need to cover in the timing compartment. 
-We assume that software can handle timing channels through resources that
-are accessed through an OS. So the timing compartment will only cover the
-hardware resources that are concurrently shared w/o explicit control?}
+%\Ed{We need to talk about what we need to cover in the timing compartment. 
+%We assume that software can handle timing channels through resources that
+%are accessed through an OS. So the timing compartment will only cover the
+%hardware resources that are concurrently shared w/o explicit control?}
 
 
-\subsection{Definition of Timing Compartments}
+%\subsection{Definition of Timing Compartments}
 
-Timing compartments are a new architecture abstraction that allows software to
-explicitly control {\em internal timing channels} in shared systems.
-When used in conjunction with access
-control mechanisms, such as conventional page handlers, they provide complete software 
-isolation, because timing channels are the only side/covert channels that can be
-exploited in software without physical attacks.
+%Timing compartments are a new architecture abstraction that allows software to
+%explicitly control {\em internal timing channels} in shared systems.
+%When used in conjunction with access
+%control mechanisms, such as conventional page handlers, they provide complete software 
+%isolation, because timing channels are the only side/covert channels that can be
+%exploited in software without physical attacks.
 
-As a software level abstraction, a timing compartment consists of one or more 
-software entities such as threads, processes, and virtual machines.  Timing 
-channels between timing compartments are allowed or prevented based on a policy 
-specified in software.  Policies are specified by a lattice of security levels
-%where leakage is prevented from preceeding levels to preceded levels.
-%of a lattice model, which defines ordering between security levels 
-\cite{denning}.
-This lattice model is quite expressive and widely used for information flow 
-control. 
+%As a software level abstraction, a timing compartment consists of one or more 
+%software entities such as threads, processes, and virtual machines.  Timing 
+%channels between timing compartments are allowed or prevented based on a policy 
+%specified in software.  Policies are specified by a lattice of security levels
+%%where leakage is prevented from preceeding levels to preceded levels.
+%%of a lattice model, which defines ordering between security levels 
+%\cite{denning}.
+%This lattice model is quite expressive and widely used for information flow 
+%control. 
+
 %  For example, the lattice may restrict timing channels only in one direction 
 %  from $\mathtt{TC1}$ to $\mathtt{TC2}$ ($\mathtt{TC2} \leq \mathtt{TC1}$).
 %  The lattice may disallow any timing channel between two compartments by 
@@ -231,12 +245,12 @@ control.
 %the VMs that do not want to pay for protection), and leakage within a timing 
 %compartment is safe.
 
-Similar to other architecture abstractions such as virtual memory,
-timing compartments are implemented as a combination of hardware and software
-mechanisms. The underlying hardware must provide mechanisms to distinguish
-events from different timing compartments and control timing interference in 
-shared resources. Then, a trusted software component, which we call the timing 
-compartment manager (TCM) manages the hardware mechanisms at run-time.
+%Similar to other architecture abstractions such as virtual memory,
+%timing compartments are implemented as a combination of hardware and software
+%mechanisms. The underlying hardware must provide mechanisms to distinguish
+%events from different timing compartments and control timing interference in 
+%shared resources. Then, a trusted software component, which we call the timing 
+%compartment manager (TCM) manages the hardware mechanisms at run-time.
 
 %To enforce the policy, a trusted software component called the timing 
 %compartment manager (TCM) confines software entities into TCs. The TCM then 
@@ -244,14 +258,6 @@ compartment manager (TCM) manages the hardware mechanisms at run-time.
 %requests for hardware to indicate the TC of the software entity that made the 
 %request. The hardware then enforces the policy by controlling how requests from 
 %different TCs share resources.
-
-Timing compartments allow software to explicitly control timing channels
-among groups of software entities, but does not enforce any restrictions within
-each compartment. We believe that handling timing channels separately from
-traditional isolation abstractions such as processes and virtual machines is 
-essential to allow efficient system designs. Because timing channel protection
-is more expensive than traditional access control, a designer should be able
-to pay the overhead of timing channel control only when necessary.
 
 %Timing compartments only address timing channels; they do not control 
 %information flow through explicit channels. Handling these concerns separately 
@@ -264,7 +270,7 @@ to pay the overhead of timing channel control only when necessary.
 
 \subsection{Application Scenarios}
 
-The ability to control internal timing channels can significantly increase the
+The ability to control inter-program timing channels can significantly increase the
 level of
 assurance in diverse application domains where distrusting entities share a
 physical system. Here, we briefly discuss representative applications.
@@ -280,7 +286,7 @@ emails or
 downloaded applications. BYOD solutions such as Samsung Knox use
 software containers or virtualization to separate the two environments:
 personal and work. Yet, these solutions cannot prevent information leaks
-through internal timing channels.
+through timing channels.
 
 \begin{figure}
     \begin{center}
@@ -294,8 +300,9 @@ Timing compartments enable stronger isolation guarantees for BYOD
 platforms. For example, consider the solution based on virtualization shown in 
 Figure~\ref{fig:byod}. The virtual machines for
 work and personal use are assigned to two different timing compartments:
-$TC_{work}$ and $TC_{pers}$. The policy is configured so that no information can 
-flow from $TC_{work}$ to $TC_{pers}$.
+$TC_{work}$ and $TC_{pers}$. 
+%The policy is configured so that no information can 
+%flow from $TC_{work}$ to $TC_{pers}$.
 Note that the BYOD application only requires two timing compartments even
 though a system may have many cores and run many applications.
 
@@ -309,7 +316,7 @@ machines (VMs) that share physical hardware.
 A tenant may share hardware with competitors or attackers that want
 to extract sensitive data. Conventional virtualization technologies restrict 
 explicit
-communication channels among virtual machines, but cannot control internal
+communication channels among virtual machines, but cannot control 
 timing channels. A practical timing channel attack has been exploited
 in commercial clouds to extract cryptographic keys\cite{heyyou}.
 For some clients, timing channels may not be a concern. Yet, for enterprise or 
@@ -336,8 +343,10 @@ VM3 and VM4 run low-security applications that do not require timing channel
 protection, but require high performance. The figure shows how three timing 
 compartments can be used to meet the security requirements in this example.
 VM1 and VM2 are placed in their own timing compartments $TC1$ and $TC2$, but VM3 
-and VM4 are grouped in $TC3$. The policy prevents leakage out of $TC1$ and 
-$TC2$, but places no constraint on timing channels out of $TC3$. This meets the 
+and VM4 are grouped in $TC3$. 
+%The policy prevents leakage out of $TC1$ and 
+%$TC2$, but places no constraint on timing channels out of $TC3$. 
+This meets the 
 security requirements of VM1 and VM2, but VM3 and VM4 are allowed to share 
 resources normally for improved performance.
 
@@ -352,7 +361,7 @@ sandbox an untrusted application and restrict its communication channels
 when it accesses sensitive data. However, access control mechanisms cannot
 prevent the untrusted application from leaking information to another 
 unrestricted
-application through internal covert timing channels. The timing compartment can 
+application through covert timing channels. The timing compartment can 
 be added to provide a complete sandbox.  In a cloud computing
 context, the same timing channel protection can be used
 by a cloud provider to sandbox third-party web services that cannot be fully 
