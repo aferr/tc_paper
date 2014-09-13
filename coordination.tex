@@ -214,7 +214,9 @@ Third, it is desirable for the schedule to repeat in a short number of cycles.
 Turns are allocated for each timing compartment in a repeated sequence
 (e.g. 1,2,3,4,1,2,3,4 for four timing compartments). Therefore, a schedule
 for the entire L2 miss path repeats after the least common multiple of each turn
-length in the path multiplied by the number of timing compartments. 
+length in the path multiplied by the number of timing compartments. If the 
+schedule repeats infrequently, the time slices are gradually phase shifted and 
+will no longer line up in a desirable way.
 %Schedules 
 %with turn lengths that have a high least common multiple will often be erratic, 
 %causing the turns of each device to shift relative to one another and cause bad 
@@ -234,8 +236,8 @@ response layer is $t_{resp}$.
 %would be queued until the turn for the same TC on the response layer starts, so 
 %this provides no benefit. In fact, reducing the turn length causes requests 
 %that arrive later in the schedule to incur extra delays. 
-Finally, to ensure that the schedule including the offset repeats in every 
-turn, we can set the turn lengths for both request and response layers to be
+Finally, to ensure that the schedule including the offset repeats frequently,
+we can set the turn lengths for both request and response layers to be
 the same.
 %since the 
 %turn lengths for both the request and response layers are the same, the 
