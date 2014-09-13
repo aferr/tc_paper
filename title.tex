@@ -27,16 +27,21 @@
     processes or VMs. Timing channels violate the boundaries between these 
     software system entities despite conventional security techniques such as 
     access controls and virtual memory. Unlike other covert/side channels such 
-    as power monitoring timing channels can be exploited remotely without 
-    physical access to the device. When coupled with conventional security 
-    techniques, timing compartments enable distrusting entities to share 
-    hardware with a level of assurance that is comparable to executing
-    on separate hardware. By separating timing channel control from control for 
-    explicit communication channels, timing compartments afford the flexibility 
-    to pay for timing channel protection only when necessary. To realize timing 
+    as power monitoring timing channels can be exploited in software without 
+    physical access to the device. 
+%    When coupled with conventional security 
+%    techniques, timing compartments enable distrusting entities to share 
+%    hardware with a level of assurance that is comparable to executing
+%    on separate hardware. By separating timing channel control from control for 
+%    explicit communication channels, timing compartments afford the flexibility 
+%    to pay for timing channel protection only when necessary. 
+    To realize timing 
     compartments, we design and experimentally evaluate a full multi-core 
     processor that eliminates timing channels for critical shared hardware 
-    components. The experimental results suggest that the overheads of
+    components. 
+    In particular, we identified new sources of timing channels including
+    cache coherence mechanisms and module interfaces, and provide solutions for them.
+    The experimental results suggest that the overheads of
     timing compartments can be rather low in modern microprocessors, especially 
     when the number of timing compartments is small.
 

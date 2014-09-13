@@ -37,7 +37,7 @@ In this paper, we investigate an architecture abstraction, named timing compartm
 which allows software to explicitly request strong timing isolation among software
 entities that share a multi-core processor.
 The goal of timing compartments is to remove fine-grained microarchitecture-level timing interference
-that cannot be controlled in software and enable strong timing isolation that is
+that cannot be controlled in software and thus enable strong timing isolation that is
 comparable to running a software entity on its own processor.
 The timing compartment is designed to prevent both unintentional information leaks
 through side channels and intentional leaks through covert channels.
@@ -122,18 +122,18 @@ allocated, the overall impact on the performance is limited by the fact
 that the protection only affects infrequent cache misses and that modern
 processors include large caches. 
 
-The following summarizes the main contributions of the paper.
+The following summarizes the main contributions.
 
 \begin{itemize}
 \item The paper introduces a new abstraction that enables software to
 explicitly remove microarchitecture-level timing interference on a multi-core.
-The timing compartment enables new
-applications that require strong timing isolation of software modules.
+%The timing compartment enables new
+%applications that require strong timing isolation of software modules.
 \item The paper identifies new timing channels on a multi-core processor,
 including the one through cache coherence, and presents
 comprehensive protection mechanisms for a full multi-core processor.
 \item The paper shows how protection mechanisms need to be coordinated to
-reduce the overhead of timing compartments.
+reduce the overhead.% of timing compartments.
 \item The paper evaluates the performance overhead of the full-processor
 timing channel protection, and shows that the overhead can be reasonable.
 \end{itemize}
