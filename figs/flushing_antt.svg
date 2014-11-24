@@ -17,7 +17,7 @@
                <text pointer-events="none" y="3" dy=".71em" transform="translate(8.493150684931507,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">hhn</text>
           </g>
           <g transform="translate(44.16438356164383,0)">
-               <rect y="89.37687256131522" width="1.4155251141552512" height="10.623127438684772" fill="rgb(31,119,180)"/>
+               <rect y="9.090909090909108" width="1.4155251141552512" height="90.90909090909089" fill="rgb(31,119,180)"/>
                <rect x="1.4155251141552512" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(174,199,232)"/>
                <rect x="2.8310502283105023" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(255,127,14)"/>
           </g>
@@ -65,7 +65,7 @@
                <text pointer-events="none" y="3" dy=".71em" transform="translate(8.493150684931507,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">mmi</text>
           </g>
           <g transform="translate(166.46575342465752,0)">
-               <rect y="34.59162181549745" width="1.4155251141552512" height="65.40837818450255" fill="rgb(31,119,180)"/>
+               <rect y="85.23524225997292" width="1.4155251141552512" height="14.764757740027074" fill="rgb(31,119,180)"/>
                <rect x="1.4155251141552512" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(174,199,232)"/>
                <rect x="2.8310502283105023" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(255,127,14)"/>
           </g>
@@ -73,7 +73,7 @@
                <text pointer-events="none" y="3" dy=".71em" transform="translate(8.493150684931507,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">mmd</text>
           </g>
           <g transform="translate(186.84931506849313,0)">
-               <rect y="9.193828898746233" width="1.4155251141552512" height="90.80617110125377" fill="rgb(31,119,180)"/>
+               <rect y="89.36481801191387" width="1.4155251141552512" height="10.635181988086126" fill="rgb(31,119,180)"/>
                <rect x="1.4155251141552512" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(174,199,232)"/>
                <rect x="2.8310502283105023" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(255,127,14)"/>
           </g>
@@ -81,7 +81,7 @@
                <text pointer-events="none" y="3" dy=".71em" transform="translate(8.493150684931507,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">llp</text>
           </g>
           <g transform="translate(207.23287671232876,0)">
-               <rect y="34.394231814290194" width="1.4155251141552512" height="65.6057681857098" fill="rgb(31,119,180)"/>
+               <rect y="83.38237491120604" width="1.4155251141552512" height="16.617625088793957" fill="rgb(31,119,180)"/>
                <rect x="1.4155251141552512" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(174,199,232)"/>
                <rect x="2.8310502283105023" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(255,127,14)"/>
           </g>
@@ -89,7 +89,7 @@
                <text pointer-events="none" y="3" dy=".71em" transform="translate(8.493150684931507,115) rotate(29.999999999999996)" fill="rgb(0,0,0)" text-anchor="middle" style="font:9px sans-serif">lld</text>
           </g>
           <g transform="translate(227.61643835616437,0)">
-               <rect y="9.090909090909108" width="1.4155251141552512" height="90.90909090909089" fill="rgb(31,119,180)"/>
+               <rect y="89.37687256131522" width="1.4155251141552512" height="10.623127438684772" fill="rgb(31,119,180)"/>
                <rect x="1.4155251141552512" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(174,199,232)"/>
                <rect x="2.8310502283105023" y="100.0" width="1.4155251141552512" height="1.0e-10" fill="rgb(255,127,14)"/>
           </g>
@@ -102,24 +102,21 @@
      </g>
      <g transform="translate(50,10)">
           <line shape-rendering="crispEdges" x1="0" y1="100.0" x2="288" y2="100.0" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="77.26310088882244" x2="288" y2="77.26310088882244" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="54.52620177764487" x2="288" y2="54.52620177764487" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="31.789302666467293" x2="288" y2="31.789302666467293" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="9.052403555289729" x2="288" y2="9.052403555289729" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="73.4534254940604" x2="288" y2="73.4534254940604" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="46.906850988120794" x2="288" y2="46.906850988120794" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="20.360276482181177" x2="288" y2="20.360276482181177" stroke="rgb(255,255,255)" stroke-opacity="0.3" stroke-width="1"/>
      </g>
      <g transform="translate(50,10)">
           <line shape-rendering="crispEdges" x1="0" y1="100.0" x2="10" y2="100.0" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="77.26310088882244" x2="10" y2="77.26310088882244" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="54.52620177764487" x2="10" y2="54.52620177764487" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="31.789302666467293" x2="10" y2="31.789302666467293" stroke="rgb(0,0,0)" stroke-width="1"/>
-          <line shape-rendering="crispEdges" x1="0" y1="9.052403555289729" x2="10" y2="9.052403555289729" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="73.4534254940604" x2="10" y2="73.4534254940604" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="46.906850988120794" x2="10" y2="46.906850988120794" stroke="rgb(0,0,0)" stroke-width="1"/>
+          <line shape-rendering="crispEdges" x1="0" y1="20.360276482181177" x2="10" y2="20.360276482181177" stroke="rgb(0,0,0)" stroke-width="1"/>
      </g>
      <g transform="translate(50,10)">
           <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,100.0)" fill="rgb(0,0,0)" text-anchor="end">0</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,77.26310088882244)" fill="rgb(0,0,0)" text-anchor="end">1</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,54.52620177764487)" fill="rgb(0,0,0)" text-anchor="end">2</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,31.789302666467293)" fill="rgb(0,0,0)" text-anchor="end">3</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,9.052403555289729)" fill="rgb(0,0,0)" text-anchor="end">4</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,73.4534254940604)" fill="rgb(0,0,0)" text-anchor="end">10</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,46.906850988120794)" fill="rgb(0,0,0)" text-anchor="end">20</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(0,20.360276482181177)" fill="rgb(0,0,0)" text-anchor="end">30</text>
      </g>
      <g transform="translate(50,10)">
           <circle fill="rgb(31,119,180)" stroke="rgb(31,119,180)" cx="250" cy="85" r="4.47213595499958"/>
@@ -127,8 +124,8 @@
           <circle fill="rgb(255,127,14)" stroke="rgb(31,119,180)" cx="250" cy="65" r="4.47213595499958"/>
      </g>
      <g transform="translate(50,10)">
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,85)" fill="rgb(0,0,0)" text-anchor="end">cache</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,75)" fill="rgb(0,0,0)" text-anchor="end">bus</text>
-          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,65)" fill="rgb(0,0,0)" text-anchor="end">mem</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,85)" fill="rgb(0,0,0)" text-anchor="end">1ms</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,75)" fill="rgb(0,0,0)" text-anchor="end">10ms</text>
+          <text pointer-events="none" x="-3" dy=".35em" transform="translate(288,65)" fill="rgb(0,0,0)" text-anchor="end">100ms</text>
      </g>
 </svg>
