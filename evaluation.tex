@@ -11,7 +11,7 @@ core has private 32KB L1 instruction and data caches, and private 256KB L2
 cache. The cores share a 4MB L3 cache. We derived cache configuration 
 parameters from the Intel Xeon E3-1220L, which is a two core architecture used 
 by Amazon EC2. In DRAMSim2, we simulate a 667MHz 2GB DDR3 memory. The 
-interconnects in the simulator runs at 1GHz. Unless specified otherwise, each 
+interconnects in the simulator run at 1GHz. Unless specified otherwise, each 
 experiment is fastforwarded for 1 billion instructions, and run for 100 million 
 instructions. 
 
@@ -41,84 +41,70 @@ instructions.
 
 \subsection{Security}
 
-At a high level, the general approach that we use such as static partitioning,
+At a high level, the general approaches that we use such as static partitioning,
 duplication, and TDM should remove timing interference. We experimentally
-tested the security in order to check if we miss any sources of timing interference.
-%To experimentally evaluate the security of our architecture, 
-The experiments simulate a two-core 
+tested the security to check if we missed any sources of timing interference.
+We simulate a two-core 
 system with two timing compartments, TC0 and
 TC1, running concurrently. 
-%The protection policy is configured to disallow any 
-%timing channels between the two compartments. 
-If the timing isolation is complete, then the execution time of a program on 
+If there are no timing channels, then the execution time of a program on 
 TC0 should be independent of the workload on TC1.
-%If the number of cycles required 
-%to execute a certain number of instructions for a particular benchmark running
-%on TC0 depends on which benchmark is running on TC1, it indicates timing 
-%interference still exist. In a secure system, the execution time
-%of TC0 would be unaffected by TC1. 
-Using this reasoning, we checked the
+Using this reasoning, we verified the
 security of our design by running, a fixed benchmark
 on TC0 while varying the benchmark on TC1 and compared the execution times. 
 As expected, 
-%these tests showed interference in the baseline without protection.
-%On the other hand,
 we observed no interference with timing compartments enabled.
 
 \subsection{Time Slice Coordination}
 \label{sec:eval_coord}
 
-To explore a large design space of coordinating the time slices for the TDM 
-protection schemes, we built a custom simulator that only models the memory
+The time multiplexed resources in this architecutre are interdependent, 
+necessitating careful coordination among the time slices for each.
+To explore a large design space of parameters (namely, the turn lengths and 
+offsets) for the time slices for the TDM 
+protected modules, we built a custom simulator that only models the memory
 hierarchy for an L2 cache miss.
 Given the turn lengths and offsets of each device, the L2 miss latency can
 be determined based on the cycle in which an L2 miss happens.
 Because a schedule repeats after the least common multiple of each turn length in 
 the schedule multiplied by the number of timing compartments, each possible 
 latency for a schedule can be enumerated. The simulator calculates
-the expected L2 miss latency assuming that the timing of L2 misses shows a
-uniform random distribution.
+the expected value of the L2 miss latency assuming that distribution of L2 miss 
+times is uniform random.
 
 Using this simulator, we exhaustively tested the L2 miss latency for an
-L3 hit under all possible turn lengths within a limit and all possible
-offsets. The experiments confirmed that 
+L3 hit under all possible turn lengths within wide search space (all turn 
+lengths less than four times the greatest relevant latency in this subsystem),
+and all possible offsets. The experiments confirmed that 
 the intuitive schedule described in 
 Section~\ref{sec:coordination} achieves the lowest expected L2 miss latency
 assuming a hit in the L3 cache.
 Fixing the turn lengths to the optimal values and adjusting only the offsets,
 the worst case latency is 19.6\% higher than the one with the optimal schedule, showing
-the importance of the coordination.
-%that coordinating the hit path is important.
+that coordinating TDM schedules is crucial.
 
 The design space for schedules involving all resources from the L2 cache to
 the main memory is far too large to search exhaustively.
-Instead we used the simulated annealing to search the design space.
-%We found that changing a 
-%turn length or offset slightly can drastically affect the performance, so the 
-%search space has many relative minima. We used our own simulated annealing 
-%optimizer to avoid getting stuck at relative minima and increase our chances of 
-%finding a global minimum.
+Instead we used a simulated annealing otpimizer to search this design space.
 First, we used the optimizer to study the L2 miss latency when the access misses
 in the L3 as well.
 After initializing the optimizer with the L3 miss schedule summarized in 
 Table~\ref{tab:l2_miss_schedules}, the optimizer did not find a better schedule 
-after 20,000 iterations. Fixing the turn lengths to be the same as the best 
+after 20,000 iterations. Fixing the turn lengths to those in the best
 schedule and sweeping only the space of offsets,
-the worst-case schedule resulted in the memory latency that is 2.38X
-higher than the best schedule.
+the worst schedule we found had an average L2 miss latency that is 2.64X higher than the 
+best schedule.
 
-We used the same optimizer to study the best schedule to minimize the average
+We used the same optimizer to find a schedule that minimizes the
 L2 miss latency under the assumption that the L3 cache hit-rate is 90\%.
-This case did not have any intuitive solution because the solution needs to 
-balance the two schedules that provide low latencies for L3 hits and misses.
-%Optimizing for the L2 miss rate overall is a harder problem since it requires a 
-%balance bewtween the best L3 miss case and L3 hit case parameters. 
+Optimizing for the L2 miss rate overall is a harder problem since it requires a 
+balance bewtween the best L3 miss case and L3 hit case parameters. 
 The schedule 
 produced by the optimizer was not one that made any intuitive sense.  However, 
-the optimal schedule was 8.67X better than the worst schedule that used the 
-same turn lengths as the best schedule (and changed only the offsets).
+the optimal schedule was 39\% better than the worst schedule that used the 
+same turn lengths as the best schedule (and as before, changed only the offsets).
 
-The results for schedule selection study are summarized in Table 
+The results for the schedule selection study are summarized in Table 
 \ref{tab:coord_results}. Overall, scheduling interdependent time multiplexed 
 devices is a challenging problem, but the gap between the worst and optimal 
 cases show that it is important.
@@ -129,13 +115,13 @@ cases show that it is important.
     \centering
     \begin{tabular}{|l|l|l|l|}
         \hline
-        \multicolumn{1}{|l|}{Optimized Quantity} & Search & Min & Max \\\hline
-        \multicolumn{1}{|l|}{L3 Hit Latency} & Exhaustive & 25.5 & 30.5 
+        \multicolumn{1}{|l|}{Optimized L2 Latency Case} & Search & Min & Max \\\hline
+        \multicolumn{1}{|l|}{Assume L3 Hit} & Exhaustive & 25.5 & 30.5 
         \\\hline
-        \multicolumn{1}{|l|}{L3 Miss Latency} & Simulated Annealing& 139.5 & 
-        334.5 \\\hline
-        \multicolumn{1}{|l|}{L2 Miss Latency} & Simulated Annealing& 38.6 & 
-        344.5 \\\hline
+        \multicolumn{1}{|l|}{Assume L3 Miss} & Simulated Annealing& 139.5 & 
+        368.5 \\\hline
+        \multicolumn{1}{|l|}{Assume 90\% L3 Hits} & Simulated Annealing& 38.1 & 
+        53.1 \\\hline
     \end{tabular}
     \end{small}
     \label{tab:coord_results}
@@ -143,12 +129,38 @@ cases show that it is important.
 
 \subsection{Performance Overhead}
 
-The timing compartment architecture extends the insecure baseline with
+The timing compartments architecture extends the insecure baseline with
 static partitioning and time multiplexing to secure the shared hardware 
 resources. These changes lead to underutilization, and thus, a performance
 overhead. To evaluate the performance overhead, we ran multiprogram workloads 
-comprised of pairs of SPEC2006 benchmarks, and measured the execution time of
-the benchmark in TC0.
+comprised of of SPEC2006 benchmarks, and measured the system throughput (STP).
+% and the 
+% average normalized turnaround time (ANTT).
+
+STP is the throughput (in IPC) of the parallel system relative to the throughput 
+of running each program serially. An STP of less than 1 means that higher 
+throughput is achieved by running the programs serially rather than in 
+parallel.
+It is computed with
+\begin{equation}
+  \sum^n_{i=1} \frac{IPC_{MP,i}}{IPC_{SP,i}},
+\end{equation}
+where $IPC_{MP,i}$ is the IPC of the $i^{th}$ program in the workload when run 
+in parallel with the others, and $IPC_{SP,i}$ is the IPC for the same program 
+when it is run alone in the same system.
+
+% ANTT is the average slowdown that each program experiences by running in 
+% parallel with the others compared to running it alone. It can be calculated 
+% using
+% \begin{equation}
+%   \sum^n_{i=1} \frac{T_{MP,i}}{T_{SP,i}},
+% \end{equation}
+% where $T_{MP,i}$ is the execution time of the $i^{th}$ program in the workload when run 
+% in parallel, and $T_{SP,i}$ is the execution time for the same program 
+% when it is run alone in the same system. STP and ANTT are similar, but do not 
+% convey the same information. STP shows the performance from the perspective of 
+% the system while ANTT shows the performance from the perspective of the user.
+
 %We configured the security policy to disallow communication among all timing 
 %compartments, and measured the execution time of the benchmark
 %in TC0. 
@@ -160,21 +172,6 @@ instructions, is shown in
 Figure~\ref{fig:memstudy}. Of the SPEC2006 benchmarks, mcf has the most L2 misses,
 while astar has almost none after fast-forwarding for 1B instructions.
 
-For the baseline architecture, we calculate the average execution time of the 
-benchmark on Core 0 by averaging among runs with different benchmarks on Core 
-1.  In the baseline, the execution time of the benchmark in Core 0 is impacted by the benchmark 
-in Core 1 due to interference in shared resources. 
-In the timing compartments architecture, the execution time of TC0 
-(on Core 0) is independent of workloads running in other timing compartments.
-
-Figure~\ref{fig:two_tc_overhead} shows the performance overhead when running 
-two TCs. Libquantum and mcf incur the highest overhead at 22\% and 10\% 
-respectively. However, each other benchmark has an overhead lower than 5\%, and 
-the arithmetic mean of the overheads is only 4.3\%
-The results show that the overhead of strong timing isolation can be reasonable
-for a small number (2) of timing compartments because it only affects infrequent
-L2 misses.
-
 \begin{figure}
     \begin{center}
         \includegraphics[width=3.4in]{figs/MPKI.eps}
@@ -183,76 +180,117 @@ L2 misses.
     \end{center}
 \end{figure}
 
-\begin{figure}
-   \begin{center}
-       \includegraphics[width=3.4in]{figs/two_tcs.eps}
-       \caption{Percent overhead of two timing compartments.}
-       \label{fig:two_tc_overhead}
-	   \vspace{-0.2in}
-   \end{center}
-\end{figure}
+Table \ref{tab:workloads} summarizes the workloads we constructed to cover a 
+variety of cases. For experiments with two cores, the workloads are exeactly as 
+shown in the table. For experiments with more cores, the same labels are used 
+to refer to workloads where half the cores run the first program, and the 
+others run the second half. 
+%% Consider commenting out the lines between this and the table
+The first two letters indicate the memory intensity 
+of each benchmark (low, moderate, or high). The letters "i" and "d" indicate 
+that the performance of the benchmarks is largely independent or dependent on 
+the cache size. The letters "p" and "n" indicate that the programs have phases 
+or that they do not.
 
-% Figure~\ref{fig:performance} shows the performance overhead of full system 
-% protection as well as the overhead incurred by the changes to the memory 
-% controller (mc), the cache (waypart), the L3 to memory bus (membus), and the 
-% L2 to L3 bus (L2L3) individually compared to the insecure baseline. The
-% overheads for libquantum and mcf, which are particularly memory intensive, 
-% are highest at 69\% and 18\% respectively. However, the arithmetic mean of 
-% the total overhead is quite low at roughly 9\%. Memory controller protection 
-% incurs by far the most overhead suggesting the impact on memory bandwidth is 
-% more significant than bus or cache underutilization. Overall, the results 
-% show that the timing compartments are viable for applications that require 
-% high assurance for software isolation.
+\begin{table}
+    \caption{ Multiprogram Workloads }
+    \centering
+\begin{small}
+    \begin{tabular}{|l|r|}
+        \hline
+        Workload Name & Benchmarks \\\hline\hline
+        hhd &  mcf bzip2 \\\hline
+        hhn &  mcf xalan \\\hline
+        hhi &  libquantum libquantum \\\hline
+        hli &  libquantum astar \\\hline
+        hld &  mcf h264ref \\\hline
+        hmi &  libquantum sjeng \\\hline
+        hmd &  xalan gcc \\\hline
+        mmi &  gcc gobmk \\\hline
+        mmd &  sjeng sjeng \\\hline
+        llp &  astar h264ref \\\hline
+        lld &  h264ref hmmer \\\hline
+        lli &  astar astar \\\hline
+    \end{tabular}
+    \end{small}
+    \label{tab:workloads}
+\end{table}
 
-% \begin{figure}
-%     \begin{center}
-%         \includegraphics[width=3.4in]{figs/breakdown.pdf}
-%         \caption{Performance overhead for 2 TCs.}
-%         \label{fig:performance}
-%     \end{center}
-% \end{figure}
+Figure ~\ref{fig:ntcstp} shows the STP of the insecure baseline (a) and of the 
+secure processor (b) as the number of cores increases. The secure processor is 
+configured so that each program runs in a separate timing compartment and no 
+information leakage is permitted. The STP is greater than 1 for the secure 
+processor for each workload and for each core count, showing that running in a 
+shared system is beneficial even with a very strict security policy. Further, 
+the STP of the secure processor with two cores is not significantly lower
+than that of the insecure baseline. As the number of isolated programs 
+increases, the overhead of the timing compartments scales linearly, but is
+still reasonable.
 
-The performance overhead is likely to increase as the number of timing 
-compartment scales up. To study the impact of the number of timing 
-compartments, we evaluated the performance overhead with two, three, and four 
-timing compartments on a 4-core  processor, each occupying one core and private 
-L1 and L2 caches. They share a 4MB L3 cache. We do not evaluate all 
-permutations of 4 benchmarks. Instead, we evaluate the overhead using cases
-when TC1, TC2, and TC3 are executing the same benchmark. As 
-before, the overhead is shown as the average for the benchmark in TC0 while
-varying the workload in TC1, TC2, and TC3.
+\begin{figure*}%
+  \begin{minipage}{1.2in}
+    \includegraphics[width=3.4in]{figs/baseline_stp.pdf}
+    \caption*{(a) Baseline}
+  \end{minipage}
+  \qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad\qquad
+  \begin{minipage}{1.2in}%
+        \includegraphics[width=3.4in]{figs/n_core_n_tc_stp.pdf}
+        \caption*{(b) Secure}
+  \end{minipage}%
+  \caption{STP as the number of cores scales.} 
+  \label{fig:ntcstp}%
+\end{figure*}
 
-The performance overhead as the number of timing compartments increases is 
-shown in Figure~\ref{fig:scalability}. The average overheads %for 
-%each benchmark 
-for 2, 3 and 4 timing compartments are 4.3\%, 8.6\%, and 14\% 
-respectively. For libquantum which is particularly memory intensive, the 
-overheads are 22\%, 37\%, and 51\% for 2, 3, and 4 timing compartments. The 
-results suggest that the overhead of timing timing channel protection is rather 
-insensitive to the number of timing compartments for compute-bound 
-applications. For memory-intensive applications, the overhead can increase 
-noticeably. However, the results still suggest that the performance overhead
-of timing compartments is reasonable. Also, the overhead results suggest
-that sharing hardware with timing compartments is more efficient than
-using dedicated hardware for each TC.
+Multiple programs can be grouped into the same timing compartment to allow 
+resource sharing when permitted by the security requirements (for example, if 
+two processes are owned by the same user or if some of the processes have low 
+security needs). Figure ~\ref{fig:2tcstp} studies the performance gained 
+through partial resource sharing by evenly dividing the processes in secured 2, 
+4, and 6 core systems into two TCs. The performance gains are substantial and 
+increase as the number of programs in the same TC increases.
 
 \begin{figure}
     \begin{center}
-        \includegraphics[width=3.4in]{figs/scalability.eps}
-        \caption{Performance overhead when varying the number of TCs (2, 3, 4).}
-        \label{fig:scalability}
-		\vspace{-0.2in}
+        \includegraphics[width=3.4in]{figs/n_core_2_tc_stp.pdf}
+        \caption{STP of systems with 2 TCs and more than 2 cores.}
+        \label{fig:2tcstp}
     \end{center}
 \end{figure}
 
-While future multi-core systems are likely to have a large number of processing 
-cores, we note that many security applications will not require many timing 
-compartments to be used concurrently. For example, the BYOD application only 
-requires two TCs no matter how many cores exist in the system. Similarly, in a 
-high-assurance cloud computing environment, the cloud provider can limit the
-number of high-assurance virtual machines that can be located on each physical
-system while increasing the system utilization by co-locating non-secure
-virtual machines with high-assurance ones.
+In Figure ~\ref{fig:breakdown} we study the overhead of implementing each of 
+the main protection mechanisms by evaluating the STP of a system with only 
+cache way partitioning, the time multiplexed bus, or the time multiplexed 
+memory controller. The results suggest that the majority of the overhead is due 
+to the memory controller, and the cache partitioning and bus protection cause a 
+much smaller portion of the overhead.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.4in]{figs/breakdown_stp.pdf}
+        \caption{STP with individual security features enabled.} 
+        \label{fig:breakdown}
+    \end{center}
+\end{figure}
+
+In addition to these security features required for concurrently sharing the 
+processor, TCs have an additional overhead whenever cores are shared by 
+processes in different TCs through context switching. On a context switch, the 
+private caches, shared cache partition, and the TLB and branch predictor state 
+must be flushed. Figure ~\ref{fig:flushing} shows the STP of the secure system 
+with context switches occuring every 1ms, 10ms, and 100ms. The overhead for 
+context switching is not prohibitive, and we note that the additional overhead 
+for context switching is only incurred on context switches between processes in 
+different timing compartments. Context switches between processes within a VM, 
+for example, will not have this overhead since they are most likely in the same 
+TC.
+
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=3.4in]{figs/flushing_stp.pdf}
+        \caption{Memory intensity of SPEC2006 benchmarks.}
+        \label{fig:flushing}
+    \end{center}
+\end{figure}
 
 \subsection{Cache Coherence Performance Overhead}
 
