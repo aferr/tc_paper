@@ -20,6 +20,14 @@
 % \newcommand{\ifanonymized}[2]{#2} % Not Anonymized
 %******************************************************************************
 
+% Space optimization. cut lower priority first.
+% use to mark parts that are nice to have, but cut due to space
+\newcommand{\cut}[1]{} 
+
+% use to mark parts that can potentially be cut
+\newcommand{\optional}[1]{#1} 
+
+
 \pagestyle{empty}
 
 \setlength{\pdfpagewidth}{8.5in}

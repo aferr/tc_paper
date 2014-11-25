@@ -4,8 +4,10 @@ Timing channel attacks are becoming a major threat as hardware is increasingly
 consolidated and shared by distrusting entities, which traditionally have been
 isolated on their own physical machines. For example, in cloud computing, mutually distrusting 
 parties own virtual machines on shared hardware.
+\optional{
 Mobile device users download untrusted applications that share hardware with 
-their banking software.
+other sensitive software.
+}
 While untrusted applications can be sandboxed using
 traditional access control mechanisms to limit explicit communication,
 timing 
@@ -45,9 +47,10 @@ through side channels and intentional leaks through covert channels.
 %More importantly, 
 When coupled with software-level protection mechanisms to control timing channels 
 through coarse-grained events such as scheduling and I/O, timing compartments
-can enable a software system to comprehensively isolate the timing of a program
+can enable comprehensively timing isolation of a program
 or a virtual machine.
 
+\cut{
 Timing compartments are designed so that timing isolation can be
 separated from traditional access control. For example, multiple programs or
 virtual machines that are isolated from each other using virtual memory may
@@ -55,38 +58,41 @@ be grouped into a single timing compartment if they either belong to the
 same owner or do not require timing channel protection. 
 This separation provides a system the flexibility to pay overhead for
 timing channel protection when it is truly necessary.
+}
 
-Processes or VMs are grouped into timing compartments by a trusted software 
-layer, called the timing compartment manager (TCM), which establishes a 
-security policy that defines which TCs must be isolated. The TCM informs the 
-hardware of the policy and allocates hardware resources for each TC.
-
-To realize timing compartments, the multi-core processor is augmented 
-to control inter-program timing interferenc in shared hardware
+To support timing compartments, multi-core hardware needs to be augmented 
+to enable controlling inter-program timing interference in shared 
 resources that cannot be efficiently controlled in software.
-In this paper, we identify major resources that can be shared concurrently among
-multiple cores on a typical multi-core processor (shared caches,
-on-chip interconnect, cache coherence mechanisms, and off-chip memory 
-controllers), and redesign each to eliminate timing interference.
+Then, a trusted software module in an operating system or a hypervisor, called 
+the timing compartment manager (TCM), can use these hardware mechanisms to
+isolate the timing of one timing compartment containing a group of programs or 
+virtual machines from others.
 
+In this paper, we show how a typical multi-core processor can be redesigned to
+support timing compartments by eliminating timing interference in concurrently
+shared resources 
+\optional{
+such as shared caches, on-chip interconnect, cache coherence mechanisms, and 
+off-chip memory controllers,
+}
+and evaluate the overheads.
 We use static partitioning and time multiplexing to address not only 
-side channels, but covert channel attacks which are not easily thwarted with 
-noise or randomization. The general approaches used for timing channel 
-protection seem straighforward at first inspection. However, we show that 
-naïvely applying these techniques can leave more subtle timing channels 
-unclosed and lead to intolerably poor performance. We found that poorly 
-coordinating time-multiplexed resources along the L2 miss path can cause a 2.6X 
-increase in the average L2 miss latency with parameters that are 
-surprisingly close to an efficient schedule. We study the interaction between 
-these components analytically and through optimization.
-
-This full system, multi-core processor protection study revealed new sources
-of timing channels.
-For example, we found that contention for the interfaces between hardware 
+side channels, but also covert channel attacks which are not easily thwarted with 
+noise or randomization. 
+While this general approach may seem straightforward at a glance, we found that
+there exist multiple new sources of timing channels that have not been studied before.
+For example, we show a covert channel attack through cache coherence traffic
+even when colluding programs do not share memory space, and found that
+contention for the interfaces between hardware 
 modules can leak information.
-We also demonstrate a covert channel attack that uses coherence traffic interference to 
-undermine communication control - even among colluding parties that do not 
-share data or cache entries with each other.
+We also show that 
+naïvely applying time multiplexing can lead to unnecessarily poor performance. 
+For example, our study shows that the average L2 miss latency may increase by
+2.6X if time-multiplexing along the L2 miss path is not carefully coordinated.
+%even with parameters that are 
+%surprisingly close to an efficient schedule. 
+%We study the interaction between 
+%these components analytically and through optimization.
 
 %Recent studies have investigated mechanisms to prevent
 %timing channels in various microarchitecture components, including
@@ -128,7 +134,7 @@ Simulation results suggest that the performance overhead of supporting
 timing compartments is relatively low, especially when the number of timing
 compartments that run simultaneously is small.
 Even though timing compartments require shared resources to be statically
-allocated, the overall impact on performance is limited since accesses to the
+allocated, the overall impact on performance is limited because accesses to the
 shared levels of the memory hierarchy are infrequent, especially on modern
 processors with large private caches.
 
@@ -139,13 +145,15 @@ The following summarizes the main contributions.
 explicitly remove microarchitecture-level timing interference on a multi-core.
 %The timing compartment enables new
 %applications that require strong timing isolation of software modules.
-\item The paper identifies new timing channels on a multi-core processor,
+\item The paper identifies new timing channels on a multi-core,
 including one through cache coherence, and presents
-comprehensive protection mechanisms for a full multi-core processor.
+comprehensive protection for a full multi-core processor.
 \item The paper shows how protection mechanisms need to be coordinated to
 reduce the overhead.% of timing compartments.
 \item The paper evaluates the performance overhead of the full-processor
 timing channel protection, and shows that the overhead can be reasonable.
+\item The paper validates the proposed approach through an RTL implementation of 
+a 4-core processor with a shared cache, a ring network, and a memory controller.
 \end{itemize}
 
 The rest of the paper is organized as follows.
@@ -153,7 +161,7 @@ Section 2 introduces timing compartments and
 presents example applications that can be enabled by strong timing isolation.
 Section 3 identifies the sources of timing channels in a multi-core processor, and
 describes protection mechanisms to eliminate them. 
-Section 4 presents how the hardware protection mechanisms based on time-division
+Section 4 presents how the protection mechanisms based on time-division
 multiplexing need to be coordinated to reduce overhead.
 Section 5 evaluates the proposed architecture. Section 6 discusses related
 work, and Section 7 concludes the paper.
