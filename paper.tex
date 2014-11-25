@@ -20,6 +20,14 @@
 % \newcommand{\ifanonymized}[2]{#2} % Not Anonymized
 %******************************************************************************
 
+% Space optimization. cut lower priority first.
+% low priority: nice to have, but does not really affect the content
+\newcommand{\loptional}[1]{#1} 
+
+% high priority: good content to have, but not critical
+\newcommand{\hoptional}[1]{#1} 
+
+
 \pagestyle{empty}
 
 \setlength{\pdfpagewidth}{8.5in}
